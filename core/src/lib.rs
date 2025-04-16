@@ -1,2 +1,2 @@
-pub mod endpoints;
+pub mod api;
 pub mod model;

@@ -1,6 +1,3 @@
-use std::path;
-
-use crate::api::Api;
 use reqwest::Response;
 pub struct Client<'a> {
     host: &'a str,

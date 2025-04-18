@@ -51,21 +51,21 @@ impl From<Market> for &'static str {
 pub enum Trading {
     NewOrder,
     TestNewOrder,
-    QueryOrderUserData,
-    CancelOrderTrade,
+    QueryOrder,
+    CancelOrder,
     CancelAllOpenOrdersOnASymbol,
-    CancelAnExistingOrderAndSendANewOrderTrade,
-    OrderAmendKeepPriorityTrade,
-    CurrentOpenOrdersUserData,
-    AllOrdersUserData,
-    NewOrderListOcoTrade,
-    NewOrderListOtoTrade,
-    NewOrderListOtocoTrade,
-    QueryOrderListUserData,
-    QueryAllOrderListsUserData,
-    QueryOpenOrderListsUserData,
-    NewOrderUsingSORTrade,
-    TestNewOrderUsingSorTrade,
+    CancelAnExistingOrderAndSendANewOrder,
+    OrderAmendKeepPriority,
+    CurrentOpenOrders,
+    AllOrders,
+    NewOrderListOco,
+    NewOrderListOto,
+    NewOrderListOtoco,
+    QueryOrderList,
+    QueryAllOrderLists,
+    QueryOpenOrderLists,
+    NewOrderUsingSOR,
+    TestNewOrderUsingSor,
 }
 
 impl From<Trading> for &'static str {
@@ -73,21 +73,45 @@ impl From<Trading> for &'static str {
         match value {
             Trading::NewOrder => "/api/v3/order",
             Trading::TestNewOrder => "/api/v3/order/test",
-            Trading::QueryOrderUserData => "/api/v3/order",
-            Trading::CancelOrderTrade => "/api/v3/order",
+            Trading::QueryOrder => "/api/v3/order",
+            Trading::CancelOrder => "/api/v3/order",
             Trading::CancelAllOpenOrdersOnASymbol => "/api/v3/openOrders",
-            Trading::CancelAnExistingOrderAndSendANewOrderTrade => "/api/v3/order/cancelReplace",
-            Trading::OrderAmendKeepPriorityTrade => "/api/v3/order/amend/keepPriority",
-            Trading::CurrentOpenOrdersUserData => "/api/v3/openOrders",
-            Trading::AllOrdersUserData => "/api/v3/allOrders",
-            Trading::NewOrderListOcoTrade => "/api/v3/orderList/oco",
-            Trading::NewOrderListOtoTrade => "/api/v3/orderList/oto",
-            Trading::NewOrderListOtocoTrade => "/api/v3/orderList/otoco",
-            Trading::QueryOrderListUserData => "/api/v3/orderList",
-            Trading::QueryAllOrderListsUserData => "/api/v3/allOrderList",
-            Trading::QueryOpenOrderListsUserData => "/api/v3/openOrderList",
-            Trading::NewOrderUsingSORTrade => "/api/v3/sor/order",
-            Trading::TestNewOrderUsingSorTrade => "/api/v3/sor/order/test",
+            Trading::CancelAnExistingOrderAndSendANewOrder => "/api/v3/order/cancelReplace",
+            Trading::OrderAmendKeepPriority => "/api/v3/order/amend/keepPriority",
+            Trading::CurrentOpenOrders => "/api/v3/openOrders",
+            Trading::AllOrders => "/api/v3/allOrders",
+            Trading::NewOrderListOco => "/api/v3/orderList/oco",
+            Trading::NewOrderListOto => "/api/v3/orderList/oto",
+            Trading::NewOrderListOtoco => "/api/v3/orderList/otoco",
+            Trading::QueryOrderList => "/api/v3/orderList",
+            Trading::QueryAllOrderLists => "/api/v3/allOrderList",
+            Trading::QueryOpenOrderLists => "/api/v3/openOrderList",
+            Trading::NewOrderUsingSOR => "/api/v3/sor/order",
+            Trading::TestNewOrderUsingSor => "/api/v3/sor/order/test",
+        }
+    }
+}
+
+pub enum Account {
+    AccountInformation,
+    AccountTradeList,
+    QueryUnfilledOrderCount,
+    QueryPreventedMatches,
+    QueryAllocations,
+    QueryCommissionRates,
+    QueryOrderAmendments,
+}
+
+impl From<Account> for &'static str {
+    fn from(value: Account) -> Self {
+        match value {
+            Account::AccountInformation => "/api/v3/account",
+            Account::AccountTradeList => "/api/v3/myTrades",
+            Account::QueryUnfilledOrderCount => "/api/v3/rateLimit/order",
+            Account::QueryPreventedMatches => "/api/v3/myPreventedMatches",
+            Account::QueryAllocations => "/api/v3/myAllocations",
+            Account::QueryCommissionRates => "/api/v3/account/commission",
+            Account::QueryOrderAmendments => "/api/v3/order/amendments",
         }
     }
 }

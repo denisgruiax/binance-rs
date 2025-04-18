@@ -7,9 +7,9 @@ pub enum Base {
     Api4,
 }
 
-impl From<Base> for &'static str {
-    fn from(value: Base) -> Self {
-        match value {
+impl Into<&'static str> for Base {
+    fn into(self) -> &'static str {
+        match self {
             Base::Api => "https://api.binance.com",
             Base::ApiGcp => "https://api-gcp.binance.com",
             Base::Api1 => "https://api1.binance.com",

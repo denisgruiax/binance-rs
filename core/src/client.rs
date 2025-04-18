@@ -16,12 +16,11 @@ impl<'a> Client<'a> {
         }
     }
 
-    pub async fn get<T>(&self, path: T) -> reqwest::Result<Response>
+    pub async fn get<T>(&self, path: T) -> impl Future<Output = Result<Response, reqwest::Error>>
     where
         T: Into<&'static str>,
     {
         let endpoint = format!("{}{}", self.host, path.into());
-
-        self.inner_client.get(endpoint).send().await
+        self.inner_client.get(endpoint).send()
     }
 }

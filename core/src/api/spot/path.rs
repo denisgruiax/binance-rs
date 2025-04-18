@@ -47,3 +47,47 @@ impl From<Market> for &'static str {
         }
     }
 }
+
+pub enum Trading {
+    NewOrder,
+    TestNewOrder,
+    QueryOrderUserData,
+    CancelOrderTrade,
+    CancelAllOpenOrdersOnASymbol,
+    CancelAnExistingOrderAndSendANewOrderTrade,
+    OrderAmendKeepPriorityTrade,
+    CurrentOpenOrdersUserData,
+    AllOrdersUserData,
+    NewOrderListOcoTrade,
+    NewOrderListOtoTrade,
+    NewOrderListOtocoTrade,
+    QueryOrderListUserData,
+    QueryAllOrderListsUserData,
+    QueryOpenOrderListsUserData,
+    NewOrderUsingSORTrade,
+    TestNewOrderUsingSorTrade,
+}
+
+impl From<Trading> for &'static str {
+    fn from(value: Trading) -> Self {
+        match value {
+            Trading::NewOrder => "/api/v3/order",
+            Trading::TestNewOrder => "/api/v3/order/test",
+            Trading::QueryOrderUserData => "/api/v3/order",
+            Trading::CancelOrderTrade => "/api/v3/order",
+            Trading::CancelAllOpenOrdersOnASymbol => "/api/v3/openOrders",
+            Trading::CancelAnExistingOrderAndSendANewOrderTrade => "/api/v3/order/cancelReplace",
+            Trading::OrderAmendKeepPriorityTrade => "/api/v3/order/amend/keepPriority",
+            Trading::CurrentOpenOrdersUserData => "/api/v3/openOrders",
+            Trading::AllOrdersUserData => "/api/v3/allOrders",
+            Trading::NewOrderListOcoTrade => "/api/v3/orderList/oco",
+            Trading::NewOrderListOtoTrade => "/api/v3/orderList/oto",
+            Trading::NewOrderListOtocoTrade => "/api/v3/orderList/otoco",
+            Trading::QueryOrderListUserData => "/api/v3/orderList",
+            Trading::QueryAllOrderListsUserData => "/api/v3/allOrderList",
+            Trading::QueryOpenOrderListsUserData => "/api/v3/openOrderList",
+            Trading::NewOrderUsingSORTrade => "/api/v3/sor/order",
+            Trading::TestNewOrderUsingSorTrade => "/api/v3/sor/order/test",
+        }
+    }
+}

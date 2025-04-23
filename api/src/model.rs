@@ -1,4 +1,4 @@
 pub mod error;
-pub mod spot;
+pub mod response;
 
 pub use error::BinanceError;

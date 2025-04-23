@@ -1,18 +1,32 @@
+use crate::client::signer::signature::Signature;
 use reqwest::Response;
 
-pub struct Client<'a> {
+pub struct Client<'a, S>
+where
+    S: Signature,
+{
     host: &'a str,
     api_key: &'a str,
     secret_key: &'a str,
+    signature: &'a S,
     inner_client: reqwest::Client,
 }
 
-impl<'a> Client<'a> {
-    pub fn new(host: &'a str, api_key: &'a str, secret_key: &'a str) -> Client<'a> {
+impl<'a, S> Client<'a, S>
+where
+    S: Signature,
+{
+    pub fn new(
+        host: &'a str,
+        api_key: &'a str,
+        secret_key: &'a str,
+        signature: &'a S,
+    ) -> Client<'a, S> {
         Client {
             host,
             api_key,
             secret_key,
+            signature,
             inner_client: reqwest::Client::new(),
         }
     }

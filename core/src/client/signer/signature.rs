@@ -1,3 +1,3 @@
-pub trait Signature {
+pub trait Signature<'a> {
     fn sign(&self, request: String) -> String;
 }

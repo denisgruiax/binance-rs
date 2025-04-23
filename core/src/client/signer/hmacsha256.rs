@@ -17,7 +17,7 @@ impl<'a> HmacSha256<'a> {
     }
 }
 
-impl<'a> Signature for HmacSha256<'a> {
+impl<'a> Signature<'a> for HmacSha256<'a> {
     fn sign(&self, request: String) -> String {
         let mut hasher = Hmac::<Sha256>::new_from_slice(self.secret_key.as_bytes()).unwrap();
         hasher.update(request.as_bytes());

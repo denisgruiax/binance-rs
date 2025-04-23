@@ -9,7 +9,7 @@ pub struct HmacSha256<'a> {
 }
 
 impl<'a> HmacSha256<'a> {
-    fn new(api_key: &'a str, secret_key: &'a str) -> HmacSha256<'a> {
+    pub fn new(api_key: &'a str, secret_key: &'a str) -> HmacSha256<'a> {
         HmacSha256 {
             api_key,
             secret_key,

@@ -1,3 +1,3 @@
 pub trait Signature<'a> {
-    fn sign(&self, request: String) -> String;
+    fn sign(&self, params: &str) -> String;
 }

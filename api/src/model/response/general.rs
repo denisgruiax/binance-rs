@@ -5,22 +5,22 @@ pub struct Empty {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ServerTime {
+pub struct ServerTimeResponse {
     pub server_time: u64,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct ExchangeInformation {
+pub struct ExchangeInformationResponse {
     pub timezone: String,
     pub server_time: u64,
-    pub rate_limits: Vec<RateLimit>,
-    pub symbols: Vec<Symbol>,
+    pub rate_limits: Vec<RateLimitResponse>,
+    pub symbols: Vec<SymbolResponse>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct RateLimit {
+pub struct RateLimitResponse {
     pub rate_limit_type: String,
     pub interval: String,
     pub interval_num: u16,
@@ -29,7 +29,7 @@ pub struct RateLimit {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct Symbol {
+pub struct SymbolResponse {
     pub symbol: String,
     pub status: String,
     pub base_asset: String,

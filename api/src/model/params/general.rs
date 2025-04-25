@@ -12,9 +12,6 @@ pub struct ExchangeInformationParams<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<&'a str>,
-
-    #[serde(rename = "recvWindow")]
-    pub recv_window: u32,
 }
 
 impl<'a> Display for ExchangeInformationParams<'a> {

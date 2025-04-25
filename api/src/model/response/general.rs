@@ -39,5 +39,4 @@ pub struct SymbolResponse {
     pub iceberg_allowed: bool,
     pub is_spot_trading_allowed: bool,
     pub is_margin_trading_allowed: bool,
-    //pub filters: Vec<Filters>,
 }

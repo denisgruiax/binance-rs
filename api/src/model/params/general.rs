@@ -1,7 +1,4 @@
 use serde::Serialize;
-use std::fmt::Display;
-
-use super::url::UrlEncoded;
 
 #[derive(Serialize)]
 pub struct ExchangeInformationParams<'a> {

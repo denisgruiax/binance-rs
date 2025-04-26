@@ -1,5 +1,4 @@
 use serde::Serialize;
-use std::fmt::Display;
 
 #[derive(Serialize)]
 pub struct OrderBookParams<'a> {

@@ -1,5 +1,7 @@
-use std::fmt::Display;
 use serde::Serialize;
+use std::fmt::Display;
+
+use super::url::UrlEncoded;
 
 #[derive(Serialize)]
 pub struct ExchangeInformationParams<'a> {
@@ -11,14 +13,4 @@ pub struct ExchangeInformationParams<'a> {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub permissions: Option<&'a str>,
-}
-
-impl<'a> Display for ExchangeInformationParams<'a> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            serde_urlencoded::to_string(self).unwrap_or_else(|_| String::new())
-        )
-    }
 }

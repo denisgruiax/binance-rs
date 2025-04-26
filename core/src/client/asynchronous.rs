@@ -25,11 +25,9 @@ where
         }
     }
 
-    pub async fn get<T>(&self, path: T) -> impl Future<Output = Result<Response, reqwest::Error>>
-    where
-        T: Into<&'static str>,
+    pub async fn get<T>(&self, path: &'a str) -> impl Future<Output = Result<Response, reqwest::Error>>
     {
-        let endpoint = format!("{}{}", self.host, path.into());
+        let endpoint = format!("{}{}", self.host, path);
         self.inner_client.get(endpoint).send()
     }
 }

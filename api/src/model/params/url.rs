@@ -5,3 +5,5 @@ pub trait UrlEncoded:Serialize {
         serde_urlencoded::to_string(self).unwrap_or_default()
     }
 }
+
+impl<T: Serialize> UrlEncoded for T {}

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Deserialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq)]
 pub struct EmptyResponse {}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]

@@ -1,4 +1,5 @@
 use crate::client::signer::signature::Signature;
+use api::model::params::url::UrlEncoded;
 use reqwest::Response;
 
 pub struct Client<'a, S>
@@ -22,19 +23,32 @@ where
         }
     }
 
-    pub async fn get(&self, path: &str) -> impl Future<Output = Result<Response, reqwest::Error>> {
-        let endpoint = format!("{}{}", self.host, path);
+    pub fn get<Path, Params>(
+        &self,
+        path: Path,
+        params: Params,
+    ) -> impl Future<Output = Result<Response, reqwest::Error>>
+    where
+        Path: Into<&'a str>,
+        Params: UrlEncoded,
+    {
+        let endpoint = format!("{}{}{}", self.host, path.into(), params.to_url_encoded());
+        println!("endpoint: {}", endpoint);
         self.inner_client.get(endpoint).send()
     }
 
-    pub async fn get_signed(
+    pub fn get_signed<Path, Params>(
         &self,
-        path: &str,
-        params: &str,
-    ) -> impl Future<Output = Result<Response, reqwest::Error>> {
+        path: Path,
+        params: Params,
+    ) -> impl Future<Output = Result<Response, reqwest::Error>>
+    where
+        Path: Into<&'a str>,
+        Params: UrlEncoded,
+    {
         let request = self
             .signature
-            .build_request(self.host, path, params)
+            .build_request(self.host, path.into(), params.to_url_encoded().as_str())
             .build()
             .expect("Invalid signed request!");
 

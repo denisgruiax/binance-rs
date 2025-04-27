@@ -10,10 +10,7 @@ use std::sync::Arc;
 
 #[cfg(test)]
 mod general {
-    use api::model::{
-        params::{self, general::ExchangeInformationParams},
-        response,
-    };
+    use api::model::params::general::ExchangeInformationParams;
 
     use super::*;
 

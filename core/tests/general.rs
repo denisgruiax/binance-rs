@@ -1,7 +1,7 @@
-use api::endpoint::host::Host;
-use api::endpoint::route::General;
-use api::model::params::EmptyParams;
-use api::model::response::general::{
+use binance_api::endpoint::host::Host;
+use binance_api::endpoint::route::General;
+use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};
+use binance_api::model::response::general::{
     EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
 };
 use binance_core::client::asynchronous::Client;
@@ -10,8 +10,6 @@ use std::sync::Arc;
 
 #[cfg(test)]
 mod general {
-    use api::model::params::general::ExchangeInformationParams;
-
     use super::*;
 
     #[tokio::test]

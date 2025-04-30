@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod general {
+mod general_integration {
     use binance_api::endpoint::host::Host;
     use binance_api::endpoint::route::General;
     use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};

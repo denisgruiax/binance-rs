@@ -33,7 +33,7 @@ where
         Params: UrlEncoded,
     {
         let endpoint = format!("{}{}{}", self.host, path.into(), params.to_url_encoded());
-        println!("endpoint: {}", endpoint);
+        
         self.inner_client.get(endpoint).send()
     }
 

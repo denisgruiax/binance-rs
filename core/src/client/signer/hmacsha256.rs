@@ -18,10 +18,10 @@ impl<'a> HmacSha256<'a> {
 }
 
 impl<'a> Signature<'a> for HmacSha256<'a> {
-    fn build_request(&self, host: &str, path: &str, params: &str) -> reqwest::RequestBuilder{
+    fn build_request(&self, client: &reqwest::Client, host: &str, path: &str, params: &str) -> reqwest::RequestBuilder{
         let url = self.sign(host, path, params);
 
-        reqwest::Client::new().get(url).header("X-MBX-APIKEY", self.api_key)
+        client.get(url).header("X-MBX-APIKEY", self.api_key)
     } 
 
     fn sign(&self, host: &str, path: &str, params: &str) -> String {

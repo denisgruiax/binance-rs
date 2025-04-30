@@ -1,16 +1,14 @@
-use binance_api::endpoint::host::Host;
-use binance_api::endpoint::route::General;
-use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};
-use binance_api::model::response::general::{
-    EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
-};
-use binance_core::client::asynchronous::Client;
-use binance_core::client::signer::hmacsha256::HmacSha256;
-use std::sync::Arc;
-
 #[cfg(test)]
 mod general {
-    use super::*;
+    use binance_api::endpoint::host::Host;
+    use binance_api::endpoint::route::General;
+    use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};
+    use binance_api::model::response::general::{
+        EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
+    };
+    use binance_core::client::asynchronous::Client;
+    use binance_core::client::signer::hmacsha256::HmacSha256;
+    use std::sync::Arc;
 
     #[tokio::test]
     async fn test_connectivity() {

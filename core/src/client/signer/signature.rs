@@ -5,6 +5,6 @@ pub trait Signature<'a> {
         format!("{}&timestamp={}", params, Utc::now().timestamp_millis())
     }
 
-    fn build_request(&self, host: &str, path: &str, params: &str) -> reqwest::RequestBuilder;
+    fn build_request(&self, client: &reqwest::Client, host: &str, path: &str, params: &str) -> reqwest::RequestBuilder;
     fn sign(&self, host: &str, path: &str, params: &str) -> String;
 }

@@ -1,6 +1,6 @@
 use crate::client::signer::signature::Signature;
 use binance_api::model::params::url::UrlEncoded;
-use reqwest::Response;
+use reqwest::{RequestBuilder, Response};
 
 pub struct Client<'a, S>
 where
@@ -48,10 +48,8 @@ where
     {
         let request = self
             .signature
-            .build_request(self.host, path.into(), params.to_url_encoded().as_str())
-            .build()
-            .expect("Invalid signed request!");
+            .build_request(&self.inner_client,self.host, path.into(), params.to_url_encoded().as_str());
 
-        self.inner_client.execute(request)
+        RequestBuilder::send(request)
     }
 }

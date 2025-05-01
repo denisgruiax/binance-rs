@@ -7,3 +7,11 @@ pub struct OrderBookParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u16>,
 }
+
+#[derive(Serialize)]
+pub struct RecentTradeListParams<'a>{
+    pub symbol: &'a str,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<u16>,
+}

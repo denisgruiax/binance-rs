@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::{DisplayFromStr, serde_as};
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -12,7 +12,7 @@ pub struct OrderBookResponse {
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Bids{
+pub struct Bids {
     #[serde_as(as = "DisplayFromStr")]
     pub price: f64,
 
@@ -22,10 +22,26 @@ pub struct Bids{
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Asks{
+pub struct Asks {
     #[serde_as(as = "DisplayFromStr")]
     pub price: f64,
 
     #[serde_as(as = "DisplayFromStr")]
     pub quantity: f64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RecentTradeResponse {
+    pub id: u32,
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+    #[serde_as(as = "DisplayFromStr")]
+    pub qty: f64,
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_qty: f64,
+    pub time: u64,
+    pub is_buyer_maker: bool,
+    pub is_best_match: bool,
 }

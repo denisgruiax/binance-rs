@@ -56,7 +56,17 @@ mod general_integration {
         let exchange_information: ExchangeInformationResponse =
             serde_json::from_str(&body).unwrap();
 
+        assert_eq!(exchange_information.timezone, "UTC");
         assert!(exchange_information.server_time > 0);
+
+        assert_eq!(exchange_information.symbols[0].symbol, "BTCUSDC");
+        assert_eq!(exchange_information.symbols[0].status, "TRADING");
         assert_eq!(exchange_information.symbols[0].base_asset, "BTC");
+        assert_eq!(exchange_information.symbols[0].quote_asset, "USDC");
+        assert_eq!(exchange_information.symbols[0].base_asset_precision, 8);
+        assert!(exchange_information.symbols[0].order_types.len() == 7);
+        assert!(exchange_information.symbols[0].iceberg_allowed);
+        assert!(exchange_information.symbols[0].is_spot_trading_allowed);
+        assert!(exchange_information.symbols[0].is_margin_trading_allowed);
     }
 }

@@ -2,7 +2,7 @@
 mod market_integration {
     use binance_api::endpoint::route::Market;
     use binance_api::model::params::market::{
-        KlineCandlestickDataParams, OldTradeLookupParams, RecentTradeListParams,
+        KlineParams, OldTradeLookupParams, RecentTradeListParams,
     };
     use binance_api::model::response::market::{
         Kline, OldTradeLookupResponse, RecentTradeResponse,
@@ -88,7 +88,7 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_kline_candlestick_data() {
-        let params = KlineCandlestickDataParams {
+        let params = KlineParams {
             symbol: "ETHUSDC",
             interval: "5m",
             start_time: None,
@@ -129,7 +129,7 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_uikline_candlestick_data() {
-        let params = KlineCandlestickDataParams {
+        let params = KlineParams {
             symbol: "ETHUSDC",
             interval: "5m",
             start_time: None,

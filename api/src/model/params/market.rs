@@ -30,7 +30,7 @@ pub struct OldTradeLookupParams<'a> {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct KlineCandlestickDataParams<'a> {
+pub struct KlineParams<'a> {
     pub symbol: &'a str,
     pub interval: &'a str,
 

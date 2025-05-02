@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod market_integration {
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::market::RecentTradeListParams;
-    use binance_api::model::response::market::RecentTradeResponse;
+    use binance_api::model::params::market::{OldTradeLookupParams, RecentTradeListParams};
+    use binance_api::model::response::market::{OldTradeLookupResponse, RecentTradeResponse};
     use binance_api::{
         endpoint::host::Host,
         model::{params::market::OrderBookParams, response::market::OrderBookResponse},
@@ -52,6 +52,34 @@ mod market_integration {
         };
 
         assert_eq!(recent_trade_list.len(), 20);
+        assert!(recent_trade_list.iter().all(check_trade));
+    }
+
+    #[tokio::test]
+    async fn test_old_trade_lookup(){
+        let params = OldTradeLookupParams {
+            symbol: "SOLUSDC",
+            limit: Some(17),
+            from_id: None,
+        };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+
+        let response = client.get(Market::OldTradeLookup, params);
+        let body = response.await.unwrap().text().await.unwrap();
+
+        let recent_trade_list =
+            serde_json::from_str::<Vec<OldTradeLookupResponse>>(&body).unwrap();
+
+        let check_trade = |trade: &OldTradeLookupResponse| {
+            trade.id > 0
+                && trade.price > 0.0
+                && trade.qty > 0.0
+                && trade.quote_qty > 0.0
+                && trade.time > 0
+        };
+
+        assert_eq!(recent_trade_list.len(), 17);
         assert!(recent_trade_list.iter().all(check_trade));
     }
 }

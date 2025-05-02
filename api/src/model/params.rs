@@ -1,6 +1,7 @@
 use serde::Serialize;
 
 pub mod general;
+pub mod interval;
 pub mod market;
 pub mod url;
 

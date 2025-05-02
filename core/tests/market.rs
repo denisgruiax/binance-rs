@@ -1,13 +1,18 @@
 #[cfg(test)]
 mod market_integration {
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::market::{OldTradeLookupParams, RecentTradeListParams};
-    use binance_api::model::response::market::{OldTradeLookupResponse, RecentTradeResponse};
+    use binance_api::model::params::market::{
+        KlineCandlestickDataParams, OldTradeLookupParams, RecentTradeListParams,
+    };
+    use binance_api::model::response::market::{
+        Kline, OldTradeLookupResponse, RecentTradeResponse,
+    };
     use binance_api::{
         endpoint::host::Host,
         model::{params::market::OrderBookParams, response::market::OrderBookResponse},
     };
     use binance_core::client::{asynchronous::Client, signer::hmacsha256::HmacSha256};
+    use serde_json::Value;
 
     #[tokio::test]
     async fn test_order_book() {
@@ -40,8 +45,7 @@ mod market_integration {
         let response = client.get(Market::RecentTradeList, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let recent_trade_list =
-            serde_json::from_str::<Vec<RecentTradeResponse>>(&body).unwrap();
+        let recent_trade_list = serde_json::from_str::<Vec<RecentTradeResponse>>(&body).unwrap();
 
         let check_trade = |trade: &RecentTradeResponse| {
             trade.id > 0
@@ -56,7 +60,7 @@ mod market_integration {
     }
 
     #[tokio::test]
-    async fn test_old_trade_lookup(){
+    async fn test_old_trade_lookup() {
         let params = OldTradeLookupParams {
             symbol: "SOLUSDC",
             limit: Some(17),
@@ -68,8 +72,7 @@ mod market_integration {
         let response = client.get(Market::OldTradeLookup, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let recent_trade_list =
-            serde_json::from_str::<Vec<OldTradeLookupResponse>>(&body).unwrap();
+        let recent_trade_list = serde_json::from_str::<Vec<OldTradeLookupResponse>>(&body).unwrap();
 
         let check_trade = |trade: &OldTradeLookupResponse| {
             trade.id > 0
@@ -81,5 +84,46 @@ mod market_integration {
 
         assert_eq!(recent_trade_list.len(), 17);
         assert!(recent_trade_list.iter().all(check_trade));
+    }
+
+    #[tokio::test]
+    async fn test_kline_candlestick_data() {
+        let params = KlineCandlestickDataParams {
+            symbol: "ETHUSDC",
+            interval: "5m",
+            start_time: None,
+            end_time: None,
+            time_zone: None,
+            limit: Some(30),
+        };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+
+        let response = client.get(Market::KlineCandlestickData, params);
+        let body = response.await.unwrap().text().await.unwrap();
+
+        let klines = serde_json::from_str::<Vec<Value>>(&body)
+            .unwrap()
+            .into_iter()
+            .map(|kline| serde_json::from_value::<Kline>(kline))
+            .map(|result| result.unwrap())
+            .collect::<Vec<Kline>>();
+
+        let check_kline = |kline: &Kline| {
+            kline.open_time > 0
+                && kline.open > 0.0
+                && kline.high > 0.0
+                && kline.low > 0.0
+                && kline.close > 0.0
+                && kline.volume > 0.0
+                && kline.close_time > 0
+                && kline.quote_asset_volume > 0.0
+                && kline.number_of_trades > 0
+                && kline.taker_buy_base_asset_volume > 0.0
+                && kline.taker_buy_quote_asset_volume > 0.0
+        };
+
+        assert_eq!(klines.len(), 30);
+        assert!(klines.iter().all(check_kline));
     }
 }

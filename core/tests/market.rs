@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod market_integration {
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::market::{
+    use binance_api::model::params::{interval::Interval, market::{
         KlineParams, OldTradeLookupParams, RecentTradeListParams,
-    };
+    }};
     use binance_api::model::response::market::{
         Kline, OldTradeLookupResponse, RecentTradeResponse,
     };
@@ -90,7 +90,7 @@ mod market_integration {
     async fn test_kline_candlestick_data() {
         let params = KlineParams {
             symbol: "ETHUSDC",
-            interval: "5m",
+            interval: Interval::Minutes5.into(),
             start_time: None,
             end_time: None,
             time_zone: None,
@@ -131,7 +131,7 @@ mod market_integration {
     async fn test_uikline_candlestick_data() {
         let params = KlineParams {
             symbol: "ETHUSDC",
-            interval: "5m",
+            interval: Interval::Hours1.into(),
             start_time: None,
             end_time: None,
             time_zone: None,

@@ -61,3 +61,39 @@ pub struct OldTradeLookupResponse {
     pub is_buyer_maker: bool,
     pub is_best_match: bool,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+pub struct Kline {
+    pub open_time: u64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub open: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub high: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub low: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub close: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub volume: f64,
+    pub close_time: u64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_asset_volume: f64,
+
+    pub number_of_trades: u32,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub taker_buy_base_asset_volume: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub taker_buy_quote_asset_volume: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub ignore_field: u8
+}

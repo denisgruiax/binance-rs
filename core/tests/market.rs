@@ -126,4 +126,45 @@ mod market_integration {
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
     }
+
+    #[tokio::test]
+    async fn test_uikline_candlestick_data() {
+        let params = KlineCandlestickDataParams {
+            symbol: "ETHUSDC",
+            interval: "5m",
+            start_time: None,
+            end_time: None,
+            time_zone: None,
+            limit: Some(50),
+        };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+
+        let response = client.get(Market::UIKlines, params);
+        let body = response.await.unwrap().text().await.unwrap();
+
+        let uiklines = serde_json::from_str::<Vec<Value>>(&body)
+            .unwrap()
+            .into_iter()
+            .map(|kline| serde_json::from_value::<Kline>(kline))
+            .map(|result| result.unwrap())
+            .collect::<Vec<Kline>>();
+
+        let check_kline = |uikline: &Kline| {
+            uikline.open_time > 0
+                && uikline.open > 0.0
+                && uikline.high > 0.0
+                && uikline.low > 0.0
+                && uikline.close > 0.0
+                && uikline.volume > 0.0
+                && uikline.close_time > 0
+                && uikline.quote_asset_volume > 0.0
+                && uikline.number_of_trades > 0
+                && uikline.taker_buy_base_asset_volume > 0.0
+                && uikline.taker_buy_quote_asset_volume > 0.0
+        };
+
+        assert_eq!(uiklines.len(), 50);
+        assert!(uiklines.iter().all(check_kline));
+    }
 }

@@ -97,3 +97,13 @@ pub struct Kline {
     #[serde_as(as = "DisplayFromStr")]
     pub ignore_field: u8
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CurrentAveragePriceResponse{
+    pub mins: u8,
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+    pub close_time: u64,
+}

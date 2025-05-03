@@ -1,13 +1,14 @@
 #[cfg(test)]
 mod market_integration {
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::market::CurrentAveragePriceParams;
+    use binance_api::model::params::market::{CurrentAveragePriceParams, TickerStatisticsParams};
     use binance_api::model::params::{
         interval::Interval,
         market::{KlineParams, OldTradeLookupParams, RecentTradeListParams},
     };
     use binance_api::model::response::market::{
         CurrentAveragePriceResponse, Kline, OldTradeLookupResponse, RecentTradeResponse,
+        TickerStatisticsFullResponse,
     };
     use binance_api::{
         endpoint::host::Host,
@@ -183,5 +184,53 @@ mod market_integration {
         assert!(current_average_price.mins > 0);
         assert!(current_average_price.price > 0.0);
         assert!(current_average_price.close_time > 0);
+    }
+
+    #[tokio::test]
+    async fn test_ticker_price_change_statistics_24h() {
+        let params = TickerStatisticsParams {
+            symbol: Some("BTCUSDC"),
+            symbols: None,
+            r#type: Some("FULL"),
+        };
+
+        let params2 = TickerStatisticsParams {
+            symbol: None,
+            symbols: Some(""),
+            r#type: Some("Mini"),
+        };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let response = client.get(Market::TickerStatistics, params);
+        let body = response.await.unwrap().text().await.unwrap();
+
+        let ticker_statistics =
+            serde_json::from_str::<TickerStatisticsFullResponse>(&body).unwrap();
+
+        let check_full_ticker_statistics = |ticker_statistics: &TickerStatisticsFullResponse| {
+            ticker_statistics.price_change != 0.0
+                && ticker_statistics.price_change_percent != 0.0
+                && ticker_statistics.weighted_avg_price > 0.0
+                && ticker_statistics.prev_close_price > 0.0
+                && ticker_statistics.last_price > 0.0
+                && ticker_statistics.last_qty > 0.0
+                && ticker_statistics.bid_price > 0.0
+                && ticker_statistics.bid_qty > 0.0
+                && ticker_statistics.ask_price > 0.0
+                && ticker_statistics.ask_qty > 0.0
+                && ticker_statistics.open_price > 0.0
+                && ticker_statistics.high_price > 0.0
+                && ticker_statistics.low_price > 0.0
+                && ticker_statistics.volume > 0.0
+                && ticker_statistics.quote_volume > 0.0
+                && ticker_statistics.open_time > 0
+                && ticker_statistics.close_time > 0
+                && ticker_statistics.first_id > 0
+                && ticker_statistics.last_id > 0
+                && ticker_statistics.count > 0
+        };
+
+        assert_eq!(ticker_statistics.symbol, "BTCUSDC");
+        assert!(check_full_ticker_statistics(&ticker_statistics));
     }
 }

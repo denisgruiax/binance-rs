@@ -51,3 +51,10 @@ pub struct KlineParams<'a> {
 pub struct CurrentAveragePriceParams<'a> {
     pub symbol: &'a str,
 }
+
+#[derive(Serialize)]
+pub struct TickerStatisticsParams<'a> {
+    pub symbol: Option<&'a str>,
+    pub symbols: Option<&'a str>,
+    pub r#type: Option<&'a str>,
+}

@@ -46,3 +46,8 @@ pub struct KlineParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<u16>,
 }
+
+#[derive(Serialize)]
+pub struct CurrentAveragePriceParams<'a> {
+    pub symbol: &'a str,
+}

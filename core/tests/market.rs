@@ -8,7 +8,7 @@ mod market_integration {
     };
     use binance_api::model::response::market::{
         CurrentAveragePriceResponse, Kline, OldTradeLookupResponse, RecentTradeResponse,
-        TickerStatisticsFullResponse,
+        TickerStatisticsFullResponse, TickerStatisticsMiniResponse,
     };
     use binance_api::{
         endpoint::host::Host,
@@ -196,16 +196,23 @@ mod market_integration {
 
         let params2 = TickerStatisticsParams {
             symbol: None,
-            symbols: Some(""),
-            r#type: Some("Mini"),
+            symbols: Some("[\"BTCUSDC\",\"BNBUSDC\"]"),
+            r#type: Some("MINI"),
         };
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
-        let response = client.get(Market::TickerStatistics, params);
-        let body = response.await.unwrap().text().await.unwrap();
 
-        let ticker_statistics =
+        let response = client.get(Market::TickerStatistics, params);
+        let response2 = client.get(Market::TickerStatistics, params2);
+
+        let body = response.await.unwrap().text().await.unwrap();
+        let body2 = response2.await.unwrap().text().await.unwrap();
+
+        let ticker_statistics_full =
             serde_json::from_str::<TickerStatisticsFullResponse>(&body).unwrap();
+
+        let ticker_statistics_mini_list =
+            serde_json::from_str::<Vec<TickerStatisticsMiniResponse>>(&body2).unwrap();
 
         let check_full_ticker_statistics = |ticker_statistics: &TickerStatisticsFullResponse| {
             ticker_statistics.price_change != 0.0
@@ -230,7 +237,25 @@ mod market_integration {
                 && ticker_statistics.count > 0
         };
 
-        assert_eq!(ticker_statistics.symbol, "BTCUSDC");
-        assert!(check_full_ticker_statistics(&ticker_statistics));
+        let check_mini_ticker_statistics = |ticker_statistics: &TickerStatisticsMiniResponse|{
+            ticker_statistics.open_price> 0.0
+                && ticker_statistics.high_price > 0.0
+                && ticker_statistics.low_price > 0.0
+                && ticker_statistics.last_price > 0.0
+                && ticker_statistics.volume > 0.0
+                && ticker_statistics.quote_volume > 0.0
+                && ticker_statistics.open_time > 0
+                && ticker_statistics.close_time > 0
+                && ticker_statistics.first_id > 0
+                && ticker_statistics.last_id > 0
+                && ticker_statistics.count > 0
+        };
+
+        assert_eq!(ticker_statistics_full.symbol, "BTCUSDC");
+        assert!(check_full_ticker_statistics(&ticker_statistics_full));
+
+        assert_eq!(ticker_statistics_mini_list[0].symbol, "BNBUSDC");
+        assert_eq!(ticker_statistics_mini_list[1].symbol, "BTCUSDC");
+        assert!(ticker_statistics_mini_list.iter().all(check_mini_ticker_statistics));
     }
 }

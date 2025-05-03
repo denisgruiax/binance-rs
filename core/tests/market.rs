@@ -1,11 +1,13 @@
 #[cfg(test)]
 mod market_integration {
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::{interval::Interval, market::{
-        KlineParams, OldTradeLookupParams, RecentTradeListParams,
-    }};
+    use binance_api::model::params::market::CurrentAveragePriceParams;
+    use binance_api::model::params::{
+        interval::Interval,
+        market::{KlineParams, OldTradeLookupParams, RecentTradeListParams},
+    };
     use binance_api::model::response::market::{
-        Kline, OldTradeLookupResponse, RecentTradeResponse,
+        CurrentAveragePriceResponse, Kline, OldTradeLookupResponse, RecentTradeResponse,
     };
     use binance_api::{
         endpoint::host::Host,
@@ -166,5 +168,20 @@ mod market_integration {
 
         assert_eq!(uiklines.len(), 50);
         assert!(uiklines.iter().all(check_kline));
+    }
+
+    #[tokio::test]
+    async fn test_current_average_price() {
+        let params = CurrentAveragePriceParams { symbol: "FETUSDC" };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let response = client.get(Market::CurrentAveragePrice, params);
+        let body = response.await.unwrap().text().await.unwrap();
+        let current_average_price =
+            serde_json::from_str::<CurrentAveragePriceResponse>(&body).unwrap();
+
+        assert!(current_average_price.mins > 0);
+        assert!(current_average_price.price > 0.0);
+        assert!(current_average_price.close_time > 0);
     }
 }

@@ -169,8 +169,7 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
         let response = client.get(Market::AvgPrice, params);
         let body = response.await.unwrap().text().await.unwrap();
-        let price =
-            serde_json::from_str::<AvgPriceResponse>(&body).unwrap();
+        let price = serde_json::from_str::<AvgPriceResponse>(&body).unwrap();
 
         assert!(price.mins > 0);
         assert!(price.price > 0.0);
@@ -199,8 +198,7 @@ mod market_integration {
         let body = response.await.unwrap().text().await.unwrap();
         let body2 = response2.await.unwrap().text().await.unwrap();
 
-        let ticker24h_full =
-            serde_json::from_str::<Ticker24hFullResponse>(&body).unwrap();
+        let ticker24h_full = serde_json::from_str::<Ticker24hFullResponse>(&body).unwrap();
 
         let ticker24h_mini_list =
             serde_json::from_str::<Vec<Ticker24hMiniResponse>>(&body2).unwrap();
@@ -247,11 +245,7 @@ mod market_integration {
 
         assert_eq!(ticker24h_mini_list[0].symbol, "BNBUSDC");
         assert_eq!(ticker24h_mini_list[1].symbol, "BTCUSDC");
-        assert!(
-            ticker24h_mini_list
-                .iter()
-                .all(check_mini_ticker24h)
-        );
+        assert!(ticker24h_mini_list.iter().all(check_mini_ticker24h));
     }
 
     #[tokio::test]
@@ -320,6 +314,27 @@ mod market_integration {
         };
 
         assert!(check_ticker_day_full(&ticker_day_full, "DOTUSDC"));
-        assert!(ticker_symbol.iter().all(|(td, s)| check_trading_day_mini(td, s)));
+        assert!(
+            ticker_symbol
+                .iter()
+                .all(|(td, s)| check_trading_day_mini(td, s))
+        );
+    }
+
+    #[tokio::test]
+    async fn test_price_ticker() {
+        let params = PriceTickerParams {
+            symbol: None,
+            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
+        };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+
+        let response = client.get(Market::PriceTicker, params);
+        let body = response.await.unwrap().text().await.unwrap();
+        let prices = serde_json::from_str::<Vec<PriceTickerResponse>>(&body).unwrap();
+
+        assert_eq!(prices.len(), 2);
+        assert!(prices.iter().all(|p| p.price > 0.0));
     }
 }

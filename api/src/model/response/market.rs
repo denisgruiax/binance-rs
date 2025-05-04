@@ -267,3 +267,13 @@ pub struct TickerDayMiniResponse {
     pub last_id: u64,
     pub count: u64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PriceTickerResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+}

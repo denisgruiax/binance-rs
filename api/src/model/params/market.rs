@@ -54,15 +54,36 @@ pub struct AvgPriceParams<'a> {
 
 #[derive(Serialize)]
 pub struct Ticker24hParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub symbols: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub r#type: Option<&'a str>,
 }
 
 #[derive(Serialize)]
 pub struct TickerDayParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub symbols: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub time_zone: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub r#type: Option<&'a str>,
+}
+
+#[derive(Serialize)]
+pub struct PriceTickerParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<&'a str>,
 }

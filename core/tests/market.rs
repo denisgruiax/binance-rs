@@ -1,19 +1,10 @@
 #[cfg(test)]
 mod market_integration {
+    use binance_api::endpoint::host::Host;
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::market::{CurrentAveragePriceParams, TickerStatisticsParams};
-    use binance_api::model::params::{
-        interval::Interval,
-        market::{KlineParams, OldTradeLookupParams, RecentTradeListParams},
-    };
-    use binance_api::model::response::market::{
-        CurrentAveragePriceResponse, Kline, OldTradeLookupResponse, RecentTradeResponse,
-        TickerStatisticsFullResponse, TickerStatisticsMiniResponse,
-    };
-    use binance_api::{
-        endpoint::host::Host,
-        model::{params::market::OrderBookParams, response::market::OrderBookResponse},
-    };
+    use binance_api::model::params::interval::Interval;
+    use binance_api::model::params::market::*;
+    use binance_api::model::response::market::*;
     use binance_core::client::{asynchronous::Client, signer::hmacsha256::HmacSha256};
     use serde_json::Value;
 
@@ -237,8 +228,8 @@ mod market_integration {
                 && ticker_statistics.count > 0
         };
 
-        let check_mini_ticker_statistics = |ticker_statistics: &TickerStatisticsMiniResponse|{
-            ticker_statistics.open_price> 0.0
+        let check_mini_ticker_statistics = |ticker_statistics: &TickerStatisticsMiniResponse| {
+            ticker_statistics.open_price > 0.0
                 && ticker_statistics.high_price > 0.0
                 && ticker_statistics.low_price > 0.0
                 && ticker_statistics.last_price > 0.0
@@ -256,6 +247,79 @@ mod market_integration {
 
         assert_eq!(ticker_statistics_mini_list[0].symbol, "BNBUSDC");
         assert_eq!(ticker_statistics_mini_list[1].symbol, "BTCUSDC");
-        assert!(ticker_statistics_mini_list.iter().all(check_mini_ticker_statistics));
+        assert!(
+            ticker_statistics_mini_list
+                .iter()
+                .all(check_mini_ticker_statistics)
+        );
+    }
+
+    #[tokio::test]
+    async fn test_trading_day() {
+        let params = TradingDayParams {
+            symbol: Some("DOTUSDC"),
+            symbols: None,
+            time_zone: None,
+            r#type: Some("FULL"),
+        };
+
+        let params2 = TradingDayParams {
+            symbol: None,
+            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
+            time_zone: None,
+            r#type: Some("MINI"),
+        };
+
+        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+
+        let response = client.get(Market::TradingDayTicker, params);
+        let response2 = client.get(Market::TradingDayTicker, params2);
+
+        let body = response.await.unwrap().text().await.unwrap();
+        let body2 = response2.await.unwrap().text().await.unwrap();
+
+        let trading_day_full = serde_json::from_str::<TradingDayFullResponse>(&body).unwrap();
+
+        let trading_day_mini_list =
+            serde_json::from_str::<Vec<TradingDayMiniResponse>>(&body2).unwrap();
+        let symbols = vec!["BTCUSDC", "SOLUSDC"];
+        let pairs = trading_day_mini_list
+            .into_iter()
+            .zip(symbols)
+            .collect::<Vec<(TradingDayMiniResponse, &str)>>();
+
+        let check_trading_day_full = |trading_day: &TradingDayFullResponse, symbol: &str| {
+            trading_day.symbol == symbol
+                && trading_day.weighted_avg_price > 0.0
+                && trading_day.open_price > 0.0
+                && trading_day.high_price > 0.0
+                && trading_day.low_price > 0.0
+                && trading_day.last_price > 0.0
+                && trading_day.volume > 0.0
+                && trading_day.quote_volume > 0.0
+                && trading_day.open_time > 0
+                && trading_day.close_time > 0
+                && trading_day.first_id > 0
+                && trading_day.last_id >= trading_day.first_id
+                && trading_day.count > 0
+        };
+
+        let check_trading_day_mini = |trading_day: &TradingDayMiniResponse, symbol: &str| {
+            trading_day.symbol == symbol
+                && trading_day.open_price > 0.0
+                && trading_day.high_price > 0.0
+                && trading_day.low_price > 0.0
+                && trading_day.last_price > 0.0
+                && trading_day.volume > 0.0
+                && trading_day.quote_volume > 0.0
+                && trading_day.open_time > 0
+                && trading_day.close_time > 0
+                && trading_day.first_id > 0
+                && trading_day.last_id >= trading_day.first_id
+                && trading_day.count > 0
+        };
+
+        assert!(check_trading_day_full(&trading_day_full, "DOTUSDC"));
+        assert!(pairs.iter().all(|(td, s)| check_trading_day_mini(td, s)));
     }
 }

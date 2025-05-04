@@ -1,7 +1,7 @@
 use serde::Serialize;
 
 #[derive(Serialize)]
-pub struct OrderBookParams<'a> {
+pub struct DepthParams<'a> {
     pub symbol: &'a str,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9,7 +9,7 @@ pub struct OrderBookParams<'a> {
 }
 
 #[derive(Serialize)]
-pub struct RecentTradeListParams<'a> {
+pub struct TradesParams<'a> {
     pub symbol: &'a str,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,7 +18,7 @@ pub struct RecentTradeListParams<'a> {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct OldTradeLookupParams<'a> {
+pub struct HistoricalTradesParams<'a> {
     pub symbol: &'a str,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -30,7 +30,7 @@ pub struct OldTradeLookupParams<'a> {
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct KlineParams<'a> {
+pub struct KlinesParams<'a> {
     pub symbol: &'a str,
     pub interval: &'a str,
 
@@ -48,19 +48,19 @@ pub struct KlineParams<'a> {
 }
 
 #[derive(Serialize)]
-pub struct CurrentAveragePriceParams<'a> {
+pub struct AvgPriceParams<'a> {
     pub symbol: &'a str,
 }
 
 #[derive(Serialize)]
-pub struct TickerStatisticsParams<'a> {
+pub struct Ticker24hParams<'a> {
     pub symbol: Option<&'a str>,
     pub symbols: Option<&'a str>,
     pub r#type: Option<&'a str>,
 }
 
 #[derive(Serialize)]
-pub struct TradingDayParams<'a> {
+pub struct TickerDayParams<'a> {
     pub symbol: Option<&'a str>,
     pub symbols: Option<&'a str>,
     pub time_zone: Option<&'a str>,

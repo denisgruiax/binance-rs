@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct OrderBookResponse {
+pub struct DepthResponse {
     pub last_update_id: u32,
     pub bids: Vec<Bids>,
     pub asks: Vec<Asks>,
@@ -33,7 +33,7 @@ pub struct Asks {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct RecentTradeResponse {
+pub struct TradesResponse {
     pub id: u32,
     #[serde_as(as = "DisplayFromStr")]
     pub price: f64,
@@ -49,7 +49,7 @@ pub struct RecentTradeResponse {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct OldTradeLookupResponse {
+pub struct HistoricalTradesResponse {
     pub id: u32,
     #[serde_as(as = "DisplayFromStr")]
     pub price: f64,
@@ -64,7 +64,7 @@ pub struct OldTradeLookupResponse {
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]
-pub struct Kline {
+pub struct KlinesResponse {
     pub open_time: u64,
 
     #[serde_as(as = "DisplayFromStr")]
@@ -101,7 +101,7 @@ pub struct Kline {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct CurrentAveragePriceResponse {
+pub struct AvgPriceResponse {
     pub mins: u8,
     #[serde_as(as = "DisplayFromStr")]
     pub price: f64,
@@ -111,7 +111,7 @@ pub struct CurrentAveragePriceResponse {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TickerStatisticsFullResponse {
+pub struct Ticker24hFullResponse {
     pub symbol: String,
 
     #[serde_as(as = "DisplayFromStr")]
@@ -169,7 +169,7 @@ pub struct TickerStatisticsFullResponse {
 #[serde_as]
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TickerStatisticsMiniResponse {
+pub struct Ticker24hMiniResponse {
     pub symbol: String,
 
     #[serde_as(as = "DisplayFromStr")]
@@ -200,7 +200,7 @@ pub struct TickerStatisticsMiniResponse {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TradingDayFullResponse {
+pub struct TickerDayFullResponse {
     pub symbol: String,
 
     #[serde_as(as = "DisplayFromStr")]
@@ -240,7 +240,7 @@ pub struct TradingDayFullResponse {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TradingDayMiniResponse {
+pub struct TickerDayMiniResponse {
     pub symbol: String,
 
     #[serde_as(as = "DisplayFromStr")]

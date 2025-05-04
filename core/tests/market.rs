@@ -10,17 +10,17 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_order_book() {
-        let params = OrderBookParams {
+        let params = DepthParams {
             symbol: "EGLDUSDC",
             limit: Some(10),
         };
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(Market::OrderBook, params);
+        let response = client.get(Market::Depth, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let order_book = serde_json::from_str::<OrderBookResponse>(&body).unwrap();
+        let order_book = serde_json::from_str::<DepthResponse>(&body).unwrap();
 
         assert!(order_book.last_update_id > 0);
         assert_eq!(order_book.bids.len(), 10);
@@ -29,19 +29,19 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_recent_trade_list() {
-        let params = RecentTradeListParams {
+        let params = TradesParams {
             symbol: "SOLUSDC",
             limit: Some(20),
         };
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(Market::RecentTradeList, params);
+        let response = client.get(Market::Trades, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let recent_trade_list = serde_json::from_str::<Vec<RecentTradeResponse>>(&body).unwrap();
+        let recent_trade_list = serde_json::from_str::<Vec<TradesResponse>>(&body).unwrap();
 
-        let check_trade = |trade: &RecentTradeResponse| {
+        let check_trade = |trade: &TradesResponse| {
             trade.id > 0
                 && trade.price > 0.0
                 && trade.qty > 0.0
@@ -55,7 +55,7 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_old_trade_lookup() {
-        let params = OldTradeLookupParams {
+        let params = HistoricalTradesParams {
             symbol: "SOLUSDC",
             limit: Some(17),
             from_id: None,
@@ -63,12 +63,12 @@ mod market_integration {
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(Market::OldTradeLookup, params);
+        let response = client.get(Market::HistoricalTrades, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let recent_trade_list = serde_json::from_str::<Vec<OldTradeLookupResponse>>(&body).unwrap();
+        let recent_trade_list = serde_json::from_str::<Vec<HistoricalTradesResponse>>(&body).unwrap();
 
-        let check_trade = |trade: &OldTradeLookupResponse| {
+        let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
                 && trade.price > 0.0
                 && trade.qty > 0.0
@@ -82,7 +82,7 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_kline_candlestick_data() {
-        let params = KlineParams {
+        let params = KlinesParams {
             symbol: "ETHUSDC",
             interval: Interval::Minutes5.into(),
             start_time: None,
@@ -93,17 +93,17 @@ mod market_integration {
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(Market::KlineCandlestickData, params);
+        let response = client.get(Market::Klines, params);
         let body = response.await.unwrap().text().await.unwrap();
 
         let klines = serde_json::from_str::<Vec<Value>>(&body)
             .unwrap()
             .into_iter()
-            .map(|kline| serde_json::from_value::<Kline>(kline))
+            .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
             .map(|result| result.unwrap())
-            .collect::<Vec<Kline>>();
+            .collect::<Vec<KlinesResponse>>();
 
-        let check_kline = |kline: &Kline| {
+        let check_kline = |kline: &KlinesResponse| {
             kline.open_time > 0
                 && kline.open > 0.0
                 && kline.high > 0.0
@@ -123,7 +123,7 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_uikline_candlestick_data() {
-        let params = KlineParams {
+        let params = KlinesParams {
             symbol: "ETHUSDC",
             interval: Interval::Hours1.into(),
             start_time: None,
@@ -140,11 +140,11 @@ mod market_integration {
         let uiklines = serde_json::from_str::<Vec<Value>>(&body)
             .unwrap()
             .into_iter()
-            .map(|kline| serde_json::from_value::<Kline>(kline))
+            .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
             .map(|result| result.unwrap())
-            .collect::<Vec<Kline>>();
+            .collect::<Vec<KlinesResponse>>();
 
-        let check_kline = |uikline: &Kline| {
+        let check_kline = |uikline: &KlinesResponse| {
             uikline.open_time > 0
                 && uikline.open > 0.0
                 && uikline.high > 0.0
@@ -164,13 +164,13 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_current_average_price() {
-        let params = CurrentAveragePriceParams { symbol: "FETUSDC" };
+        let params = AvgPriceParams { symbol: "FETUSDC" };
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
-        let response = client.get(Market::CurrentAveragePrice, params);
+        let response = client.get(Market::AvgPrice, params);
         let body = response.await.unwrap().text().await.unwrap();
         let current_average_price =
-            serde_json::from_str::<CurrentAveragePriceResponse>(&body).unwrap();
+            serde_json::from_str::<AvgPriceResponse>(&body).unwrap();
 
         assert!(current_average_price.mins > 0);
         assert!(current_average_price.price > 0.0);
@@ -179,13 +179,13 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_ticker_price_change_statistics_24h() {
-        let params = TickerStatisticsParams {
+        let params = Ticker24hParams {
             symbol: Some("BTCUSDC"),
             symbols: None,
             r#type: Some("FULL"),
         };
 
-        let params2 = TickerStatisticsParams {
+        let params2 = Ticker24hParams {
             symbol: None,
             symbols: Some("[\"BTCUSDC\",\"BNBUSDC\"]"),
             r#type: Some("MINI"),
@@ -193,19 +193,19 @@ mod market_integration {
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(Market::TickerStatistics, params);
-        let response2 = client.get(Market::TickerStatistics, params2);
+        let response = client.get(Market::Ticker24h, params);
+        let response2 = client.get(Market::Ticker24h, params2);
 
         let body = response.await.unwrap().text().await.unwrap();
         let body2 = response2.await.unwrap().text().await.unwrap();
 
         let ticker_statistics_full =
-            serde_json::from_str::<TickerStatisticsFullResponse>(&body).unwrap();
+            serde_json::from_str::<Ticker24hFullResponse>(&body).unwrap();
 
         let ticker_statistics_mini_list =
-            serde_json::from_str::<Vec<TickerStatisticsMiniResponse>>(&body2).unwrap();
+            serde_json::from_str::<Vec<Ticker24hMiniResponse>>(&body2).unwrap();
 
-        let check_full_ticker_statistics = |ticker_statistics: &TickerStatisticsFullResponse| {
+        let check_full_ticker_statistics = |ticker_statistics: &Ticker24hFullResponse| {
             ticker_statistics.price_change != 0.0
                 && ticker_statistics.price_change_percent != 0.0
                 && ticker_statistics.weighted_avg_price > 0.0
@@ -228,7 +228,7 @@ mod market_integration {
                 && ticker_statistics.count > 0
         };
 
-        let check_mini_ticker_statistics = |ticker_statistics: &TickerStatisticsMiniResponse| {
+        let check_mini_ticker_statistics = |ticker_statistics: &Ticker24hMiniResponse| {
             ticker_statistics.open_price > 0.0
                 && ticker_statistics.high_price > 0.0
                 && ticker_statistics.low_price > 0.0
@@ -256,14 +256,14 @@ mod market_integration {
 
     #[tokio::test]
     async fn test_trading_day() {
-        let params = TradingDayParams {
+        let params = TickerDayParams {
             symbol: Some("DOTUSDC"),
             symbols: None,
             time_zone: None,
             r#type: Some("FULL"),
         };
 
-        let params2 = TradingDayParams {
+        let params2 = TickerDayParams {
             symbol: None,
             symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
             time_zone: None,
@@ -272,23 +272,23 @@ mod market_integration {
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(Market::TradingDayTicker, params);
-        let response2 = client.get(Market::TradingDayTicker, params2);
+        let response = client.get(Market::TickerDay, params);
+        let response2 = client.get(Market::TickerDay, params2);
 
         let body = response.await.unwrap().text().await.unwrap();
         let body2 = response2.await.unwrap().text().await.unwrap();
 
-        let trading_day_full = serde_json::from_str::<TradingDayFullResponse>(&body).unwrap();
+        let trading_day_full = serde_json::from_str::<TickerDayFullResponse>(&body).unwrap();
 
         let trading_day_mini_list =
-            serde_json::from_str::<Vec<TradingDayMiniResponse>>(&body2).unwrap();
+            serde_json::from_str::<Vec<TickerDayMiniResponse>>(&body2).unwrap();
         let symbols = vec!["BTCUSDC", "SOLUSDC"];
         let pairs = trading_day_mini_list
             .into_iter()
             .zip(symbols)
-            .collect::<Vec<(TradingDayMiniResponse, &str)>>();
+            .collect::<Vec<(TickerDayMiniResponse, &str)>>();
 
-        let check_trading_day_full = |trading_day: &TradingDayFullResponse, symbol: &str| {
+        let check_trading_day_full = |trading_day: &TickerDayFullResponse, symbol: &str| {
             trading_day.symbol == symbol
                 && trading_day.weighted_avg_price > 0.0
                 && trading_day.open_price > 0.0
@@ -304,7 +304,7 @@ mod market_integration {
                 && trading_day.count > 0
         };
 
-        let check_trading_day_mini = |trading_day: &TradingDayMiniResponse, symbol: &str| {
+        let check_trading_day_mini = |trading_day: &TickerDayMiniResponse, symbol: &str| {
             trading_day.symbol == symbol
                 && trading_day.open_price > 0.0
                 && trading_day.high_price > 0.0

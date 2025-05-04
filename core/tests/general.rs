@@ -11,13 +11,13 @@ mod general_integration {
     use std::sync::Arc;
 
     #[tokio::test]
-    async fn test_connectivity() {
+    async fn test_ping() {
         let client = Arc::new(Client::new(
             Host::Api.into(),
             HmacSha256::new("api_key", "secret_key"),
         ));
 
-        let response = client.get(General::ExchangeInformation, EmptyParams);
+        let response = client.get(General::Ping, EmptyParams);
         let body = response.await.unwrap().text().await.unwrap();
         let empty: EmptyResponse = serde_json::from_str(&body).unwrap();
 
@@ -31,7 +31,7 @@ mod general_integration {
             HmacSha256::new("api_key", "secret_key"),
         ));
 
-        let response = client.get(General::CheckServerTime, EmptyParams);
+        let response = client.get(General::ServerTime, EmptyParams);
         let body = response.await.unwrap().text().await.unwrap();
         let server_time: ServerTimeResponse = serde_json::from_str(&body).unwrap();
 
@@ -39,7 +39,7 @@ mod general_integration {
     }
 
     #[tokio::test]
-    async fn test_exchange_information() {
+    async fn test_exchange_info() {
         let client = Arc::new(Client::new(
             Host::Api.into(),
             HmacSha256::new("api_key", "secret_key"),
@@ -51,7 +51,7 @@ mod general_integration {
             permissions: None,
         };
 
-        let response = client.get(General::ExchangeInformation, params);
+        let response = client.get(General::ExchangeInfo, params);
         let body = response.await.unwrap().text().await.unwrap();
         let exchange_information: ExchangeInformationResponse =
             serde_json::from_str(&body).unwrap();

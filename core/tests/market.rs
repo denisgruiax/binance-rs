@@ -9,7 +9,7 @@ mod market_integration {
     use serde_json::Value;
 
     #[tokio::test]
-    async fn test_order_book() {
+    async fn test_depth() {
         let params = DepthParams {
             symbol: "EGLDUSDC",
             limit: Some(10),
@@ -20,15 +20,15 @@ mod market_integration {
         let response = client.get(Market::Depth, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let order_book = serde_json::from_str::<DepthResponse>(&body).unwrap();
+        let depth = serde_json::from_str::<DepthResponse>(&body).unwrap();
 
-        assert!(order_book.last_update_id > 0);
-        assert_eq!(order_book.bids.len(), 10);
-        assert_eq!(order_book.asks.len(), 10);
+        assert!(depth.last_update_id > 0);
+        assert_eq!(depth.bids.len(), 10);
+        assert_eq!(depth.asks.len(), 10);
     }
 
     #[tokio::test]
-    async fn test_recent_trade_list() {
+    async fn test_trades() {
         let params = TradesParams {
             symbol: "SOLUSDC",
             limit: Some(20),
@@ -39,7 +39,7 @@ mod market_integration {
         let response = client.get(Market::Trades, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let recent_trade_list = serde_json::from_str::<Vec<TradesResponse>>(&body).unwrap();
+        let trades = serde_json::from_str::<Vec<TradesResponse>>(&body).unwrap();
 
         let check_trade = |trade: &TradesResponse| {
             trade.id > 0
@@ -49,12 +49,12 @@ mod market_integration {
                 && trade.time > 0
         };
 
-        assert_eq!(recent_trade_list.len(), 20);
-        assert!(recent_trade_list.iter().all(check_trade));
+        assert_eq!(trades.len(), 20);
+        assert!(trades.iter().all(check_trade));
     }
 
     #[tokio::test]
-    async fn test_old_trade_lookup() {
+    async fn test_historical_trades() {
         let params = HistoricalTradesParams {
             symbol: "SOLUSDC",
             limit: Some(17),
@@ -66,7 +66,7 @@ mod market_integration {
         let response = client.get(Market::HistoricalTrades, params);
         let body = response.await.unwrap().text().await.unwrap();
 
-        let recent_trade_list = serde_json::from_str::<Vec<HistoricalTradesResponse>>(&body).unwrap();
+        let trades = serde_json::from_str::<Vec<HistoricalTradesResponse>>(&body).unwrap();
 
         let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
@@ -76,12 +76,12 @@ mod market_integration {
                 && trade.time > 0
         };
 
-        assert_eq!(recent_trade_list.len(), 17);
-        assert!(recent_trade_list.iter().all(check_trade));
+        assert_eq!(trades.len(), 17);
+        assert!(trades.iter().all(check_trade));
     }
 
     #[tokio::test]
-    async fn test_kline_candlestick_data() {
+    async fn test_klines() {
         let params = KlinesParams {
             symbol: "ETHUSDC",
             interval: Interval::Minutes5.into(),
@@ -122,7 +122,7 @@ mod market_integration {
     }
 
     #[tokio::test]
-    async fn test_uikline_candlestick_data() {
+    async fn test_uiklines() {
         let params = KlinesParams {
             symbol: "ETHUSDC",
             interval: Interval::Hours1.into(),
@@ -163,22 +163,22 @@ mod market_integration {
     }
 
     #[tokio::test]
-    async fn test_current_average_price() {
+    async fn test_average_price() {
         let params = AvgPriceParams { symbol: "FETUSDC" };
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
         let response = client.get(Market::AvgPrice, params);
         let body = response.await.unwrap().text().await.unwrap();
-        let current_average_price =
+        let price =
             serde_json::from_str::<AvgPriceResponse>(&body).unwrap();
 
-        assert!(current_average_price.mins > 0);
-        assert!(current_average_price.price > 0.0);
-        assert!(current_average_price.close_time > 0);
+        assert!(price.mins > 0);
+        assert!(price.price > 0.0);
+        assert!(price.close_time > 0);
     }
 
     #[tokio::test]
-    async fn test_ticker_price_change_statistics_24h() {
+    async fn test_ticker24h() {
         let params = Ticker24hParams {
             symbol: Some("BTCUSDC"),
             symbols: None,
@@ -199,13 +199,13 @@ mod market_integration {
         let body = response.await.unwrap().text().await.unwrap();
         let body2 = response2.await.unwrap().text().await.unwrap();
 
-        let ticker_statistics_full =
+        let ticker24h_full =
             serde_json::from_str::<Ticker24hFullResponse>(&body).unwrap();
 
-        let ticker_statistics_mini_list =
+        let ticker24h_mini_list =
             serde_json::from_str::<Vec<Ticker24hMiniResponse>>(&body2).unwrap();
 
-        let check_full_ticker_statistics = |ticker_statistics: &Ticker24hFullResponse| {
+        let check_full_ticker24h = |ticker_statistics: &Ticker24hFullResponse| {
             ticker_statistics.price_change != 0.0
                 && ticker_statistics.price_change_percent != 0.0
                 && ticker_statistics.weighted_avg_price > 0.0
@@ -228,7 +228,7 @@ mod market_integration {
                 && ticker_statistics.count > 0
         };
 
-        let check_mini_ticker_statistics = |ticker_statistics: &Ticker24hMiniResponse| {
+        let check_mini_ticker24h = |ticker_statistics: &Ticker24hMiniResponse| {
             ticker_statistics.open_price > 0.0
                 && ticker_statistics.high_price > 0.0
                 && ticker_statistics.low_price > 0.0
@@ -242,20 +242,20 @@ mod market_integration {
                 && ticker_statistics.count > 0
         };
 
-        assert_eq!(ticker_statistics_full.symbol, "BTCUSDC");
-        assert!(check_full_ticker_statistics(&ticker_statistics_full));
+        assert_eq!(ticker24h_full.symbol, "BTCUSDC");
+        assert!(check_full_ticker24h(&ticker24h_full));
 
-        assert_eq!(ticker_statistics_mini_list[0].symbol, "BNBUSDC");
-        assert_eq!(ticker_statistics_mini_list[1].symbol, "BTCUSDC");
+        assert_eq!(ticker24h_mini_list[0].symbol, "BNBUSDC");
+        assert_eq!(ticker24h_mini_list[1].symbol, "BTCUSDC");
         assert!(
-            ticker_statistics_mini_list
+            ticker24h_mini_list
                 .iter()
-                .all(check_mini_ticker_statistics)
+                .all(check_mini_ticker24h)
         );
     }
 
     #[tokio::test]
-    async fn test_trading_day() {
+    async fn test_ticker_day() {
         let params = TickerDayParams {
             symbol: Some("DOTUSDC"),
             symbols: None,
@@ -278,48 +278,48 @@ mod market_integration {
         let body = response.await.unwrap().text().await.unwrap();
         let body2 = response2.await.unwrap().text().await.unwrap();
 
-        let trading_day_full = serde_json::from_str::<TickerDayFullResponse>(&body).unwrap();
+        let ticker_day_full = serde_json::from_str::<TickerDayFullResponse>(&body).unwrap();
 
-        let trading_day_mini_list =
+        let ticker_day_mini_list =
             serde_json::from_str::<Vec<TickerDayMiniResponse>>(&body2).unwrap();
         let symbols = vec!["BTCUSDC", "SOLUSDC"];
-        let pairs = trading_day_mini_list
+        let ticker_symbol = ticker_day_mini_list
             .into_iter()
             .zip(symbols)
             .collect::<Vec<(TickerDayMiniResponse, &str)>>();
 
-        let check_trading_day_full = |trading_day: &TickerDayFullResponse, symbol: &str| {
-            trading_day.symbol == symbol
-                && trading_day.weighted_avg_price > 0.0
-                && trading_day.open_price > 0.0
-                && trading_day.high_price > 0.0
-                && trading_day.low_price > 0.0
-                && trading_day.last_price > 0.0
-                && trading_day.volume > 0.0
-                && trading_day.quote_volume > 0.0
-                && trading_day.open_time > 0
-                && trading_day.close_time > 0
-                && trading_day.first_id > 0
-                && trading_day.last_id >= trading_day.first_id
-                && trading_day.count > 0
+        let check_ticker_day_full = |ticker_day: &TickerDayFullResponse, symbol: &str| {
+            ticker_day.symbol == symbol
+                && ticker_day.weighted_avg_price > 0.0
+                && ticker_day.open_price > 0.0
+                && ticker_day.high_price > 0.0
+                && ticker_day.low_price > 0.0
+                && ticker_day.last_price > 0.0
+                && ticker_day.volume > 0.0
+                && ticker_day.quote_volume > 0.0
+                && ticker_day.open_time > 0
+                && ticker_day.close_time > 0
+                && ticker_day.first_id > 0
+                && ticker_day.last_id >= ticker_day.first_id
+                && ticker_day.count > 0
         };
 
-        let check_trading_day_mini = |trading_day: &TickerDayMiniResponse, symbol: &str| {
-            trading_day.symbol == symbol
-                && trading_day.open_price > 0.0
-                && trading_day.high_price > 0.0
-                && trading_day.low_price > 0.0
-                && trading_day.last_price > 0.0
-                && trading_day.volume > 0.0
-                && trading_day.quote_volume > 0.0
-                && trading_day.open_time > 0
-                && trading_day.close_time > 0
-                && trading_day.first_id > 0
-                && trading_day.last_id >= trading_day.first_id
-                && trading_day.count > 0
+        let check_trading_day_mini = |ticker_day: &TickerDayMiniResponse, symbol: &str| {
+            ticker_day.symbol == symbol
+                && ticker_day.open_price > 0.0
+                && ticker_day.high_price > 0.0
+                && ticker_day.low_price > 0.0
+                && ticker_day.last_price > 0.0
+                && ticker_day.volume > 0.0
+                && ticker_day.quote_volume > 0.0
+                && ticker_day.open_time > 0
+                && ticker_day.close_time > 0
+                && ticker_day.first_id > 0
+                && ticker_day.last_id >= ticker_day.first_id
+                && ticker_day.count > 0
         };
 
-        assert!(check_trading_day_full(&trading_day_full, "DOTUSDC"));
-        assert!(pairs.iter().all(|(td, s)| check_trading_day_mini(td, s)));
+        assert!(check_ticker_day_full(&ticker_day_full, "DOTUSDC"));
+        assert!(ticker_symbol.iter().all(|(td, s)| check_trading_day_mini(td, s)));
     }
 }

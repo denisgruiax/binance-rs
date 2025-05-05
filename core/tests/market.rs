@@ -18,9 +18,9 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Depth, params);
-        let body = response.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let depth = serde_json::from_str::<DepthResponse>(&body).unwrap();
+        let depth = serde_json::from_slice::<DepthResponse>(&bytes).unwrap();
 
         assert!(depth.last_update_id > 0);
         assert_eq!(depth.bids.len(), 10);
@@ -37,9 +37,9 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Trades, params);
-        let body = response.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let trades = serde_json::from_str::<Vec<TradesResponse>>(&body).unwrap();
+        let trades = serde_json::from_slice::<Vec<TradesResponse>>(&bytes).unwrap();
 
         let check_trade = |trade: &TradesResponse| {
             trade.id > 0
@@ -64,9 +64,9 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::HistoricalTrades, params);
-        let body = response.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let trades = serde_json::from_str::<Vec<HistoricalTradesResponse>>(&body).unwrap();
+        let trades = serde_json::from_slice::<Vec<HistoricalTradesResponse>>(&bytes).unwrap();
 
         let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
@@ -94,9 +94,9 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Klines, params);
-        let body = response.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let klines = serde_json::from_str::<Vec<Value>>(&body)
+        let klines = serde_json::from_slice::<Vec<Value>>(&bytes)
             .unwrap()
             .into_iter()
             .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
@@ -135,9 +135,9 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::UIKlines, params);
-        let body = response.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let uiklines = serde_json::from_str::<Vec<Value>>(&body)
+        let uiklines = serde_json::from_slice::<Vec<Value>>(&bytes)
             .unwrap()
             .into_iter()
             .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
@@ -168,8 +168,8 @@ mod market_integration {
 
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
         let response = client.get(Market::AvgPrice, params);
-        let body = response.await.unwrap().text().await.unwrap();
-        let price = serde_json::from_str::<AvgPriceResponse>(&body).unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let price = serde_json::from_slice::<AvgPriceResponse>(&bytes).unwrap();
 
         assert!(price.mins > 0);
         assert!(price.price > 0.0);
@@ -195,13 +195,13 @@ mod market_integration {
         let response = client.get(Market::Ticker24h, params);
         let response2 = client.get(Market::Ticker24h, params2);
 
-        let body = response.await.unwrap().text().await.unwrap();
-        let body2 = response2.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let bytes2 = response2.await.unwrap().bytes().await.unwrap();
 
-        let ticker24h_full = serde_json::from_str::<Ticker24hFullResponse>(&body).unwrap();
+        let ticker24h_full = serde_json::from_slice::<Ticker24hFullResponse>(&bytes).unwrap();
 
         let ticker24h_mini_list =
-            serde_json::from_str::<Vec<Ticker24hMiniResponse>>(&body2).unwrap();
+            serde_json::from_slice::<Vec<Ticker24hMiniResponse>>(&bytes2).unwrap();
 
         let check_full_ticker24h = |ticker_statistics: &Ticker24hFullResponse| {
             ticker_statistics.price_change != 0.0
@@ -269,13 +269,13 @@ mod market_integration {
         let response = client.get(Market::TickerDay, params);
         let response2 = client.get(Market::TickerDay, params2);
 
-        let body = response.await.unwrap().text().await.unwrap();
-        let body2 = response2.await.unwrap().text().await.unwrap();
+        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let bytes2 = response2.await.unwrap().bytes().await.unwrap();
 
-        let ticker_day_full = serde_json::from_str::<TickerDayFullResponse>(&body).unwrap();
+        let ticker_day_full = serde_json::from_slice::<TickerDayFullResponse>(&bytes).unwrap();
 
         let ticker_day_mini_list =
-            serde_json::from_str::<Vec<TickerDayMiniResponse>>(&body2).unwrap();
+            serde_json::from_slice::<Vec<TickerDayMiniResponse>>(&bytes2).unwrap();
         let symbols = vec!["BTCUSDC", "SOLUSDC"];
         let ticker_symbol = ticker_day_mini_list
             .into_iter()
@@ -331,8 +331,9 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::PriceTicker, params);
-        let body = response.await.unwrap().text().await.unwrap();
-        let prices = serde_json::from_str::<Vec<PriceTickerResponse>>(&body).unwrap();
+
+        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let prices = serde_json::from_slice::<Vec<PriceTickerResponse>>(&bytes).unwrap();
 
         assert_eq!(prices.len(), 2);
         assert!(prices.iter().all(|p| p.price > 0.0));

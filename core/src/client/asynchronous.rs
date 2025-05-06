@@ -24,29 +24,21 @@ where
         }
     }
 
-    pub fn get<Path, Params>(
+    pub fn get(
         &self,
-        path: Path,
-        params: Params,
-    ) -> impl Future<Output = Result<Response, reqwest::Error>>
-    where
-        Path: Into<&'a str>,
-        Params: UrlEncoded,
-    {
+        path: impl Into<&'a str>,
+        params: impl UrlEncoded,
+    ) -> impl Future<Output = Result<Response, reqwest::Error>> {
         let endpoint = format!("{}{}{}", self.host, path.into(), params.to_url_encoded());
 
         self.inner_client.get(endpoint).send()
     }
 
-    pub fn get_signed<Path, Params>(
+    pub fn get_signed(
         &self,
-        path: Path,
-        params: Params,
-    ) -> impl Future<Output = Result<Response, reqwest::Error>>
-    where
-        Path: Into<&'a str>,
-        Params: UrlEncoded,
-    {
+        path: impl Into<&'a str>,
+        params: impl UrlEncoded,
+    ) -> impl Future<Output = Result<Response, reqwest::Error>> {
         let request = self.signature.build_request(
             &self.inner_client,
             self.host,

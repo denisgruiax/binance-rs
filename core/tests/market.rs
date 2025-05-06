@@ -99,7 +99,7 @@ mod market_integration {
         let klines: Vec<KlinesResponse> = serde_json::from_slice::<Vec<Value>>(&bytes)
             .unwrap()
             .into_iter()
-            .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
+            .map(serde_json::from_value::<KlinesResponse>)
             .map(|result| result.unwrap())
             .collect();
 
@@ -140,7 +140,7 @@ mod market_integration {
         let uiklines: Vec<KlinesResponse> = serde_json::from_slice::<Vec<Value>>(&bytes)
             .unwrap()
             .into_iter()
-            .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
+            .map(serde_json::from_value::<KlinesResponse>)
             .map(|result| result.unwrap())
             .collect();
 

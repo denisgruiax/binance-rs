@@ -20,7 +20,7 @@ mod market_integration {
         let response = client.get(Market::Depth, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let depth = serde_json::from_slice::<DepthResponse>(&bytes).unwrap();
+        let depth: DepthResponse = serde_json::from_slice(&bytes).unwrap();
 
         assert!(depth.last_update_id > 0);
         assert_eq!(depth.bids.len(), 10);
@@ -39,7 +39,7 @@ mod market_integration {
         let response = client.get(Market::Trades, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let trades = serde_json::from_slice::<Vec<TradesResponse>>(&bytes).unwrap();
+        let trades: Vec<TradesResponse> = serde_json::from_slice(&bytes).unwrap();
 
         let check_trade = |trade: &TradesResponse| {
             trade.id > 0
@@ -66,7 +66,7 @@ mod market_integration {
         let response = client.get(Market::HistoricalTrades, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let trades = serde_json::from_slice::<Vec<HistoricalTradesResponse>>(&bytes).unwrap();
+        let trades: Vec<HistoricalTradesResponse> = serde_json::from_slice(&bytes).unwrap();
 
         let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
@@ -96,12 +96,12 @@ mod market_integration {
         let response = client.get(Market::Klines, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let klines = serde_json::from_slice::<Vec<Value>>(&bytes)
+        let klines: Vec<KlinesResponse> = serde_json::from_slice::<Vec<Value>>(&bytes)
             .unwrap()
             .into_iter()
             .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
             .map(|result| result.unwrap())
-            .collect::<Vec<KlinesResponse>>();
+            .collect();
 
         let check_kline = |kline: &KlinesResponse| {
             kline.open_time > 0
@@ -137,12 +137,12 @@ mod market_integration {
         let response = client.get(Market::UIKlines, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
 
-        let uiklines = serde_json::from_slice::<Vec<Value>>(&bytes)
+        let uiklines: Vec<KlinesResponse> = serde_json::from_slice::<Vec<Value>>(&bytes)
             .unwrap()
             .into_iter()
             .map(|kline| serde_json::from_value::<KlinesResponse>(kline))
             .map(|result| result.unwrap())
-            .collect::<Vec<KlinesResponse>>();
+            .collect();
 
         let check_kline = |uikline: &KlinesResponse| {
             uikline.open_time > 0
@@ -169,7 +169,7 @@ mod market_integration {
         let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
         let response = client.get(Market::AvgPrice, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
-        let price = serde_json::from_slice::<AvgPriceResponse>(&bytes).unwrap();
+        let price: AvgPriceResponse = serde_json::from_slice(&bytes).unwrap();
 
         assert!(price.mins > 0);
         assert!(price.price > 0.0);
@@ -198,10 +198,10 @@ mod market_integration {
         let bytes = response.await.unwrap().bytes().await.unwrap();
         let bytes2 = response2.await.unwrap().bytes().await.unwrap();
 
-        let ticker24h_full = serde_json::from_slice::<Ticker24hFullResponse>(&bytes).unwrap();
+        let ticker24h_full: Ticker24hFullResponse = serde_json::from_slice(&bytes).unwrap();
 
-        let ticker24h_mini_list =
-            serde_json::from_slice::<Vec<Ticker24hMiniResponse>>(&bytes2).unwrap();
+        let ticker24h_mini_list: Vec<Ticker24hMiniResponse> =
+            serde_json::from_slice(&bytes2).unwrap();
 
         let check_full_ticker24h = |ticker_statistics: &Ticker24hFullResponse| {
             ticker_statistics.price_change != 0.0
@@ -272,10 +272,10 @@ mod market_integration {
         let bytes = response.await.unwrap().bytes().await.unwrap();
         let bytes2 = response2.await.unwrap().bytes().await.unwrap();
 
-        let ticker_day_full = serde_json::from_slice::<TickerDayFullResponse>(&bytes).unwrap();
+        let ticker_day_full: TickerDayFullResponse = serde_json::from_slice(&bytes).unwrap();
 
-        let ticker_day_mini_list =
-            serde_json::from_slice::<Vec<TickerDayMiniResponse>>(&bytes2).unwrap();
+        let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
+            serde_json::from_slice(&bytes2).unwrap();
         let symbols = vec!["BTCUSDC", "SOLUSDC"];
         let ticker_symbol = ticker_day_mini_list
             .into_iter()
@@ -333,7 +333,7 @@ mod market_integration {
         let response = client.get(Market::PriceTicker, params);
 
         let bytes = response.await.unwrap().bytes().await.unwrap();
-        let prices = serde_json::from_slice::<Vec<PriceTickerResponse>>(&bytes).unwrap();
+        let prices: Vec<PriceTickerResponse> = serde_json::from_slice(&bytes).unwrap();
 
         assert_eq!(prices.len(), 2);
         assert!(prices.iter().all(|p| p.price > 0.0));

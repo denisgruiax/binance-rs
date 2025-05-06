@@ -16,9 +16,9 @@ impl<'a, S> Client<'a, S>
 where
     S: Signature<'a>,
 {
-    pub fn new(host: &'a str, signature: S) -> Client<'a, S> {
+    pub fn new(host: impl Into<&'a str>, signature: S) -> Client<'a, S> {
         Client {
-            host,
+            host: host.into(),
             signature,
             inner_client: reqwest::Client::new(),
         }

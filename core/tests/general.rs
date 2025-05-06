@@ -13,7 +13,7 @@ mod general_integration {
     #[tokio::test]
     async fn test_ping() {
         let client = Arc::new(Client::new(
-            Host::Api.into(),
+            Host::Api,
             HmacSha256::new("api_key", "secret_key"),
         ));
 
@@ -27,7 +27,7 @@ mod general_integration {
     #[tokio::test]
     async fn test_server_time() {
         let client = Arc::new(Client::new(
-            Host::Api.into(),
+            Host::Api,
             HmacSha256::new("api_key", "secret_key"),
         ));
 
@@ -41,7 +41,7 @@ mod general_integration {
     #[tokio::test]
     async fn test_exchange_info() {
         let client = Arc::new(Client::new(
-            Host::Api.into(),
+            Host::Api,
             HmacSha256::new("api_key", "secret_key"),
         ));
 

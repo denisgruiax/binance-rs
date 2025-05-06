@@ -15,7 +15,7 @@ mod market_integration {
             limit: Some(10),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Depth, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
@@ -34,7 +34,7 @@ mod market_integration {
             limit: Some(20),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Trades, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
@@ -61,7 +61,7 @@ mod market_integration {
             from_id: None,
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::HistoricalTrades, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
@@ -91,7 +91,7 @@ mod market_integration {
             limit: Some(30),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Klines, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
@@ -132,7 +132,7 @@ mod market_integration {
             limit: Some(50),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::UIKlines, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
@@ -166,7 +166,7 @@ mod market_integration {
     async fn test_average_price() {
         let params = AvgPriceParams { symbol: "FETUSDC" };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
         let response = client.get(Market::AvgPrice, params);
         let bytes = response.await.unwrap().bytes().await.unwrap();
         let price: AvgPriceResponse = serde_json::from_slice(&bytes).unwrap();
@@ -190,7 +190,7 @@ mod market_integration {
             r#type: Some("MINI"),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::Ticker24h, params);
         let response2 = client.get(Market::Ticker24h, params2);
@@ -264,7 +264,7 @@ mod market_integration {
             r#type: Some("MINI"),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::TickerDay, params);
         let response2 = client.get(Market::TickerDay, params2);
@@ -328,7 +328,7 @@ mod market_integration {
             symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
         };
 
-        let client = Client::new(Host::Api.into(), HmacSha256::new("api_key", "secret_key"));
+        let client = Client::new(Host::Api, HmacSha256::new("api_key", "secret_key"));
 
         let response = client.get(Market::PriceTicker, params);
 

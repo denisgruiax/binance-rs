@@ -1,5 +1,5 @@
 use crate::client::signer::signature::Signature;
-use binance_api::model::params::url::UrlEncoded;
+use binance_api::model::{params::url::UrlEncoded, BinanceError};
 use reqwest::{RequestBuilder, Response};
 
 pub struct Client<'a, S>
@@ -37,14 +37,14 @@ where
         &self,
         path: impl Into<&'a str>,
         params: impl UrlEncoded,
-    ) -> impl Future<Output = Result<Response, reqwest::Error>> {
+    ) -> Result<impl Future<Output = Result<Response, reqwest::Error>>, BinanceError> {
         let request = self.signature.build_request(
             &self.inner_client,
             self.host,
             path.into(),
             params.to_url_encoded().as_str(),
-        );
+        )?;
 
-        RequestBuilder::send(request)
+        Ok(RequestBuilder::send(request))
     }
 }

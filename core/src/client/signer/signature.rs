@@ -1,3 +1,4 @@
+use binance_api::model::BinanceError;
 use chrono::Utc;
 
 pub trait Signature<'a> {
@@ -5,6 +6,6 @@ pub trait Signature<'a> {
         format!("{}&timestamp={}", params, Utc::now().timestamp_millis())
     }
 
-    fn build_request(&self, client: &reqwest::Client, host: &str, path: &str, params: &str) -> reqwest::RequestBuilder;
-    fn sign(&self, host: &str, path: &str, params: &str) -> String;
+    fn build_request(&self, client: &reqwest::Client, host: &str, path: &str, params: &str) -> Result<reqwest::RequestBuilder, BinanceError>;
+    fn sign(&self, host: &str, path: &str, params: &str) -> Result<String, BinanceError>;
 }

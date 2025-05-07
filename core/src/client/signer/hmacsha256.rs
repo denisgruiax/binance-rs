@@ -1,3 +1,4 @@
+use binance_api::model::BinanceError;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
 
@@ -18,14 +19,14 @@ impl<'a> HmacSha256<'a> {
 }
 
 impl<'a> Signature<'a> for HmacSha256<'a> {
-    fn build_request(&self, client: &reqwest::Client, host: &str, path: &str, params: &str) -> reqwest::RequestBuilder{
-        let url = self.sign(host, path, params);
+    fn build_request(&self, client: &reqwest::Client, host: &str, path: &str, params: &str) -> Result<reqwest::RequestBuilder, BinanceError>{
+        let url = self.sign(host, path, params)?;
 
-        client.get(url).header("X-MBX-APIKEY", self.api_key)
+        Ok(client.get(url).header("X-MBX-APIKEY", self.api_key))
     } 
 
-    fn sign(&self, host: &str, path: &str, params: &str) -> String {
-        let mut hasher = Hmac::<Sha256>::new_from_slice(self.secret_key.as_bytes()).unwrap();
+    fn sign(&self, host: &str, path: &str, params: &str) -> Result<String, BinanceError> {
+        let mut hasher = Hmac::<Sha256>::new_from_slice(self.secret_key.as_bytes())?;
         let params = self.add_timestamp(params);
 
         hasher.update(params.as_bytes());
@@ -33,6 +34,6 @@ impl<'a> Signature<'a> for HmacSha256<'a> {
         let signature = hex::encode(hasher.finalize().into_bytes());
         let endpoint = format!("{}&signature={}", params, signature);
 
-        format!("{}{}{}", host, path, endpoint)
+        Ok(format!("{}{}{}", host, path, endpoint))
     }
 }

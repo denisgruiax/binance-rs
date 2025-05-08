@@ -30,8 +30,11 @@ where
         self.client.get(General::ServerTime.into(), EmptyParams)
     }
 
-    pub fn exchange_info(&self) -> Result<ExchangeInformationResponse, BinanceError> {
-        self.client.get(General::ExchangeInfo.into(), EmptyParams)
+    pub fn exchange_info(
+        &self,
+        params: ExchangeInformationParams,
+    ) -> Result<ExchangeInformationResponse, BinanceError> {
+        self.client.get(General::ExchangeInfo.into(), params)
     }
 }
 
@@ -42,7 +45,10 @@ mod general_api {
         signer::{hmacsha256::HmacSha256, signature::Signature},
         synchronous::Client,
     };
-    use binance_api::{endpoint::host::Host, model::response::general::EmptyResponse};
+    use binance_api::{
+        endpoint::host::Host,
+        model::{params::general::ExchangeInformationParams, response::general::EmptyResponse},
+    };
     use std::sync::Arc;
 
     fn shared_test_client<'a, S>() -> Arc<GeneralApi<'a, HmacSha256<'a>>>
@@ -57,17 +63,39 @@ mod general_api {
 
     #[test]
     fn test_ping() {
-        let general_api:Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
+        let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
 
         assert_eq!(general_api.ping().unwrap(), EmptyResponse {});
     }
     #[test]
     fn test_server_time() {
-        let general_api:Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
+        let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
 
         assert!(general_api.server_time().unwrap().server_time > 0);
     }
 
     #[test]
-    fn test_exchange_info() {}
+    fn test_exchange_info() {
+        let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+        let params = ExchangeInformationParams {
+            symbol: Some("BTCUSDC"),
+            symbols: None,
+            permissions: None,
+        };
+
+        let exchange_info = general_api.exchange_info(params).unwrap();
+
+        assert_eq!(exchange_info.timezone, "UTC");
+        assert!(exchange_info.server_time > 0);
+
+        assert_eq!(exchange_info.symbols[0].symbol, "BTCUSDC");
+        assert_eq!(exchange_info.symbols[0].status, "TRADING");
+        assert_eq!(exchange_info.symbols[0].base_asset, "BTC");
+        assert_eq!(exchange_info.symbols[0].quote_asset, "USDC");
+        assert_eq!(exchange_info.symbols[0].base_asset_precision, 8);
+        assert!(exchange_info.symbols[0].order_types.len() == 7);
+        assert!(exchange_info.symbols[0].iceberg_allowed);
+        assert!(exchange_info.symbols[0].is_spot_trading_allowed);
+        assert!(exchange_info.symbols[0].is_margin_trading_allowed);
+    }
 }

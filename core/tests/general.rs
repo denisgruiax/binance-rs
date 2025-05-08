@@ -8,14 +8,13 @@ mod general_integration {
     };
     use binance_core::client::asynchronous::Client;
     use binance_core::client::signer::hmacsha256::HmacSha256;
-    use std::sync::Arc;
 
     #[tokio::test]
     async fn test_ping() {
-        let client = Arc::new(Client::new(
+        let client = Client::new(
             Host::Api,
             HmacSha256::new("api_key", "secret_key"),
-        ));
+        );
 
         let response = client.get(General::Ping, EmptyParams);
         let body = response.await.unwrap().text().await.unwrap();
@@ -26,10 +25,10 @@ mod general_integration {
 
     #[tokio::test]
     async fn test_server_time() {
-        let client = Arc::new(Client::new(
+        let client = Client::new(
             Host::Api,
             HmacSha256::new("api_key", "secret_key"),
-        ));
+        );
 
         let response = client.get(General::ServerTime, EmptyParams);
         let body = response.await.unwrap().text().await.unwrap();
@@ -40,10 +39,10 @@ mod general_integration {
 
     #[tokio::test]
     async fn test_exchange_info() {
-        let client = Arc::new(Client::new(
+        let client = Client::new(
             Host::Api,
             HmacSha256::new("api_key", "secret_key"),
-        ));
+        );
 
         let params = ExchangeInformationParams {
             symbol: Some("BTCUSDC"),

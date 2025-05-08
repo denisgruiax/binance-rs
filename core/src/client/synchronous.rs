@@ -1,5 +1,8 @@
 use binance_api::model::{BinanceError, params::url::UrlEncoded};
-use reqwest::{StatusCode, blocking::Response};
+use reqwest::{
+    StatusCode,
+    blocking::{RequestBuilder, Response},
+};
 use serde::de::DeserializeOwned;
 
 use super::signer::signature::Signature;
@@ -38,6 +41,21 @@ where
         let response = self.inner_client.get(endpoint).send();
 
         Self::handle::<T>(response)
+    }
+
+    pub fn get_signed(
+        &self,
+        path: impl Into<&'a str>,
+        params: impl UrlEncoded,
+    ) -> Result<Result<Response, reqwest::Error>, BinanceError> {
+        let request = self.signature.build_blocking_request(
+            &self.inner_client,
+            self.host,
+            path.into(),
+            params.to_url_encoded().as_str(),
+        )?;
+
+        Ok(RequestBuilder::send(request))
     }
 
     pub fn handle<T: DeserializeOwned>(

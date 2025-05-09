@@ -1,7 +1,9 @@
 use crate::client::{signer::signature::Signature, synchronous::Client};
 use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
-use binance_api::model::response::market::{HistoricalTradesResponse, TradesResponse};
+use binance_api::model::response::market::{
+    HistoricalTradesResponse, KlinesResponse, TradesResponse,
+};
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
 pub struct MarketApi<'a, S>
@@ -33,6 +35,10 @@ where
     ) -> Result<Vec<HistoricalTradesResponse>, BinanceError> {
         self.client.get(Market::HistoricalTrades.into(), params)
     }
+
+    pub fn get_klines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
+        self.client.get(Market::Klines.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -42,8 +48,13 @@ mod market_api {
     use binance_api::{
         endpoint::host::Host,
         model::{
-            params::market::{DepthParams, HistoricalTradesParams, TradesParams},
-            response::market::{DepthResponse, HistoricalTradesResponse, TradesResponse},
+            params::{
+                interval::Interval,
+                market::{DepthParams, HistoricalTradesParams, KlinesParams, TradesParams},
+            },
+            response::market::{
+                DepthResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse,
+            },
         },
     };
     use std::sync::{Arc, OnceLock};
@@ -99,15 +110,16 @@ mod market_api {
     }
 
     #[test]
-    fn test_get_historical_trades(){
+    fn test_get_historical_trades() {
         let market_api = shared_test_market();
-        let params = HistoricalTradesParams{
+        let params = HistoricalTradesParams {
             symbol: "SOLUSDC",
             limit: Some(40),
             from_id: None,
         };
 
-        let trades: Vec<HistoricalTradesResponse> = market_api.get_historical_trades(params).unwrap();
+        let trades: Vec<HistoricalTradesResponse> =
+            market_api.get_historical_trades(params).unwrap();
 
         let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
@@ -119,5 +131,37 @@ mod market_api {
 
         assert_eq!(trades.len(), 40);
         assert!(trades.iter().all(check_trade));
+    }
+
+    #[test]
+    fn test_get_klines() {
+        let market_api = shared_test_market();
+        let params = KlinesParams {
+            symbol: "ETHUSDC",
+            interval: Interval::Minutes5.into(),
+            start_time: None,
+            end_time: None,
+            time_zone: None,
+            limit: Some(30),
+        };
+
+        let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
+
+        let check_kline = |kline: &KlinesResponse| {
+            kline.open_time > 0
+                && kline.open > 0.0
+                && kline.high > 0.0
+                && kline.low > 0.0
+                && kline.close > 0.0
+                && kline.volume > 0.0
+                && kline.close_time > 0
+                && kline.quote_asset_volume > 0.0
+                && kline.number_of_trades > 0
+                && kline.taker_buy_base_asset_volume > 0.0
+                && kline.taker_buy_quote_asset_volume > 0.0
+        };
+
+        assert_eq!(klines.len(), 30);
+        assert!(klines.iter().all(check_kline));
     }
 }

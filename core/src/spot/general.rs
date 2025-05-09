@@ -25,11 +25,11 @@ where
         self.client.get(General::Ping.into(), EmptyParams)
     }
 
-    pub fn server_time(&self) -> Result<ServerTimeResponse, BinanceError> {
+    pub fn get_server_time(&self) -> Result<ServerTimeResponse, BinanceError> {
         self.client.get(General::ServerTime.into(), EmptyParams)
     }
 
-    pub fn exchange_info(
+    pub fn get_exchange_info(
         &self,
         params: ExchangeInformationParams,
     ) -> Result<ExchangeInformationResponse, BinanceError> {
@@ -76,7 +76,7 @@ mod general_api {
     fn test_server_time() {
         let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
 
-        assert!(general_api.server_time().unwrap().server_time > 0);
+        assert!(general_api.get_server_time().unwrap().server_time > 0);
     }
 
     #[test]
@@ -88,7 +88,7 @@ mod general_api {
             permissions: None,
         };
 
-        let exchange_info = general_api.exchange_info(params).unwrap();
+        let exchange_info = general_api.get_exchange_info(params).unwrap();
 
         assert_eq!(exchange_info.timezone, "UTC");
         assert!(exchange_info.server_time > 0);

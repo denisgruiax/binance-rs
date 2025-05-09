@@ -19,11 +19,11 @@ where
         MarketApi { client }
     }
 
-    pub fn depth(&self, params: DepthParams) -> Result<DepthResponse, BinanceError> {
+    pub fn get_depth(&self, params: DepthParams) -> Result<DepthResponse, BinanceError> {
         self.client.get(Market::Depth.into(), params)
     }
 
-    pub fn trades(&self, params: TradesParams) -> Result<Vec<TradesResponse>, BinanceError>{
+    pub fn get_trades(&self, params: TradesParams) -> Result<Vec<TradesResponse>, BinanceError>{
         self.client.get(Market::Trades.into(), params)
     }
 }
@@ -59,7 +59,7 @@ mod market_api {
             limit: Some(20),
         };
 
-        let depth: DepthResponse = market_api.depth(params).unwrap();
+        let depth: DepthResponse = market_api.get_depth(params).unwrap();
 
         assert!(depth.last_update_id > 0);
         assert_eq!(depth.bids.len(), 20);
@@ -74,7 +74,7 @@ mod market_api {
             limit: Some(25),
         };
 
-        let trades: Vec<TradesResponse> = market_api.trades(params).unwrap();
+        let trades: Vec<TradesResponse> = market_api.get_trades(params).unwrap();
         
         let check_trade = |trade: &TradesResponse| {
             trade.id > 0

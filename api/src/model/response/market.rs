@@ -5,7 +5,7 @@ use serde_with::{DisplayFromStr, serde_as};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DepthResponse {
-    pub last_update_id: u32,
+    pub last_update_id: u64,
     pub bids: Vec<Bids>,
     pub asks: Vec<Asks>,
 }

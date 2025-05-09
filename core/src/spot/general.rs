@@ -1,5 +1,4 @@
 use crate::client::{signer::signature::Signature, synchronous::Client};
-use binance_api::endpoint::host::Host;
 use binance_api::endpoint::route::General;
 use binance_api::model::BinanceError;
 use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};
@@ -49,16 +48,22 @@ mod general_api {
         endpoint::host::Host,
         model::{params::general::ExchangeInformationParams, response::general::EmptyResponse},
     };
-    use std::sync::Arc;
+    use std::sync::{Arc, OnceLock};
 
-    fn shared_test_client<'a, S>() -> Arc<GeneralApi<'a, HmacSha256<'a>>>
+    static CLIENT: OnceLock<Arc<GeneralApi<'static, HmacSha256<'static>>>> = OnceLock::new();
+
+    fn shared_test_client<'a, S>() -> Arc<GeneralApi<'static, HmacSha256<'static>>>
     where
         S: Signature<'a>,
     {
-        Arc::new(GeneralApi::new(Client::new(
-            Host::Api.into(),
-            HmacSha256::new("api_key", "secret_key"),
-        )))
+        CLIENT
+            .get_or_init(|| {
+                Arc::new(GeneralApi::new(Client::new(
+                    Host::Api.into(),
+                    HmacSha256::new("api_key", "secret_key"),
+                )))
+            })
+            .clone()
     }
 
     #[test]

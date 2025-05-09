@@ -39,6 +39,10 @@ where
     pub fn get_klines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::Klines.into(), params)
     }
+
+    pub fn get_uiklines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError>{
+        self.client.get(Market::UIKlines.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -146,6 +150,38 @@ mod market_api {
         };
 
         let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
+
+        let check_kline = |kline: &KlinesResponse| {
+            kline.open_time > 0
+                && kline.open > 0.0
+                && kline.high > 0.0
+                && kline.low > 0.0
+                && kline.close > 0.0
+                && kline.volume > 0.0
+                && kline.close_time > 0
+                && kline.quote_asset_volume > 0.0
+                && kline.number_of_trades > 0
+                && kline.taker_buy_base_asset_volume > 0.0
+                && kline.taker_buy_quote_asset_volume > 0.0
+        };
+
+        assert_eq!(klines.len(), 30);
+        assert!(klines.iter().all(check_kline));
+    }
+
+     #[test]
+    fn test_get_uiklines() {
+        let market_api = shared_test_market();
+        let params = KlinesParams {
+            symbol: "ETHUSDC",
+            interval: Interval::Minutes5.into(),
+            start_time: None,
+            end_time: None,
+            time_zone: None,
+            limit: Some(30),
+        };
+
+        let klines: Vec<KlinesResponse> = market_api.get_uiklines(params).unwrap();
 
         let check_kline = |kline: &KlinesResponse| {
             kline.open_time > 0

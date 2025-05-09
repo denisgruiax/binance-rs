@@ -3,7 +3,7 @@ use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
 use binance_api::model::response::market::{
     AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, Ticker24hFullResponse,
-    Ticker24hMiniResponse, TradesResponse,
+    Ticker24hMiniResponse, TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
 };
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
@@ -79,6 +79,34 @@ where
     ) -> Result<Vec<Ticker24hFullResponse>, BinanceError> {
         self.client.get(Market::Ticker24h.into(), params)
     }
+
+    pub fn get_ticker_day_mini(
+        &self,
+        params: TickerDayParams,
+    ) -> Result<TickerDayMiniResponse, BinanceError> {
+        self.client.get(Market::TickerDay.into(), params)
+    }
+
+    pub fn get_ticker_day_full(
+        &self,
+        params: TickerDayParams,
+    ) -> Result<TickerDayFullResponse, BinanceError> {
+        self.client.get(Market::TickerDay.into(), params)
+    }
+
+    pub fn get_ticker_day_mini_list(
+        &self,
+        params: TickerDayParams,
+    ) -> Result<Vec<TickerDayMiniResponse>, BinanceError> {
+        self.client.get(Market::TickerDay.into(), params)
+    }
+
+    pub fn get_ticker_day_full_list(
+        &self,
+        params: TickerDayParams,
+    ) -> Result<Vec<TickerDayFullResponse>, BinanceError> {
+        self.client.get(Market::TickerDay.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -92,12 +120,13 @@ mod market_api {
                 interval::Interval,
                 market::{
                     AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams,
-                    Ticker24hParams, TradesParams,
+                    Ticker24hParams, TickerDayParams, TradesParams,
                 },
             },
             response::market::{
                 AvgPriceResponse, DepthResponse, HistoricalTradesResponse, KlinesResponse,
-                Ticker24hFullResponse, Ticker24hMiniResponse, TradesResponse,
+                Ticker24hFullResponse, Ticker24hMiniResponse, TickerDayFullResponse,
+                TickerDayMiniResponse, TradesResponse,
             },
         },
     };
@@ -389,5 +418,145 @@ mod market_api {
         assert_eq!(ticker24h_full_list[0].symbol, "BTCUSDC");
         assert_eq!(ticker24h_full_list[1].symbol, "SOLUSDC");
         assert!(ticker24h_full_list.iter().all(check_ticker24h_full));
+    }
+
+    #[test]
+    fn test_get_ticker_day_mini() {
+        let market_api = shared_test_market();
+        let params = TickerDayParams {
+            symbol: Some("SOLUSDC"),
+            symbols: None,
+            time_zone: None,
+            r#type: Some("MINI"),
+        };
+
+        let ticker_day_mini: TickerDayMiniResponse =
+            market_api.get_ticker_day_mini(params).unwrap();
+
+        let check_trading_day_mini = |ticker_day: &TickerDayMiniResponse, symbol: &str| {
+            ticker_day.symbol == symbol
+                && ticker_day.open_price > 0.0
+                && ticker_day.high_price > 0.0
+                && ticker_day.low_price > 0.0
+                && ticker_day.last_price > 0.0
+                && ticker_day.volume > 0.0
+                && ticker_day.quote_volume > 0.0
+                && ticker_day.open_time > 0
+                && ticker_day.close_time > 0
+                && ticker_day.first_id > 0
+                && ticker_day.last_id >= ticker_day.first_id
+                && ticker_day.count > 0
+        };
+
+        assert!(check_trading_day_mini(&ticker_day_mini, "SOLUSDC"));
+    }
+
+    #[test]
+    fn test_get_ticker_day_full() {
+        let market_api = shared_test_market();
+        let params = TickerDayParams {
+            symbol: Some("DOTUSDC"),
+            symbols: None,
+            time_zone: None,
+            r#type: Some("FULL"),
+        };
+
+        let ticker_day_full: TickerDayFullResponse =
+            market_api.get_ticker_day_full(params).unwrap();
+
+        let check_ticker_day_full = |ticker_day: &TickerDayFullResponse, symbol: &str| {
+            ticker_day.symbol == symbol
+                && ticker_day.weighted_avg_price > 0.0
+                && ticker_day.open_price > 0.0
+                && ticker_day.high_price > 0.0
+                && ticker_day.low_price > 0.0
+                && ticker_day.last_price > 0.0
+                && ticker_day.volume > 0.0
+                && ticker_day.quote_volume > 0.0
+                && ticker_day.open_time > 0
+                && ticker_day.close_time > 0
+                && ticker_day.first_id > 0
+                && ticker_day.last_id >= ticker_day.first_id
+                && ticker_day.count > 0
+        };
+        assert!(check_ticker_day_full(&ticker_day_full, "DOTUSDC"));
+    }
+
+    #[test]
+    fn test_get_ticker_day_mini_list() {
+        let market_api = shared_test_market();
+        let symbols = vec!["BTCUSDC", "SOLUSDC"];
+        let params = TickerDayParams {
+            symbol: None,
+            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
+            time_zone: None,
+            r#type: Some("MINI"),
+        };
+
+        let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
+            market_api.get_ticker_day_mini_list(params).unwrap();
+
+        let check_trading_day_mini = |ticker_day: &TickerDayMiniResponse, symbol: &str| {
+            ticker_day.symbol == symbol
+                && ticker_day.open_price > 0.0
+                && ticker_day.high_price > 0.0
+                && ticker_day.low_price > 0.0
+                && ticker_day.last_price > 0.0
+                && ticker_day.volume > 0.0
+                && ticker_day.quote_volume > 0.0
+                && ticker_day.open_time > 0
+                && ticker_day.close_time > 0
+                && ticker_day.first_id > 0
+                && ticker_day.last_id >= ticker_day.first_id
+                && ticker_day.count > 0
+        };
+
+        assert!(
+            ticker_day_mini_list
+                .into_iter()
+                .zip(symbols)
+                .collect::<Vec<(TickerDayMiniResponse, &str)>>()
+                .iter()
+                .all(|(td, s)| check_trading_day_mini(td, s))
+        );
+    }
+
+    #[test]
+    fn test_get_ticker_day_full_list() {
+        let market_api = shared_test_market();
+        let symbols = vec!["BTCUSDC", "SOLUSDC"];
+        let params = TickerDayParams {
+            symbol: None,
+            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
+            time_zone: None,
+            r#type: Some("FULL"),
+        };
+
+        let ticker_day_mini_list: Vec<TickerDayFullResponse> =
+            market_api.get_ticker_day_full_list(params).unwrap();
+
+        let check_trading_day_mini = |ticker_day: &TickerDayFullResponse, symbol: &str| {
+            ticker_day.symbol == symbol
+                && ticker_day.open_price > 0.0
+                && ticker_day.high_price > 0.0
+                && ticker_day.low_price > 0.0
+                && ticker_day.last_price > 0.0
+                && ticker_day.volume > 0.0
+                && ticker_day.quote_volume > 0.0
+                && ticker_day.open_time > 0
+                && ticker_day.close_time > 0
+                && ticker_day.first_id > 0
+                && ticker_day.last_id >= ticker_day.first_id
+                && ticker_day.count > 0
+        };
+
+        assert!(
+            ticker_day_mini_list
+                .into_iter()
+                .zip(symbols)
+                .collect::<Vec<(TickerDayFullResponse, &str)>>()
+                .iter()
+                .all(|(td, s)| check_trading_day_mini(td, s))
+        );
     }
 }

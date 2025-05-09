@@ -120,8 +120,13 @@ where
 
     pub fn get_price_ticker_list(
         &self,
-        params: PriceTickerParams,
+        symbols: &str,
     ) -> Result<Vec<PriceTickerResponse>, BinanceError> {
+        let params = PriceTickerParams {
+            symbol: None,
+            symbols: Some(symbols),
+        };
+
         self.client.get(Market::PriceTicker.into(), params)
     }
 }
@@ -585,5 +590,16 @@ mod market_api {
 
         assert_eq!(egld_usdc.symbol, "EGLDUSDC");
         assert!(egld_usdc.price > 0.0);
+    }
+
+    #[test]
+    fn test_get_price_ticker_list() {
+        let market_api = shared_test_market();
+
+        let price_ticker_list: Vec<PriceTickerResponse> = market_api
+            .get_price_ticker_list("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .unwrap();
+
+        assert!(price_ticker_list.iter().all(|p| p.price > 0.0));
     }
 }

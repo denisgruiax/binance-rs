@@ -1,6 +1,7 @@
 use crate::client::{signer::signature::Signature, synchronous::Client};
 use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
+use binance_api::model::response::market::TradesResponse;
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
 pub struct MarketApi<'a, S>
@@ -21,20 +22,20 @@ where
     pub fn depth(&self, params: DepthParams) -> Result<DepthResponse, BinanceError> {
         self.client.get(Market::Depth.into(), params)
     }
+
+    pub fn trades(&self, params: TradesParams) -> Result<Vec<TradesResponse>, BinanceError>{
+        self.client.get(Market::Trades.into(), params)
+    }
 }
 
 #[cfg(test)]
 mod market_api {
     use binance_api::{
         endpoint::host::Host,
-        model::{params::market::DepthParams, response::market::DepthResponse},
+        model::{params::market::{DepthParams, TradesParams}, response::market::{DepthResponse, TradesResponse}},
     };
-    use futures::stream::Once;
-
     use std::sync::{Arc, OnceLock};
-
     use crate::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
-
     use super::MarketApi;
 
     static CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
@@ -63,5 +64,27 @@ mod market_api {
         assert!(depth.last_update_id > 0);
         assert_eq!(depth.bids.len(), 20);
         assert_eq!(depth.asks.len(), 20);
+    }
+
+    #[test]
+    fn test_trades(){
+        let market_api = shared_test_market();
+        let params = TradesParams{
+            symbol: "SOLUSDC",
+            limit: Some(25),
+        };
+
+        let trades: Vec<TradesResponse> = market_api.trades(params).unwrap();
+        
+        let check_trade = |trade: &TradesResponse| {
+            trade.id > 0
+                && trade.price > 0.0
+                && trade.qty > 0.0
+                && trade.quote_qty > 0.0
+                && trade.time > 0
+        };
+
+        assert_eq!(trades.len(), 25);
+        assert!(trades.iter().all(check_trade));
     }
 }

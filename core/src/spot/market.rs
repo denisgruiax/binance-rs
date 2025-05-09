@@ -2,7 +2,7 @@ use crate::client::{signer::signature::Signature, synchronous::Client};
 use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
 use binance_api::model::response::market::{
-    HistoricalTradesResponse, KlinesResponse, TradesResponse,
+    AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse
 };
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
@@ -43,6 +43,10 @@ where
     pub fn get_uiklines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError>{
         self.client.get(Market::UIKlines.into(), params)
     }
+
+    pub fn get_average_price(&self, params: AvgPriceParams) -> Result<AvgPriceResponse, BinanceError>{
+        self.client.get(Market::AvgPrice.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -54,10 +58,10 @@ mod market_api {
         model::{
             params::{
                 interval::Interval,
-                market::{DepthParams, HistoricalTradesParams, KlinesParams, TradesParams},
+                market::{AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams, TradesParams},
             },
             response::market::{
-                DepthResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse,
+                AvgPriceResponse, DepthResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse
             },
         },
     };
@@ -199,5 +203,17 @@ mod market_api {
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
+    }
+
+    #[test]
+    fn test_get_average_price(){
+        let market_api = shared_test_market();
+        let params = AvgPriceParams { symbol: "FETUSDC" };
+
+        let average_price: AvgPriceResponse = market_api.get_average_price(params).unwrap();
+
+        assert!(average_price.mins > 0);
+        assert!(average_price.price > 0.0);
+        assert!(average_price.close_time > 0);
     }
 }

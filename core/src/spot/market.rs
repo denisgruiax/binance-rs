@@ -2,8 +2,9 @@ use crate::client::{signer::signature::Signature, synchronous::Client};
 use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
 use binance_api::model::response::market::{
-    AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, Ticker24hFullResponse,
-    Ticker24hMiniResponse, TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
+    AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, PriceTickerResponse,
+    Ticker24hFullResponse, Ticker24hMiniResponse, TickerDayFullResponse, TickerDayMiniResponse,
+    TradesResponse,
 };
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
@@ -107,6 +108,22 @@ where
     ) -> Result<Vec<TickerDayFullResponse>, BinanceError> {
         self.client.get(Market::TickerDay.into(), params)
     }
+
+    pub fn get_price_ticker(&self, symbol: &str) -> Result<PriceTickerResponse, BinanceError> {
+        let params = PriceTickerParams {
+            symbol: Some(symbol),
+            symbols: None,
+        };
+
+        self.client.get(Market::PriceTicker.into(), params)
+    }
+
+    pub fn get_price_ticker_list(
+        &self,
+        params: PriceTickerParams,
+    ) -> Result<Vec<PriceTickerResponse>, BinanceError> {
+        self.client.get(Market::PriceTicker.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -125,8 +142,8 @@ mod market_api {
             },
             response::market::{
                 AvgPriceResponse, DepthResponse, HistoricalTradesResponse, KlinesResponse,
-                Ticker24hFullResponse, Ticker24hMiniResponse, TickerDayFullResponse,
-                TickerDayMiniResponse, TradesResponse,
+                PriceTickerResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
+                TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
             },
         },
     };
@@ -558,5 +575,15 @@ mod market_api {
                 .iter()
                 .all(|(td, s)| check_trading_day_mini(td, s))
         );
+    }
+
+    #[test]
+    fn test_get_price_ticker() {
+        let market_api = shared_test_market();
+
+        let egld_usdc: PriceTickerResponse = market_api.get_price_ticker("EGLDUSDC").unwrap();
+
+        assert_eq!(egld_usdc.symbol, "EGLDUSDC");
+        assert!(egld_usdc.price > 0.0);
     }
 }

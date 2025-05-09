@@ -65,6 +65,20 @@ where
     ) -> Result<Ticker24hFullResponse, BinanceError> {
         self.client.get(Market::Ticker24h.into(), params)
     }
+
+    pub fn get_ticker24h_mini_list(
+        &self,
+        params: Ticker24hParams,
+    ) -> Result<Vec<Ticker24hMiniResponse>, BinanceError> {
+        self.client.get(Market::Ticker24h.into(), params)
+    }
+
+    pub fn get_ticker24h_full_list(
+        &self,
+        params: Ticker24hParams,
+    ) -> Result<Vec<Ticker24hFullResponse>, BinanceError> {
+        self.client.get(Market::Ticker24h.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -269,7 +283,7 @@ mod market_api {
     }
 
     #[test]
-    fn test_get_ticker_24h_full() {
+    fn test_get_ticker24h_full() {
         let market_api = shared_test_market();
         let params = Ticker24hParams {
             symbol: Some("DOTUSDC"),
@@ -304,5 +318,76 @@ mod market_api {
 
         assert_eq!(ticker24h_full.symbol, "DOTUSDC");
         assert!(check_ticker24h_full(&ticker24h_full));
+    }
+
+    #[test]
+    fn test_get_ticker24h_mini_list() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams {
+            symbol: None,
+            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
+            r#type: Some("MINI"),
+        };
+
+        let ticker24h_mini_list: Vec<Ticker24hMiniResponse> =
+            market_api.get_ticker24h_mini_list(params).unwrap();
+
+        let check_ticker24h_mini = |ticker_statistics: &Ticker24hMiniResponse| {
+            ticker_statistics.open_price > 0.0
+                && ticker_statistics.high_price > 0.0
+                && ticker_statistics.low_price > 0.0
+                && ticker_statistics.last_price > 0.0
+                && ticker_statistics.volume > 0.0
+                && ticker_statistics.quote_volume > 0.0
+                && ticker_statistics.open_time > 0
+                && ticker_statistics.close_time > 0
+                && ticker_statistics.first_id > 0
+                && ticker_statistics.last_id > 0
+                && ticker_statistics.count > 0
+        };
+
+        assert_eq!(ticker24h_mini_list[0].symbol, "BTCUSDC");
+        assert_eq!(ticker24h_mini_list[1].symbol, "SOLUSDC");
+        assert!(ticker24h_mini_list.iter().all(check_ticker24h_mini));
+    }
+
+    #[test]
+    fn test_get_ticker24h_full_list() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams {
+            symbol: None,
+            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
+            r#type: Some("FULL"),
+        };
+
+        let ticker24h_full_list: Vec<Ticker24hFullResponse> =
+            market_api.get_ticker24h_full_list(params).unwrap();
+
+        let check_ticker24h_full = |ticker_statistics: &Ticker24hFullResponse| {
+            ticker_statistics.price_change != 0.0
+                && ticker_statistics.price_change_percent != 0.0
+                && ticker_statistics.weighted_avg_price > 0.0
+                && ticker_statistics.prev_close_price > 0.0
+                && ticker_statistics.last_price > 0.0
+                && ticker_statistics.last_qty > 0.0
+                && ticker_statistics.bid_price > 0.0
+                && ticker_statistics.bid_qty > 0.0
+                && ticker_statistics.ask_price > 0.0
+                && ticker_statistics.ask_qty > 0.0
+                && ticker_statistics.open_price > 0.0
+                && ticker_statistics.high_price > 0.0
+                && ticker_statistics.low_price > 0.0
+                && ticker_statistics.volume > 0.0
+                && ticker_statistics.quote_volume > 0.0
+                && ticker_statistics.open_time > 0
+                && ticker_statistics.close_time > 0
+                && ticker_statistics.first_id > 0
+                && ticker_statistics.last_id > 0
+                && ticker_statistics.count > 0
+        };
+
+        assert_eq!(ticker24h_full_list[0].symbol, "BTCUSDC");
+        assert_eq!(ticker24h_full_list[1].symbol, "SOLUSDC");
+        assert!(ticker24h_full_list.iter().all(check_ticker24h_full));
     }
 }

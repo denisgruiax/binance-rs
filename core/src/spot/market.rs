@@ -2,7 +2,8 @@ use crate::client::{signer::signature::Signature, synchronous::Client};
 use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
 use binance_api::model::response::market::{
-    AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse
+    AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, Ticker24hFullResponse,
+    Ticker24hMiniResponse, TradesResponse,
 };
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
@@ -40,12 +41,29 @@ where
         self.client.get(Market::Klines.into(), params)
     }
 
-    pub fn get_uiklines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError>{
+    pub fn get_uiklines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::UIKlines.into(), params)
     }
 
-    pub fn get_average_price(&self, params: AvgPriceParams) -> Result<AvgPriceResponse, BinanceError>{
+    pub fn get_average_price(
+        &self,
+        params: AvgPriceParams,
+    ) -> Result<AvgPriceResponse, BinanceError> {
         self.client.get(Market::AvgPrice.into(), params)
+    }
+
+    pub fn get_ticker24h_mini(
+        &self,
+        params: Ticker24hParams,
+    ) -> Result<Ticker24hMiniResponse, BinanceError> {
+        self.client.get(Market::Ticker24h.into(), params)
+    }
+
+    pub fn get_ticker24h_full(
+        &self,
+        params: Ticker24hParams,
+    ) -> Result<Ticker24hFullResponse, BinanceError> {
+        self.client.get(Market::Ticker24h.into(), params)
     }
 }
 
@@ -58,10 +76,14 @@ mod market_api {
         model::{
             params::{
                 interval::Interval,
-                market::{AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams, TradesParams},
+                market::{
+                    AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams,
+                    Ticker24hParams, TradesParams,
+                },
             },
             response::market::{
-                AvgPriceResponse, DepthResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse
+                AvgPriceResponse, DepthResponse, HistoricalTradesResponse, KlinesResponse,
+                Ticker24hFullResponse, Ticker24hMiniResponse, TradesResponse,
             },
         },
     };
@@ -173,7 +195,7 @@ mod market_api {
         assert!(klines.iter().all(check_kline));
     }
 
-     #[test]
+    #[test]
     fn test_get_uiklines() {
         let market_api = shared_test_market();
         let params = KlinesParams {
@@ -206,7 +228,7 @@ mod market_api {
     }
 
     #[test]
-    fn test_get_average_price(){
+    fn test_get_average_price() {
         let market_api = shared_test_market();
         let params = AvgPriceParams { symbol: "FETUSDC" };
 
@@ -215,5 +237,72 @@ mod market_api {
         assert!(average_price.mins > 0);
         assert!(average_price.price > 0.0);
         assert!(average_price.close_time > 0);
+    }
+
+    #[test]
+    fn test_get_ticker24h_mini() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams {
+            symbol: Some("BTCUSDC"),
+            symbols: None,
+            r#type: Some("MINI"),
+        };
+
+        let ticker24h_mini: Ticker24hMiniResponse = market_api.get_ticker24h_mini(params).unwrap();
+
+        let check_ticker24h_mini = |ticker_statistics: &Ticker24hMiniResponse| {
+            ticker_statistics.open_price > 0.0
+                && ticker_statistics.high_price > 0.0
+                && ticker_statistics.low_price > 0.0
+                && ticker_statistics.last_price > 0.0
+                && ticker_statistics.volume > 0.0
+                && ticker_statistics.quote_volume > 0.0
+                && ticker_statistics.open_time > 0
+                && ticker_statistics.close_time > 0
+                && ticker_statistics.first_id > 0
+                && ticker_statistics.last_id > 0
+                && ticker_statistics.count > 0
+        };
+
+        assert_eq!(ticker24h_mini.symbol, "BTCUSDC");
+        assert!(check_ticker24h_mini(&ticker24h_mini));
+    }
+
+    #[test]
+    fn test_get_ticker_24h_full() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams {
+            symbol: Some("DOTUSDC"),
+            symbols: None,
+            r#type: Some("FULL"),
+        };
+
+        let ticker24h_full: Ticker24hFullResponse = market_api.get_ticker24h_full(params).unwrap();
+
+        let check_ticker24h_full = |ticker_statistics: &Ticker24hFullResponse| {
+            ticker_statistics.price_change != 0.0
+                && ticker_statistics.price_change_percent != 0.0
+                && ticker_statistics.weighted_avg_price > 0.0
+                && ticker_statistics.prev_close_price > 0.0
+                && ticker_statistics.last_price > 0.0
+                && ticker_statistics.last_qty > 0.0
+                && ticker_statistics.bid_price > 0.0
+                && ticker_statistics.bid_qty > 0.0
+                && ticker_statistics.ask_price > 0.0
+                && ticker_statistics.ask_qty > 0.0
+                && ticker_statistics.open_price > 0.0
+                && ticker_statistics.high_price > 0.0
+                && ticker_statistics.low_price > 0.0
+                && ticker_statistics.volume > 0.0
+                && ticker_statistics.quote_volume > 0.0
+                && ticker_statistics.open_time > 0
+                && ticker_statistics.close_time > 0
+                && ticker_statistics.first_id > 0
+                && ticker_statistics.last_id > 0
+                && ticker_statistics.count > 0
+        };
+
+        assert_eq!(ticker24h_full.symbol, "DOTUSDC");
+        assert!(check_ticker24h_full(&ticker24h_full));
     }
 }

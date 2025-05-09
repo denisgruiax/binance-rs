@@ -62,7 +62,7 @@ mod market_api {
     }
 
     #[test]
-    fn test_depth() {
+    fn test_get_depth() {
         let market_api = shared_test_market();
         let params = DepthParams {
             symbol: "BTCUSDC",
@@ -77,7 +77,7 @@ mod market_api {
     }
 
     #[test]
-    fn test_trades() {
+    fn test_get_trades() {
         let market_api = shared_test_market();
         let params = TradesParams {
             symbol: "SOLUSDC",

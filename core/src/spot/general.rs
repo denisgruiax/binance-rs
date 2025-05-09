@@ -73,14 +73,14 @@ mod general_api {
         assert_eq!(general_api.ping().unwrap(), EmptyResponse {});
     }
     #[test]
-    fn test_server_time() {
+    fn test_get_server_time() {
         let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
 
         assert!(general_api.get_server_time().unwrap().server_time > 0);
     }
 
     #[test]
-    fn test_exchange_info() {
+    fn test_get_exchange_info() {
         let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>();
         let params = ExchangeInformationParams {
             symbol: Some("BTCUSDC"),

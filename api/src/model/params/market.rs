@@ -89,10 +89,25 @@ pub struct PriceTickerParams<'a> {
 }
 
 #[derive(Serialize)]
-pub struct BookTickerParams<'a>{
+pub struct BookTickerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbols: Option<&'a str>,
+}
+
+#[derive(Serialize)]
+pub struct RollingTickerParams<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub symbol: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub symbols: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub window_size: Option<&'a str>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub r#type: Option<&'a str>,
 }

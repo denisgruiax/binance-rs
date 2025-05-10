@@ -3,8 +3,8 @@ use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
 use binance_api::model::response::market::{
     AvgPriceResponse, BookTickerResponse, HistoricalTradesResponse, KlinesResponse,
-    PriceTickerResponse, Ticker24hFullResponse, Ticker24hMiniResponse, TickerDayFullResponse,
-    TickerDayMiniResponse, TradesResponse,
+    PriceTickerResponse, RollingTickerMiniResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
+    TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
 };
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
@@ -149,6 +149,34 @@ where
         };
 
         self.client.get(Market::BookTicker.into(), params)
+    }
+
+    pub fn get_rolling_ticker_mini(
+        &self,
+        params: RollingTickerParams,
+    ) -> Result<RollingTickerMiniResponse, BinanceError> {
+        self.client.get(Market::RollingTicker.into(), params)
+    }
+
+    pub fn get_rolling_ticker_mini_list(
+        &self,
+        params: RollingTickerParams,
+    ) -> Result<Vec<RollingTickerMiniResponse>, BinanceError> {
+        self.client.get(Market::RollingTicker.into(), params)
+    }
+
+    pub fn get_rolling_ticker_full(
+        &self,
+        params: RollingTickerParams,
+    ) -> Result<RollingTickerMiniResponse, BinanceError> {
+        self.client.get(Market::RollingTicker.into(), params)
+    }
+
+    pub fn get_rolling_ticker_full_list(
+        &self,
+        params: RollingTickerParams,
+    ) -> Result<Vec<RollingTickerMiniResponse>, BinanceError> {
+        self.client.get(Market::RollingTicker.into(), params)
     }
 }
 

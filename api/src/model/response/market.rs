@@ -296,3 +296,76 @@ pub struct BookTickerResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub ask_qty: f64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RollingTickerMiniResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub open_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub high_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub low_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub last_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub volume: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_volume: f64,
+
+    pub open_time: u64,
+    pub close_time: u64,
+
+    pub first_id: u64,
+    pub last_id: u64,
+    pub count: u64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RollingTickerFullResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price_change: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price_change_percent: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub weighted_avg_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub open_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub high_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub low_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub last_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub volume: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_volume: f64,
+
+    pub open_time: u64,
+    pub close_time: u64,
+
+    pub first_id: u64,
+    pub last_id: u64,
+    pub count: u64,
+}

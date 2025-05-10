@@ -2,9 +2,9 @@ use crate::client::{signer::signature::Signature, synchronous::Client};
 use binance_api::endpoint::route::Market;
 use binance_api::model::params::market::*;
 use binance_api::model::response::market::{
-    AvgPriceResponse, HistoricalTradesResponse, KlinesResponse, PriceTickerResponse,
-    Ticker24hFullResponse, Ticker24hMiniResponse, TickerDayFullResponse, TickerDayMiniResponse,
-    TradesResponse,
+    AvgPriceResponse, BookTickerResponse, HistoricalTradesResponse, KlinesResponse,
+    PriceTickerResponse, Ticker24hFullResponse, Ticker24hMiniResponse, TickerDayFullResponse,
+    TickerDayMiniResponse, TradesResponse,
 };
 use binance_api::model::{BinanceError, response::market::DepthResponse};
 
@@ -129,6 +129,27 @@ where
 
         self.client.get(Market::PriceTicker.into(), params)
     }
+
+    pub fn get_book_ticker(&self, symbol: &str) -> Result<BookTickerResponse, BinanceError> {
+        let params = BookTickerParams {
+            symbol: Some(symbol),
+            symbols: None,
+        };
+
+        self.client.get(Market::BookTicker.into(), params)
+    }
+
+    pub fn get_book_ticker_list(
+        &self,
+        symbols: &str,
+    ) -> Result<Vec<BookTickerResponse>, BinanceError> {
+        let params = BookTickerParams {
+            symbol: None,
+            symbols: Some(symbols),
+        };
+
+        self.client.get(Market::BookTicker.into(), params)
+    }
 }
 
 #[cfg(test)]
@@ -146,8 +167,8 @@ mod market_api {
                 },
             },
             response::market::{
-                AvgPriceResponse, DepthResponse, HistoricalTradesResponse, KlinesResponse,
-                PriceTickerResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
+                AvgPriceResponse, BookTickerResponse, DepthResponse, HistoricalTradesResponse,
+                KlinesResponse, PriceTickerResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
                 TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
             },
         },
@@ -601,5 +622,42 @@ mod market_api {
             .unwrap();
 
         assert!(price_ticker_list.iter().all(|p| p.price > 0.0));
+    }
+
+    #[test]
+    fn test_get_book_ticker() {
+        let market_api = shared_test_market();
+
+        let book_ticker: BookTickerResponse = market_api.get_book_ticker("EGLDUSDC").unwrap();
+
+        let check_book_ticker = |book_ticker: &BookTickerResponse, symbol: &str| {
+            book_ticker.symbol == symbol
+                && book_ticker.bid_price > 0.0
+                && book_ticker.bid_qty > 0.0
+                && book_ticker.ask_price > 0.0
+                && book_ticker.ask_qty > 0.0
+        };
+
+        assert!(check_book_ticker(&book_ticker, "EGLDUSDC"));
+    }
+
+    #[test]
+    fn test_get_book_ticker_list() {
+        let market_api = shared_test_market();
+
+        let book_ticker: Vec<BookTickerResponse> = market_api
+            .get_book_ticker_list("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .unwrap();
+
+        let check_book_ticker = |book_ticker: &BookTickerResponse, symbol: &str| {
+            book_ticker.symbol == symbol
+                && book_ticker.bid_price > 0.0
+                && book_ticker.bid_qty > 0.0
+                && book_ticker.ask_price > 0.0
+                && book_ticker.ask_qty > 0.0
+        };
+
+        assert!(check_book_ticker(&book_ticker[0], "BTCUSDC"));
+        assert!(check_book_ticker(&book_ticker[1], "SOLUSDC"));
     }
 }

@@ -15,9 +15,9 @@ impl<'a, S> Client<'a, S>
 where
     S: Signature<'a>,
 {
-    pub fn new(host: impl Into<&'a str>, signature: S) -> Client<'a, S> {
+    pub fn new(host: &'a impl AsRef<str>, signature: S) -> Client<'a, S> {
         Client {
-            host: host.into(),
+            host: host.as_ref(),
             signature,
             inner_client: reqwest::Client::new(),
         }
@@ -25,23 +25,23 @@ where
 
     pub fn get(
         &self,
-        path: impl Into<&'a str>,
+        path: &'a impl AsRef<str>,
         params: impl UrlEncoded,
     ) -> impl Future<Output = Result<Response, reqwest::Error>> {
-        let endpoint = format!("{}{}{}", self.host, path.into(), params.to_url_encoded());
+        let endpoint = format!("{}{}{}", self.host, path.as_ref(), params.to_url_encoded());
 
         self.inner_client.get(endpoint).send()
     }
 
     pub fn get_signed(
         &self,
-        path: impl Into<&'a str>,
+        path: &'a impl AsRef<str>,
         params: impl UrlEncoded,
     ) -> Result<impl Future<Output = Result<Response, reqwest::Error>>, BinanceError> {
         let request = self.signature.build_request(
             &self.inner_client,
             self.host,
-            path.into(),
+            path.as_ref(),
             params.to_url_encoded().as_str(),
         )?;
 

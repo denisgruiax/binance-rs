@@ -277,6 +277,20 @@ mod market_api {
         assert!(trades.iter().all(check_trade));
     }
 
+    fn check_kline(kline: &KlinesResponse) -> bool {
+        kline.open_time > 0
+            && kline.open > 0.0
+            && kline.high > 0.0
+            && kline.low > 0.0
+            && kline.close > 0.0
+            && kline.volume > 0.0
+            && kline.close_time > 0
+            && kline.quote_asset_volume > 0.0
+            && kline.number_of_trades > 0
+            && kline.taker_buy_base_asset_volume > 0.0
+            && kline.taker_buy_quote_asset_volume > 0.0
+    }
+
     #[test]
     fn test_get_klines() {
         let market_api = shared_test_market();
@@ -290,20 +304,6 @@ mod market_api {
         };
 
         let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
-
-        let check_kline = |kline: &KlinesResponse| {
-            kline.open_time > 0
-                && kline.open > 0.0
-                && kline.high > 0.0
-                && kline.low > 0.0
-                && kline.close > 0.0
-                && kline.volume > 0.0
-                && kline.close_time > 0
-                && kline.quote_asset_volume > 0.0
-                && kline.number_of_trades > 0
-                && kline.taker_buy_base_asset_volume > 0.0
-                && kline.taker_buy_quote_asset_volume > 0.0
-        };
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
@@ -323,20 +323,6 @@ mod market_api {
 
         let klines: Vec<KlinesResponse> = market_api.get_uiklines(params).unwrap();
 
-        let check_kline = |kline: &KlinesResponse| {
-            kline.open_time > 0
-                && kline.open > 0.0
-                && kline.high > 0.0
-                && kline.low > 0.0
-                && kline.close > 0.0
-                && kline.volume > 0.0
-                && kline.close_time > 0
-                && kline.quote_asset_volume > 0.0
-                && kline.number_of_trades > 0
-                && kline.taker_buy_base_asset_volume > 0.0
-                && kline.taker_buy_quote_asset_volume > 0.0
-        };
-
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
     }
@@ -353,6 +339,43 @@ mod market_api {
         assert!(average_price.close_time > 0);
     }
 
+    fn check_ticker24h_mini(ticker_statistics: &Ticker24hMiniResponse) -> bool {
+        ticker_statistics.open_price > 0.0
+            && ticker_statistics.high_price > 0.0
+            && ticker_statistics.low_price > 0.0
+            && ticker_statistics.last_price > 0.0
+            && ticker_statistics.volume > 0.0
+            && ticker_statistics.quote_volume > 0.0
+            && ticker_statistics.open_time > 0
+            && ticker_statistics.close_time > 0
+            && ticker_statistics.first_id > 0
+            && ticker_statistics.last_id > 0
+            && ticker_statistics.count > 0
+    }
+
+    fn check_ticker24h_full(ticker_statistics: &Ticker24hFullResponse) -> bool {
+        ticker_statistics.price_change != 0.0
+            && ticker_statistics.price_change_percent != 0.0
+            && ticker_statistics.weighted_avg_price > 0.0
+            && ticker_statistics.prev_close_price > 0.0
+            && ticker_statistics.last_price > 0.0
+            && ticker_statistics.last_qty > 0.0
+            && ticker_statistics.bid_price > 0.0
+            && ticker_statistics.bid_qty > 0.0
+            && ticker_statistics.ask_price > 0.0
+            && ticker_statistics.ask_qty > 0.0
+            && ticker_statistics.open_price > 0.0
+            && ticker_statistics.high_price > 0.0
+            && ticker_statistics.low_price > 0.0
+            && ticker_statistics.volume > 0.0
+            && ticker_statistics.quote_volume > 0.0
+            && ticker_statistics.open_time > 0
+            && ticker_statistics.close_time > 0
+            && ticker_statistics.first_id > 0
+            && ticker_statistics.last_id > 0
+            && ticker_statistics.count > 0
+    }
+
     #[test]
     fn test_get_ticker24h_mini() {
         let market_api = shared_test_market();
@@ -363,20 +386,6 @@ mod market_api {
         };
 
         let ticker24h_mini: Ticker24hMiniResponse = market_api.get_ticker24h_mini(params).unwrap();
-
-        let check_ticker24h_mini = |ticker_statistics: &Ticker24hMiniResponse| {
-            ticker_statistics.open_price > 0.0
-                && ticker_statistics.high_price > 0.0
-                && ticker_statistics.low_price > 0.0
-                && ticker_statistics.last_price > 0.0
-                && ticker_statistics.volume > 0.0
-                && ticker_statistics.quote_volume > 0.0
-                && ticker_statistics.open_time > 0
-                && ticker_statistics.close_time > 0
-                && ticker_statistics.first_id > 0
-                && ticker_statistics.last_id > 0
-                && ticker_statistics.count > 0
-        };
 
         assert_eq!(ticker24h_mini.symbol, "BTCUSDC");
         assert!(check_ticker24h_mini(&ticker24h_mini));
@@ -393,29 +402,6 @@ mod market_api {
 
         let ticker24h_full: Ticker24hFullResponse = market_api.get_ticker24h_full(params).unwrap();
 
-        let check_ticker24h_full = |ticker_statistics: &Ticker24hFullResponse| {
-            ticker_statistics.price_change != 0.0
-                && ticker_statistics.price_change_percent != 0.0
-                && ticker_statistics.weighted_avg_price > 0.0
-                && ticker_statistics.prev_close_price > 0.0
-                && ticker_statistics.last_price > 0.0
-                && ticker_statistics.last_qty > 0.0
-                && ticker_statistics.bid_price > 0.0
-                && ticker_statistics.bid_qty > 0.0
-                && ticker_statistics.ask_price > 0.0
-                && ticker_statistics.ask_qty > 0.0
-                && ticker_statistics.open_price > 0.0
-                && ticker_statistics.high_price > 0.0
-                && ticker_statistics.low_price > 0.0
-                && ticker_statistics.volume > 0.0
-                && ticker_statistics.quote_volume > 0.0
-                && ticker_statistics.open_time > 0
-                && ticker_statistics.close_time > 0
-                && ticker_statistics.first_id > 0
-                && ticker_statistics.last_id > 0
-                && ticker_statistics.count > 0
-        };
-
         assert_eq!(ticker24h_full.symbol, "DOTUSDC");
         assert!(check_ticker24h_full(&ticker24h_full));
     }
@@ -431,20 +417,6 @@ mod market_api {
 
         let ticker24h_mini_list: Vec<Ticker24hMiniResponse> =
             market_api.get_ticker24h_mini_list(params).unwrap();
-
-        let check_ticker24h_mini = |ticker_statistics: &Ticker24hMiniResponse| {
-            ticker_statistics.open_price > 0.0
-                && ticker_statistics.high_price > 0.0
-                && ticker_statistics.low_price > 0.0
-                && ticker_statistics.last_price > 0.0
-                && ticker_statistics.volume > 0.0
-                && ticker_statistics.quote_volume > 0.0
-                && ticker_statistics.open_time > 0
-                && ticker_statistics.close_time > 0
-                && ticker_statistics.first_id > 0
-                && ticker_statistics.last_id > 0
-                && ticker_statistics.count > 0
-        };
 
         assert_eq!(ticker24h_mini_list[0].symbol, "BTCUSDC");
         assert_eq!(ticker24h_mini_list[1].symbol, "SOLUSDC");
@@ -463,32 +435,40 @@ mod market_api {
         let ticker24h_full_list: Vec<Ticker24hFullResponse> =
             market_api.get_ticker24h_full_list(params).unwrap();
 
-        let check_ticker24h_full = |ticker_statistics: &Ticker24hFullResponse| {
-            ticker_statistics.price_change != 0.0
-                && ticker_statistics.price_change_percent != 0.0
-                && ticker_statistics.weighted_avg_price > 0.0
-                && ticker_statistics.prev_close_price > 0.0
-                && ticker_statistics.last_price > 0.0
-                && ticker_statistics.last_qty > 0.0
-                && ticker_statistics.bid_price > 0.0
-                && ticker_statistics.bid_qty > 0.0
-                && ticker_statistics.ask_price > 0.0
-                && ticker_statistics.ask_qty > 0.0
-                && ticker_statistics.open_price > 0.0
-                && ticker_statistics.high_price > 0.0
-                && ticker_statistics.low_price > 0.0
-                && ticker_statistics.volume > 0.0
-                && ticker_statistics.quote_volume > 0.0
-                && ticker_statistics.open_time > 0
-                && ticker_statistics.close_time > 0
-                && ticker_statistics.first_id > 0
-                && ticker_statistics.last_id > 0
-                && ticker_statistics.count > 0
-        };
-
         assert_eq!(ticker24h_full_list[0].symbol, "BTCUSDC");
         assert_eq!(ticker24h_full_list[1].symbol, "SOLUSDC");
         assert!(ticker24h_full_list.iter().all(check_ticker24h_full));
+    }
+
+    fn check_trading_day_mini(ticker_day: &TickerDayMiniResponse, symbol: &str) -> bool {
+        ticker_day.symbol == symbol
+            && ticker_day.open_price > 0.0
+            && ticker_day.high_price > 0.0
+            && ticker_day.low_price > 0.0
+            && ticker_day.last_price > 0.0
+            && ticker_day.volume > 0.0
+            && ticker_day.quote_volume > 0.0
+            && ticker_day.open_time > 0
+            && ticker_day.close_time > 0
+            && ticker_day.first_id > 0
+            && ticker_day.last_id >= ticker_day.first_id
+            && ticker_day.count > 0
+    }
+
+    fn check_ticker_day_full(ticker_day: &TickerDayFullResponse, symbol: &str) -> bool {
+        ticker_day.symbol == symbol
+            && ticker_day.weighted_avg_price > 0.0
+            && ticker_day.open_price > 0.0
+            && ticker_day.high_price > 0.0
+            && ticker_day.low_price > 0.0
+            && ticker_day.last_price > 0.0
+            && ticker_day.volume > 0.0
+            && ticker_day.quote_volume > 0.0
+            && ticker_day.open_time > 0
+            && ticker_day.close_time > 0
+            && ticker_day.first_id > 0
+            && ticker_day.last_id >= ticker_day.first_id
+            && ticker_day.count > 0
     }
 
     #[test]
@@ -503,21 +483,6 @@ mod market_api {
 
         let ticker_day_mini: TickerDayMiniResponse =
             market_api.get_ticker_day_mini(params).unwrap();
-
-        let check_trading_day_mini = |ticker_day: &TickerDayMiniResponse, symbol: &str| {
-            ticker_day.symbol == symbol
-                && ticker_day.open_price > 0.0
-                && ticker_day.high_price > 0.0
-                && ticker_day.low_price > 0.0
-                && ticker_day.last_price > 0.0
-                && ticker_day.volume > 0.0
-                && ticker_day.quote_volume > 0.0
-                && ticker_day.open_time > 0
-                && ticker_day.close_time > 0
-                && ticker_day.first_id > 0
-                && ticker_day.last_id >= ticker_day.first_id
-                && ticker_day.count > 0
-        };
 
         assert!(check_trading_day_mini(&ticker_day_mini, "SOLUSDC"));
     }
@@ -535,21 +500,6 @@ mod market_api {
         let ticker_day_full: TickerDayFullResponse =
             market_api.get_ticker_day_full(params).unwrap();
 
-        let check_ticker_day_full = |ticker_day: &TickerDayFullResponse, symbol: &str| {
-            ticker_day.symbol == symbol
-                && ticker_day.weighted_avg_price > 0.0
-                && ticker_day.open_price > 0.0
-                && ticker_day.high_price > 0.0
-                && ticker_day.low_price > 0.0
-                && ticker_day.last_price > 0.0
-                && ticker_day.volume > 0.0
-                && ticker_day.quote_volume > 0.0
-                && ticker_day.open_time > 0
-                && ticker_day.close_time > 0
-                && ticker_day.first_id > 0
-                && ticker_day.last_id >= ticker_day.first_id
-                && ticker_day.count > 0
-        };
         assert!(check_ticker_day_full(&ticker_day_full, "DOTUSDC"));
     }
 
@@ -566,21 +516,6 @@ mod market_api {
 
         let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
             market_api.get_ticker_day_mini_list(params).unwrap();
-
-        let check_trading_day_mini = |ticker_day: &TickerDayMiniResponse, symbol: &str| {
-            ticker_day.symbol == symbol
-                && ticker_day.open_price > 0.0
-                && ticker_day.high_price > 0.0
-                && ticker_day.low_price > 0.0
-                && ticker_day.last_price > 0.0
-                && ticker_day.volume > 0.0
-                && ticker_day.quote_volume > 0.0
-                && ticker_day.open_time > 0
-                && ticker_day.close_time > 0
-                && ticker_day.first_id > 0
-                && ticker_day.last_id >= ticker_day.first_id
-                && ticker_day.count > 0
-        };
 
         assert!(
             ticker_day_mini_list
@@ -606,28 +541,13 @@ mod market_api {
         let ticker_day_mini_list: Vec<TickerDayFullResponse> =
             market_api.get_ticker_day_full_list(params).unwrap();
 
-        let check_trading_day_mini = |ticker_day: &TickerDayFullResponse, symbol: &str| {
-            ticker_day.symbol == symbol
-                && ticker_day.open_price > 0.0
-                && ticker_day.high_price > 0.0
-                && ticker_day.low_price > 0.0
-                && ticker_day.last_price > 0.0
-                && ticker_day.volume > 0.0
-                && ticker_day.quote_volume > 0.0
-                && ticker_day.open_time > 0
-                && ticker_day.close_time > 0
-                && ticker_day.first_id > 0
-                && ticker_day.last_id >= ticker_day.first_id
-                && ticker_day.count > 0
-        };
-
         assert!(
             ticker_day_mini_list
                 .into_iter()
                 .zip(symbols)
                 .collect::<Vec<(TickerDayFullResponse, &str)>>()
                 .iter()
-                .all(|(td, s)| check_trading_day_mini(td, s))
+                .all(|(td, s)| check_ticker_day_full(td, s))
         );
     }
 
@@ -652,19 +572,19 @@ mod market_api {
         assert!(price_ticker_list.iter().all(|p| p.price > 0.0));
     }
 
+    fn check_book_ticker(book_ticker: &BookTickerResponse, symbol: &str) -> bool {
+        book_ticker.symbol == symbol
+            && book_ticker.bid_price > 0.0
+            && book_ticker.bid_qty > 0.0
+            && book_ticker.ask_price > 0.0
+            && book_ticker.ask_qty > 0.0
+    }
+
     #[test]
     fn test_get_book_ticker() {
         let market_api = shared_test_market();
 
         let book_ticker: BookTickerResponse = market_api.get_book_ticker("EGLDUSDC").unwrap();
-
-        let check_book_ticker = |book_ticker: &BookTickerResponse, symbol: &str| {
-            book_ticker.symbol == symbol
-                && book_ticker.bid_price > 0.0
-                && book_ticker.bid_qty > 0.0
-                && book_ticker.ask_price > 0.0
-                && book_ticker.ask_qty > 0.0
-        };
 
         assert!(check_book_ticker(&book_ticker, "EGLDUSDC"));
     }
@@ -676,14 +596,6 @@ mod market_api {
         let book_ticker: Vec<BookTickerResponse> = market_api
             .get_book_ticker_list("[\"BTCUSDC\",\"SOLUSDC\"]")
             .unwrap();
-
-        let check_book_ticker = |book_ticker: &BookTickerResponse, symbol: &str| {
-            book_ticker.symbol == symbol
-                && book_ticker.bid_price > 0.0
-                && book_ticker.bid_qty > 0.0
-                && book_ticker.ask_price > 0.0
-                && book_ticker.ask_qty > 0.0
-        };
 
         assert!(check_book_ticker(&book_ticker[0], "BTCUSDC"));
         assert!(check_book_ticker(&book_ticker[1], "SOLUSDC"));

@@ -12,11 +12,11 @@ mod general_integration {
     #[tokio::test]
     async fn test_ping() {
         let client = Client::new(
-            Host::Api,
+            &Host::Api,
             HmacSha256::new("api_key", "secret_key"),
         );
 
-        let response = client.get(General::Ping, EmptyParams);
+        let response = client.get(&General::Ping, EmptyParams);
         let body = response.await.unwrap().text().await.unwrap();
         let empty: EmptyResponse = serde_json::from_str(&body).unwrap();
 
@@ -26,11 +26,11 @@ mod general_integration {
     #[tokio::test]
     async fn test_server_time() {
         let client = Client::new(
-            Host::Api,
+            &Host::Api,
             HmacSha256::new("api_key", "secret_key"),
         );
 
-        let response = client.get(General::ServerTime, EmptyParams);
+        let response = client.get(&General::ServerTime, EmptyParams);
         let body = response.await.unwrap().text().await.unwrap();
         let server_time: ServerTimeResponse = serde_json::from_str(&body).unwrap();
 
@@ -40,7 +40,7 @@ mod general_integration {
     #[tokio::test]
     async fn test_exchange_info() {
         let client = Client::new(
-            Host::Api,
+            &Host::Api,
             HmacSha256::new("api_key", "secret_key"),
         );
 
@@ -50,7 +50,7 @@ mod general_integration {
             permissions: None,
         };
 
-        let response = client.get(General::ExchangeInfo, params);
+        let response = client.get(&General::ExchangeInfo, params);
         let body = response.await.unwrap().text().await.unwrap();
         let exchange_information: ExchangeInformationResponse =
             serde_json::from_str(&body).unwrap();

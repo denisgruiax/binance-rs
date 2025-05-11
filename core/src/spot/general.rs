@@ -22,18 +22,18 @@ where
     }
 
     pub fn ping(&self) -> Result<EmptyResponse, BinanceError> {
-        self.client.get(General::Ping.into(), EmptyParams)
+        self.client.get(General::Ping.as_ref(), EmptyParams)
     }
 
     pub fn get_server_time(&self) -> Result<ServerTimeResponse, BinanceError> {
-        self.client.get(General::ServerTime.into(), EmptyParams)
+        self.client.get(General::ServerTime.as_ref(), EmptyParams)
     }
 
     pub fn get_exchange_info(
         &self,
         params: ExchangeInformationParams,
     ) -> Result<ExchangeInformationResponse, BinanceError> {
-        self.client.get(General::ExchangeInfo.into(), params)
+        self.client.get(General::ExchangeInfo.as_ref(), params)
     }
 }
 
@@ -59,7 +59,7 @@ mod general_api {
         CLIENT
             .get_or_init(|| {
                 Arc::new(GeneralApi::new(Client::new(
-                    Host::Api.into(),
+                    Host::Api.as_ref(),
                     HmacSha256::new("api_key", "secret_key"),
                 )))
             })

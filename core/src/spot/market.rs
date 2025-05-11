@@ -24,89 +24,89 @@ where
     }
 
     pub fn get_depth(&self, params: DepthParams) -> Result<DepthResponse, BinanceError> {
-        self.client.get(Market::Depth.into(), params)
+        self.client.get(Market::Depth.as_ref(), params)
     }
 
     pub fn get_trades(&self, params: TradesParams) -> Result<Vec<TradesResponse>, BinanceError> {
-        self.client.get(Market::Trades.into(), params)
+        self.client.get(Market::Trades.as_ref(), params)
     }
 
     pub fn get_historical_trades(
         &self,
         params: HistoricalTradesParams,
     ) -> Result<Vec<HistoricalTradesResponse>, BinanceError> {
-        self.client.get(Market::HistoricalTrades.into(), params)
+        self.client.get(Market::HistoricalTrades.as_ref(), params)
     }
 
     pub fn get_klines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
-        self.client.get(Market::Klines.into(), params)
+        self.client.get(Market::Klines.as_ref(), params)
     }
 
     pub fn get_uiklines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
-        self.client.get(Market::UIKlines.into(), params)
+        self.client.get(Market::UIKlines.as_ref(), params)
     }
 
     pub fn get_average_price(
         &self,
         params: AvgPriceParams,
     ) -> Result<AvgPriceResponse, BinanceError> {
-        self.client.get(Market::AvgPrice.into(), params)
+        self.client.get(Market::AvgPrice.as_ref(), params)
     }
 
     pub fn get_ticker24h_mini(
         &self,
         params: Ticker24hParams,
     ) -> Result<Ticker24hMiniResponse, BinanceError> {
-        self.client.get(Market::Ticker24h.into(), params)
+        self.client.get(Market::Ticker24h.as_ref(), params)
     }
 
     pub fn get_ticker24h_full(
         &self,
         params: Ticker24hParams,
     ) -> Result<Ticker24hFullResponse, BinanceError> {
-        self.client.get(Market::Ticker24h.into(), params)
+        self.client.get(Market::Ticker24h.as_ref(), params)
     }
 
     pub fn get_ticker24h_mini_list(
         &self,
         params: Ticker24hParams,
     ) -> Result<Vec<Ticker24hMiniResponse>, BinanceError> {
-        self.client.get(Market::Ticker24h.into(), params)
+        self.client.get(Market::Ticker24h.as_ref(), params)
     }
 
     pub fn get_ticker24h_full_list(
         &self,
         params: Ticker24hParams,
     ) -> Result<Vec<Ticker24hFullResponse>, BinanceError> {
-        self.client.get(Market::Ticker24h.into(), params)
+        self.client.get(Market::Ticker24h.as_ref(), params)
     }
 
     pub fn get_ticker_day_mini(
         &self,
         params: TickerDayParams,
     ) -> Result<TickerDayMiniResponse, BinanceError> {
-        self.client.get(Market::TickerDay.into(), params)
+        self.client.get(Market::TickerDay.as_ref(), params)
     }
 
     pub fn get_ticker_day_full(
         &self,
         params: TickerDayParams,
     ) -> Result<TickerDayFullResponse, BinanceError> {
-        self.client.get(Market::TickerDay.into(), params)
+        self.client.get(Market::TickerDay.as_ref(), params)
     }
 
     pub fn get_ticker_day_mini_list(
         &self,
         params: TickerDayParams,
     ) -> Result<Vec<TickerDayMiniResponse>, BinanceError> {
-        self.client.get(Market::TickerDay.into(), params)
+        self.client.get(Market::TickerDay.as_ref(), params)
     }
 
     pub fn get_ticker_day_full_list(
         &self,
         params: TickerDayParams,
     ) -> Result<Vec<TickerDayFullResponse>, BinanceError> {
-        self.client.get(Market::TickerDay.into(), params)
+        self.client.get(Market::TickerDay.as_ref(), params)
     }
 
     pub fn get_price_ticker(&self, symbol: &str) -> Result<PriceTickerResponse, BinanceError> {
@@ -115,7 +115,7 @@ where
             symbols: None,
         };
 
-        self.client.get(Market::PriceTicker.into(), params)
+        self.client.get(Market::PriceTicker.as_ref(), params)
     }
 
     pub fn get_price_ticker_list(
@@ -127,7 +127,7 @@ where
             symbols: Some(symbols),
         };
 
-        self.client.get(Market::PriceTicker.into(), params)
+        self.client.get(Market::PriceTicker.as_ref(), params)
     }
 
     pub fn get_book_ticker(&self, symbol: &str) -> Result<BookTickerResponse, BinanceError> {
@@ -136,7 +136,7 @@ where
             symbols: None,
         };
 
-        self.client.get(Market::BookTicker.into(), params)
+        self.client.get(Market::BookTicker.as_ref(), params)
     }
 
     pub fn get_book_ticker_list(
@@ -148,35 +148,35 @@ where
             symbols: Some(symbols),
         };
 
-        self.client.get(Market::BookTicker.into(), params)
+        self.client.get(Market::BookTicker.as_ref(), params)
     }
 
     pub fn get_rolling_ticker_mini(
         &self,
         params: RollingTickerParams,
     ) -> Result<RollingTickerMiniResponse, BinanceError> {
-        self.client.get(Market::RollingTicker.into(), params)
+        self.client.get(Market::RollingTicker.as_ref(), params)
     }
 
     pub fn get_rolling_ticker_mini_list(
         &self,
         params: RollingTickerParams,
     ) -> Result<Vec<RollingTickerMiniResponse>, BinanceError> {
-        self.client.get(Market::RollingTicker.into(), params)
+        self.client.get(Market::RollingTicker.as_ref(), params)
     }
 
     pub fn get_rolling_ticker_full(
         &self,
         params: RollingTickerParams,
     ) -> Result<RollingTickerMiniResponse, BinanceError> {
-        self.client.get(Market::RollingTicker.into(), params)
+        self.client.get(Market::RollingTicker.as_ref(), params)
     }
 
     pub fn get_rolling_ticker_full_list(
         &self,
         params: RollingTickerParams,
     ) -> Result<Vec<RollingTickerMiniResponse>, BinanceError> {
-        self.client.get(Market::RollingTicker.into(), params)
+        self.client.get(Market::RollingTicker.as_ref(), params)
     }
 }
 
@@ -209,7 +209,7 @@ mod market_api {
         CLIENT
             .get_or_init(|| {
                 Arc::new(MarketApi::new(Client::new(
-                    Host::Api.into(),
+                    Host::Api.as_ref(),
                     HmacSha256::new("api_key", "secret_key"),
                 )))
             })
@@ -282,7 +282,7 @@ mod market_api {
         let market_api = shared_test_market();
         let params = KlinesParams {
             symbol: "ETHUSDC",
-            interval: Interval::Minutes5.into(),
+            interval: Interval::Minutes5.as_ref(),
             start_time: None,
             end_time: None,
             time_zone: None,
@@ -314,7 +314,7 @@ mod market_api {
         let market_api = shared_test_market();
         let params = KlinesParams {
             symbol: "ETHUSDC",
-            interval: Interval::Minutes5.into(),
+            interval: Interval::Minutes5.as_ref(),
             start_time: None,
             end_time: None,
             time_zone: None,

@@ -4,9 +4,9 @@ pub enum General {
     ExchangeInfo,
 }
 
-impl From<General> for &'static str {
-    fn from(value: General) -> Self {
-        match value {
+impl AsRef<str> for General {
+    fn as_ref(&self) -> &'static str {
+        match self {
             General::Ping => "/api/v3/ping?",
             General::ServerTime => "/api/v3/time?",
             General::ExchangeInfo => "/api/v3/exchangeInfo?",
@@ -29,9 +29,9 @@ pub enum Market {
     RollingTicker,
 }
 
-impl From<Market> for &'static str {
-    fn from(value: Market) -> Self {
-        match value {
+impl AsRef<str> for Market {
+    fn as_ref(&self) -> &'static str {
+        match self {
             Market::Depth => "/api/v3/depth?",
             Market::Trades => "/api/v3/trades?",
             Market::HistoricalTrades => "/api/v3/historicalTrades?",
@@ -68,9 +68,9 @@ pub enum Trading {
     TestSorOrder,
 }
 
-impl From<Trading> for &'static str {
-    fn from(value: Trading) -> Self {
-        match value {
+impl AsRef<str> for Trading {
+    fn as_ref(&self) -> &'static str {
+        match self {
             Trading::NewOrder => "/api/v3/order?",
             Trading::TestOrder => "/api/v3/order/test?",
             Trading::GetOrder => "/api/v3/order?",
@@ -102,9 +102,9 @@ pub enum Account {
     Amendments,
 }
 
-impl From<Account> for &'static str {
-    fn from(value: Account) -> Self {
-        match value {
+impl AsRef<str> for Account {
+    fn as_ref(&self) -> &'static str {
+        match self {
             Account::Info => "/api/v3/account?",
             Account::MyTrades => "/api/v3/myTrades?",
             Account::UnfilledOrderCount => "/api/v3/rateLimit/order?",

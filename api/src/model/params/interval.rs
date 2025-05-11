@@ -17,9 +17,9 @@ pub enum Interval {
     Months1,
 }
 
-impl From<Interval> for &'static str {
-    fn from(value: Interval) -> Self {
-        match value {
+impl AsRef<str> for Interval {
+    fn as_ref(&self) -> &'static str {
+        match self {
             Interval::Seconds1 => "1s",
             Interval::Minutes1 => "1m",
             Interval::Minutes3 => "3m",

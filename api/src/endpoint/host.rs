@@ -7,9 +7,9 @@ pub enum Host {
     Api4,
 }
 
-impl From<Host> for &'static str {
-    fn from(value: Host) -> Self {
-        match value {
+impl AsRef<str> for Host {
+    fn as_ref(&self) -> &'static str {
+        match self {
             Host::Api => "https://api.binance.com",
             Host::ApiGcp => "https://api-gcp.binance.com",
             Host::Api1 => "https://api1.binance.com",

@@ -43,11 +43,14 @@ where
         Self::handle::<T>(response)
     }
 
-    pub fn get_signed(
+    pub fn get_signed<T>(
         &self,
         path: impl Into<&'a str>,
         params: impl UrlEncoded,
-    ) -> Result<Result<Response, reqwest::Error>, BinanceError> {
+    ) -> Result<T, BinanceError>
+    where
+        T: DeserializeOwned,
+    {
         let request = self.signature.build_blocking_request(
             &self.inner_client,
             self.host,
@@ -55,7 +58,9 @@ where
             params.to_url_encoded().as_str(),
         )?;
 
-        Ok(RequestBuilder::send(request))
+        let response = RequestBuilder::send(request);
+
+        Self::handle::<T>(response)
     }
 
     pub fn handle<T: DeserializeOwned>(

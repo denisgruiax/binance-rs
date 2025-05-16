@@ -1,6 +1,10 @@
 use binance_api::{
     endpoint::route::Account,
-    model::{BinanceError, params::account::InfoParams, response::account::InfoResponse},
+    model::{
+        BinanceError,
+        params::account::{InfoParams, MyTradesParams},
+        response::account::{InfoResponse, MyTradesResponse},
+    },
 };
 
 use crate::client::{signer::signature::Signature, synchronous::Client};
@@ -23,6 +27,14 @@ where
     pub fn get_info(&self, params: InfoParams) -> Result<InfoResponse, BinanceError> {
         self.client
             .get_signed::<InfoResponse>(Account::Info.as_ref(), params)
+    }
+
+    pub fn get_my_trades(
+        &self,
+        params: MyTradesParams,
+    ) -> Result<Vec<MyTradesResponse>, BinanceError> {
+        self.client
+            .get_signed::<Vec<MyTradesResponse>>(Account::MyTrades.as_ref(), params)
     }
 }
 
@@ -63,5 +75,31 @@ mod market_api {
         assert!(info.can_deposit);
         assert!(info.update_time > 0);
         assert!(info.uid > 0);
+    }
+
+    #[test]
+    fn test_get_my_trades() {
+        let account_api = shared_test_account();
+        let params = MyTradesParams {
+            symbol: "BNBUSDC",
+            order_id: None,
+            start_time: None,
+            end_time: None,
+            from_id: None,
+            limit: None,
+            recv_window: None,
+        };
+
+        let my_trades = account_api.get_my_trades(params).unwrap();
+
+        let check_trade = |trade: &MyTradesResponse| {
+            trade.id > 0
+                && trade.order_id > 0
+                && trade.price > 0.0
+                && trade.qty > 0.0
+                && trade.time > 0
+        };
+
+        assert!(my_trades.iter().all(check_trade));
     }
 }

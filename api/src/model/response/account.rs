@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
+use serde_with::{DisplayFromStr, serde_as};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-#[serde_as]
 pub struct InfoResponse {
     pub maker_commission: u32,
     pub taker_commission: u32,
@@ -22,32 +21,60 @@ pub struct InfoResponse {
     pub uid: u64,
 }
 
+#[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-#[serde_as]
 pub struct ComissionRatesResponse {
     #[serde_as(as = "DisplayFromStr")]
-    pub maker: String,
+    pub maker: f64,
 
     #[serde_as(as = "DisplayFromStr")]
-    pub taker: String,
+    pub taker: f64,
 
     #[serde_as(as = "DisplayFromStr")]
-    pub buyer: String,
+    pub buyer: f64,
 
     #[serde_as(as = "DisplayFromStr")]
-    pub seller: String,
+    pub seller: f64,
 }
 
+#[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-#[serde_as]
 pub struct AssetResponse {
     pub asset: String,
 
     #[serde_as(as = "DisplayFromStr")]
-    pub free: String,
+    pub free: f64,
 
     #[serde_as(as = "DisplayFromStr")]
-    pub locked: String,
+    pub locked: f64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MyTradesResponse {
+    pub symbol: String,
+    pub id: u64,
+    pub order_id: u64,
+    pub order_list_id: i64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub commission: f64,
+
+    pub commission_asset: String,
+    pub time: u64,
+    pub is_buyer: bool,
+    pub is_maker: bool,
+    pub is_best_match: bool,
 }

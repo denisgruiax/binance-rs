@@ -26,7 +26,7 @@ where
 
     pub fn get_info(&self, params: InfoParams) -> Result<InfoResponse, BinanceError> {
         self.client
-            .get_signed::<InfoResponse>(Account::Info.as_ref(), params)
+            .get_signed::<InfoResponse>(Account::Info, params)
     }
 
     pub fn get_my_trades(
@@ -34,7 +34,7 @@ where
         params: MyTradesParams,
     ) -> Result<Vec<MyTradesResponse>, BinanceError> {
         self.client
-            .get_signed::<Vec<MyTradesResponse>>(Account::MyTrades.as_ref(), params)
+            .get_signed::<Vec<MyTradesResponse>>(Account::MyTrades, params)
     }
 
     pub fn get_unfilled_order_count(
@@ -42,7 +42,7 @@ where
         recv_window: Option<u16>,
     ) -> Result<Vec<UnfilledOrderCountResponse>, BinanceError> {
         self.client.get_signed(
-            Account::UnfilledOrderCount.as_ref(),
+            Account::UnfilledOrderCount,
             UnfilledOrderCountParams { recv_window },
         )
     }

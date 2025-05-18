@@ -83,7 +83,13 @@ where
                     .map_err(|error| BinanceError::Deserialize(error))?),
 
                 StatusCode::REQUEST_TIMEOUT => Err(BinanceError::RequestTimeout),
+                StatusCode::UNAUTHORIZED => {
+                    let api_error: binance_api::model::error::ApiError =
+                        serde_json::from_slice(&response.bytes()?)
+                            .map_err(|error| BinanceError::Deserialize(error))?;
 
+                        Err(BinanceError::Api(api_error))
+                }
                 StatusCode::TOO_MANY_REQUESTS => Err(BinanceError::TooManyRequest),
                 status_code => Err(BinanceError::Unknown(format!(
                     "Response Status Code: {}",

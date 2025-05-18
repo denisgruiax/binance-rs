@@ -2,7 +2,7 @@
 mod market_integration {
     use binance_api::endpoint::host::Host;
     use binance_api::endpoint::route::Market;
-    use binance_api::model::params::interval::Interval;
+    use binance_api::model::params::binance::Interval;
     use binance_api::model::params::market::*;
     use binance_api::model::response::market::*;
     use binance_core::client::{asynchronous::Client, signer::hmacsha256::HmacSha256};

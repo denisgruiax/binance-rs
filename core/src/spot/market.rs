@@ -188,7 +188,7 @@ mod market_api {
         endpoint::host::Host,
         model::{
             params::{
-                interval::Interval,
+                binance::Interval,
                 market::{
                     AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams,
                     Ticker24hParams, TickerDayParams, TradesParams,

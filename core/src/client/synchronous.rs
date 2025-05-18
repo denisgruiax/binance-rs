@@ -1,6 +1,6 @@
 use binance_api::model::{BinanceError, params::url::UrlEncoded};
 use reqwest::{
-    StatusCode,
+    Method, StatusCode,
     blocking::{RequestBuilder, Response},
 };
 use serde::de::DeserializeOwned;
@@ -56,11 +56,29 @@ where
             self.host,
             path.as_ref(),
             params.to_url_encoded().as_str(),
+            Method::GET,
         )?;
 
         let response = RequestBuilder::send(request);
 
         Self::handle::<T>(response)
+    }
+
+    pub fn post<T>(&self, path: impl AsRef<str>, params: impl UrlEncoded) -> Result<T, BinanceError>
+    where
+        T: DeserializeOwned,
+    {
+        let request = self.signature.build_blocking_request(
+            &self.inner_client,
+            self.host,
+            path.as_ref(),
+            params.to_url_encoded().as_str(),
+            Method::POST,
+        )?;
+
+        let response = RequestBuilder::send(request);
+
+        Self::handle(response)
     }
 
     pub fn handle<T: DeserializeOwned>(
@@ -88,7 +106,7 @@ where
                         serde_json::from_slice(&response.bytes()?)
                             .map_err(|error| BinanceError::Deserialize(error))?;
 
-                        Err(BinanceError::Api(api_error))
+                    Err(BinanceError::Api(api_error))
                 }
                 StatusCode::TOO_MANY_REQUESTS => Err(BinanceError::TooManyRequest),
                 status_code => Err(BinanceError::Unknown(format!(

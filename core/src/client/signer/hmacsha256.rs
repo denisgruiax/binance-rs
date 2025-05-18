@@ -1,5 +1,6 @@
 use binance_api::model::BinanceError;
 use hmac::{Hmac, Mac};
+use reqwest::Method;
 use sha2::Sha256;
 
 use crate::client::signer::signature::Signature;
@@ -25,10 +26,17 @@ impl<'a> Signature<'a> for HmacSha256<'a> {
         host: &str,
         path: &str,
         params: &str,
+        method: Method,
     ) -> Result<reqwest::blocking::RequestBuilder, BinanceError> {
         let url = self.sign(host, path, params)?;
 
-        Ok(client.get(url).header("X-MBX-APIKEY", self.api_key))
+        match method {
+            Method::GET => Ok(client.get(url).header("X-MBX-APIKEY", self.api_key)),
+            Method::POST => Ok(client.post(url).header("X-MBX-APIKEY", self.api_key)),
+            _ => Err(BinanceError::Unknown(String::from(
+                "Invalid method to send the reuqest!",
+            ))),
+        }
     }
 
     fn build_request(

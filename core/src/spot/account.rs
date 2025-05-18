@@ -2,8 +2,8 @@ use binance_api::{
     endpoint::route::Account,
     model::{
         BinanceError,
-        params::account::{InfoParams, MyTradesParams},
-        response::account::{InfoResponse, MyTradesResponse},
+        params::account::{InfoParams, MyTradesParams, UnfilledOrderCountParams},
+        response::account::{InfoResponse, MyTradesResponse, UnfilledOrderCountResponse},
     },
 };
 
@@ -35,6 +35,16 @@ where
     ) -> Result<Vec<MyTradesResponse>, BinanceError> {
         self.client
             .get_signed::<Vec<MyTradesResponse>>(Account::MyTrades.as_ref(), params)
+    }
+
+    pub fn get_unfilled_order_count(
+        &self,
+        recv_window: Option<u16>,
+    ) -> Result<Vec<UnfilledOrderCountResponse>, BinanceError> {
+        self.client.get_signed(
+            Account::UnfilledOrderCount.as_ref(),
+            UnfilledOrderCountParams { recv_window },
+        )
     }
 }
 
@@ -101,5 +111,18 @@ mod market_api {
         };
 
         assert!(my_trades.iter().all(check_trade));
+    }
+
+    #[test]
+    fn test_unfilled_order_count() {
+        let account_api = shared_test_account();
+        let unffiled_order_count = account_api.get_unfilled_order_count(None).unwrap_err();
+        println!("{:#?}", unffiled_order_count);
+                
+        // assert!(
+        //     unffiled_order_count
+        //         .iter()
+        //         .all(|order| order.interval_num > 0 && order.limit > 0 && order.count > 0)
+        // )
     }
 }

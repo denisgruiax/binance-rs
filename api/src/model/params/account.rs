@@ -18,3 +18,9 @@ pub struct MyTradesParams<'a> {
     pub limit: Option<u16>,
     pub recv_window: Option<u16>,
 }
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UnfilledOrderCountParams {
+    pub recv_window: Option<u16>,
+}

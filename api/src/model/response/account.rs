@@ -78,3 +78,13 @@ pub struct MyTradesResponse {
     pub is_maker: bool,
     pub is_best_match: bool,
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UnfilledOrderCountResponse {
+    pub rate_limit_type: String,
+    pub interval: String,
+    pub interval_num: u64,
+    pub limit: u64,
+    pub count: u64,
+}

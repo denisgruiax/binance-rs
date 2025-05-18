@@ -45,7 +45,7 @@ where
 
     pub fn get_signed<T>(
         &self,
-        path: impl Into<&'a str>,
+        path: impl AsRef<str>,
         params: impl UrlEncoded,
     ) -> Result<T, BinanceError>
     where
@@ -54,7 +54,7 @@ where
         let request = self.signature.build_blocking_request(
             &self.inner_client,
             self.host,
-            path.into(),
+            path.as_ref(),
             params.to_url_encoded().as_str(),
         )?;
 

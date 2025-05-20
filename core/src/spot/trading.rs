@@ -57,7 +57,7 @@ mod trading_api {
     }
 
     #[test]
-    fn test_get_info() {
+    fn test_post_new_order() {
         let trading_api = shared_test_trading();
 
         let params = NewOrderParams {

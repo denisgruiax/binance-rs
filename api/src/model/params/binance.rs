@@ -88,3 +88,21 @@ pub enum OrderSide {
     Buy,
     Sell,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum TimeInForce {
+    Gtc,
+    Ioc,
+    Fok,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum StpModes {
+    None,
+    ExpireMaker,
+    ExpireTaker,
+    ExpireBoth,
+    Decrement,
+}

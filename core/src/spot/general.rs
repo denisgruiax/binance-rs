@@ -82,11 +82,8 @@ mod general_api {
     #[test]
     fn test_get_exchange_info() {
         let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>();
-        let params = ExchangeInformationParams {
-            symbol: Some("BTCUSDC"),
-            symbols: None,
-            permissions: None,
-        };
+        
+        let params = ExchangeInformationParams::new().symbol("BTCUSDC");
 
         let exchange_info = general_api.get_exchange_info(params).unwrap();
 

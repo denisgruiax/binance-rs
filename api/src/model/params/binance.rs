@@ -67,6 +67,12 @@ pub enum OrderType {
     LimitMaker,
 }
 
+impl Default for OrderType {
+    fn default() -> Self {
+        OrderType::Market
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum OrderResponseType {
@@ -87,6 +93,12 @@ pub enum WorkingFloor {
 pub enum OrderSide {
     Buy,
     Sell,
+}
+
+impl Default for OrderSide {
+    fn default() -> Self {
+        OrderSide::Buy
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

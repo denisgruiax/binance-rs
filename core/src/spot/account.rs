@@ -116,13 +116,15 @@ mod market_api {
     #[test]
     fn test_unfilled_order_count() {
         let account_api = shared_test_account();
-        let unffiled_order_count = account_api.get_unfilled_order_count(None).unwrap_err();
+        let unffiled_order_count = account_api.get_unfilled_order_count(None).unwrap();
         println!("{:#?}", unffiled_order_count);
-                
-        // assert!(
-        //     unffiled_order_count
-        //         .iter()
-        //         .all(|order| order.interval_num > 0 && order.limit > 0 && order.count > 0)
-        // )
+
+        assert!(
+            unffiled_order_count
+                .iter()
+                .all(|order| order.interval_num > 0
+                    && order.limit > 0
+                    && (order.count > 0 || order.count == 0))
+        )
     }
 }

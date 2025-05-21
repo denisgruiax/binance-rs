@@ -39,12 +39,9 @@ where
 
     pub fn get_unfilled_order_count(
         &self,
-        recv_window: Option<u16>,
+        params: UnfilledOrderCountParams,
     ) -> Result<Vec<UnfilledOrderCountResponse>, BinanceError> {
-        self.client.get_signed(
-            Account::UnfilledOrderCount,
-            UnfilledOrderCountParams { recv_window },
-        )
+        self.client.get_signed(Account::UnfilledOrderCount, params)
     }
 }
 
@@ -56,7 +53,6 @@ mod market_api {
     use crate::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
     use crate::spot::secret::{API_KEY, SECRET_KEY};
     use binance_api::endpoint::host::Host;
-
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();
 
     fn shared_test_account() -> Arc<AccountApi<'static, HmacSha256<'static>>> {
@@ -73,10 +69,8 @@ mod market_api {
     #[test]
     fn test_get_info() {
         let account_api = shared_test_account();
-        let params = InfoParams {
-            omit_zero_balances: Some(true),
-            recv_window: Some(5000),
-        };
+
+        let params = InfoParams::new().omit_zero_balances(true).recv_window(5000);
 
         let info: InfoResponse = account_api.get_info(params).unwrap();
 
@@ -90,15 +84,8 @@ mod market_api {
     #[test]
     fn test_get_my_trades() {
         let account_api = shared_test_account();
-        let params = MyTradesParams {
-            symbol: "BNBUSDC",
-            order_id: None,
-            start_time: None,
-            end_time: None,
-            from_id: None,
-            limit: None,
-            recv_window: None,
-        };
+
+        let params = MyTradesParams::new("BNBUSDC");
 
         let my_trades = account_api.get_my_trades(params).unwrap();
 
@@ -116,7 +103,9 @@ mod market_api {
     #[test]
     fn test_unfilled_order_count() {
         let account_api = shared_test_account();
-        let unffiled_order_count = account_api.get_unfilled_order_count(None).unwrap();
+        let unffiled_order_count = account_api
+            .get_unfilled_order_count(UnfilledOrderCountParams::new())
+            .unwrap();
         println!("{:#?}", unffiled_order_count);
 
         assert!(

@@ -110,10 +110,7 @@ where
     }
 
     pub fn get_price_ticker(&self, symbol: &str) -> Result<PriceTickerResponse, BinanceError> {
-        let params = PriceTickerParams {
-            symbol: Some(symbol),
-            symbols: None,
-        };
+        let params = PriceTickerParams::new().symbol(symbol);
 
         self.client.get(Market::PriceTicker.as_ref(), params)
     }
@@ -122,19 +119,13 @@ where
         &self,
         symbols: &str,
     ) -> Result<Vec<PriceTickerResponse>, BinanceError> {
-        let params = PriceTickerParams {
-            symbol: None,
-            symbols: Some(symbols),
-        };
+        let params = PriceTickerParams::new().symbols(symbols);
 
         self.client.get(Market::PriceTicker.as_ref(), params)
     }
 
     pub fn get_book_ticker(&self, symbol: &str) -> Result<BookTickerResponse, BinanceError> {
-        let params = BookTickerParams {
-            symbol: Some(symbol),
-            symbols: None,
-        };
+        let params = BookTickerParams::new().symbol(symbol);
 
         self.client.get(Market::BookTicker.as_ref(), params)
     }
@@ -143,10 +134,7 @@ where
         &self,
         symbols: &str,
     ) -> Result<Vec<BookTickerResponse>, BinanceError> {
-        let params = BookTickerParams {
-            symbol: None,
-            symbols: Some(symbols),
-        };
+        let params = BookTickerParams::new().symbols(symbols);
 
         self.client.get(Market::BookTicker.as_ref(), params)
     }
@@ -219,10 +207,8 @@ mod market_api {
     #[test]
     fn test_get_depth() {
         let market_api = shared_test_market();
-        let params = DepthParams {
-            symbol: "BTCUSDC",
-            limit: Some(20),
-        };
+
+        let params = DepthParams::new("BTCUSDC").limit(20);
 
         let depth: DepthResponse = market_api.get_depth(params).unwrap();
 
@@ -234,10 +220,8 @@ mod market_api {
     #[test]
     fn test_get_trades() {
         let market_api = shared_test_market();
-        let params = TradesParams {
-            symbol: "SOLUSDC",
-            limit: Some(25),
-        };
+
+        let params = TradesParams::new("SOLUSDC").limit(25);
 
         let trades: Vec<TradesResponse> = market_api.get_trades(params).unwrap();
 
@@ -256,11 +240,8 @@ mod market_api {
     #[test]
     fn test_get_historical_trades() {
         let market_api = shared_test_market();
-        let params = HistoricalTradesParams {
-            symbol: "SOLUSDC",
-            limit: Some(40),
-            from_id: None,
-        };
+
+        let params = HistoricalTradesParams::new("SOLUSDC").limit(40);
 
         let trades: Vec<HistoricalTradesResponse> =
             market_api.get_historical_trades(params).unwrap();
@@ -294,14 +275,8 @@ mod market_api {
     #[test]
     fn test_get_klines() {
         let market_api = shared_test_market();
-        let params = KlinesParams {
-            symbol: "ETHUSDC",
-            interval: Interval::Minutes5.as_ref(),
-            start_time: None,
-            end_time: None,
-            time_zone: None,
-            limit: Some(30),
-        };
+
+        let params = KlinesParams::new("ETHUSDC", Interval::Minutes5.as_ref()).limit(30);
 
         let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
 
@@ -312,14 +287,8 @@ mod market_api {
     #[test]
     fn test_get_uiklines() {
         let market_api = shared_test_market();
-        let params = KlinesParams {
-            symbol: "ETHUSDC",
-            interval: Interval::Minutes5.as_ref(),
-            start_time: None,
-            end_time: None,
-            time_zone: None,
-            limit: Some(30),
-        };
+
+        let params = KlinesParams::new("ETHUSDC", Interval::Minutes5.as_ref()).limit(30);
 
         let klines: Vec<KlinesResponse> = market_api.get_uiklines(params).unwrap();
 
@@ -330,7 +299,7 @@ mod market_api {
     #[test]
     fn test_get_average_price() {
         let market_api = shared_test_market();
-        let params = AvgPriceParams { symbol: "FETUSDC" };
+        let params = AvgPriceParams::new("FETUSDC");
 
         let average_price: AvgPriceResponse = market_api.get_average_price(params).unwrap();
 
@@ -379,11 +348,8 @@ mod market_api {
     #[test]
     fn test_get_ticker24h_mini() {
         let market_api = shared_test_market();
-        let params = Ticker24hParams {
-            symbol: Some("BTCUSDC"),
-            symbols: None,
-            r#type: Some("MINI"),
-        };
+
+        let params = Ticker24hParams::new().symbol("BTCUSDC").r#type("MINI");
 
         let ticker24h_mini: Ticker24hMiniResponse = market_api.get_ticker24h_mini(params).unwrap();
 
@@ -394,11 +360,7 @@ mod market_api {
     #[test]
     fn test_get_ticker24h_full() {
         let market_api = shared_test_market();
-        let params = Ticker24hParams {
-            symbol: Some("DOTUSDC"),
-            symbols: None,
-            r#type: Some("FULL"),
-        };
+        let params = Ticker24hParams::new().symbol("DOTUSDC").r#type("FULL");
 
         let ticker24h_full: Ticker24hFullResponse = market_api.get_ticker24h_full(params).unwrap();
 
@@ -409,11 +371,9 @@ mod market_api {
     #[test]
     fn test_get_ticker24h_mini_list() {
         let market_api = shared_test_market();
-        let params = Ticker24hParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
-            r#type: Some("MINI"),
-        };
+        let params = Ticker24hParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("MINI");
 
         let ticker24h_mini_list: Vec<Ticker24hMiniResponse> =
             market_api.get_ticker24h_mini_list(params).unwrap();
@@ -426,11 +386,9 @@ mod market_api {
     #[test]
     fn test_get_ticker24h_full_list() {
         let market_api = shared_test_market();
-        let params = Ticker24hParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
-            r#type: Some("FULL"),
-        };
+        let params = Ticker24hParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("FULL");
 
         let ticker24h_full_list: Vec<Ticker24hFullResponse> =
             market_api.get_ticker24h_full_list(params).unwrap();
@@ -474,12 +432,7 @@ mod market_api {
     #[test]
     fn test_get_ticker_day_mini() {
         let market_api = shared_test_market();
-        let params = TickerDayParams {
-            symbol: Some("SOLUSDC"),
-            symbols: None,
-            time_zone: None,
-            r#type: Some("MINI"),
-        };
+        let params = TickerDayParams::new().symbol("SOLUSDC").r#type("MINI");
 
         let ticker_day_mini: TickerDayMiniResponse =
             market_api.get_ticker_day_mini(params).unwrap();
@@ -490,12 +443,7 @@ mod market_api {
     #[test]
     fn test_get_ticker_day_full() {
         let market_api = shared_test_market();
-        let params = TickerDayParams {
-            symbol: Some("DOTUSDC"),
-            symbols: None,
-            time_zone: None,
-            r#type: Some("FULL"),
-        };
+        let params = TickerDayParams::new().symbol("DOTUSDC").r#type("FULL");
 
         let ticker_day_full: TickerDayFullResponse =
             market_api.get_ticker_day_full(params).unwrap();
@@ -507,12 +455,9 @@ mod market_api {
     fn test_get_ticker_day_mini_list() {
         let market_api = shared_test_market();
         let symbols = vec!["BTCUSDC", "SOLUSDC"];
-        let params = TickerDayParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
-            time_zone: None,
-            r#type: Some("MINI"),
-        };
+        let params = TickerDayParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("MINI");
 
         let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
             market_api.get_ticker_day_mini_list(params).unwrap();
@@ -531,12 +476,9 @@ mod market_api {
     fn test_get_ticker_day_full_list() {
         let market_api = shared_test_market();
         let symbols = vec!["BTCUSDC", "SOLUSDC"];
-        let params = TickerDayParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
-            time_zone: None,
-            r#type: Some("FULL"),
-        };
+        let params = TickerDayParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("FULL");
 
         let ticker_day_mini_list: Vec<TickerDayFullResponse> =
             market_api.get_ticker_day_full_list(params).unwrap();

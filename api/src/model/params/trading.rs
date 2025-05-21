@@ -131,7 +131,7 @@ impl<'a> NewOrderParams<'a> {
         }
     }
 
-    fn market(symbol: &'a str, side: OrderSide, r#type: OrderType, quote_order_qty: f64) -> Self {
+    pub fn market(symbol: &'a str, side: OrderSide, r#type: OrderType, quote_order_qty: f64) -> Self {
         NewOrderParams {
             symbol,
             side,

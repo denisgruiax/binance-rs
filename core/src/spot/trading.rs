@@ -60,24 +60,8 @@ mod trading_api {
     fn test_post_new_order() {
         let trading_api = shared_test_trading();
 
-        let params = NewOrderParams {
-            symbol: "BTCUSDC",
-            side: OrderSide::Buy,
-            r#type: OrderType::Market,
-            time_in_force: None,
-            quantity: Some(0.05),
-            quote_order_qty: None,
-            price: None,
-            new_client_order_id: None,
-            strategy_id: None,
-            strategy_type: None,
-            stop_price: None,
-            trailing_delta: None,
-            icerberg_qty: None,
-            new_order_resp_type: Some(OrderResponseType::Ack),
-            self_trade_prevention_mode: None,
-            recv_window: None,
-        };
+        let params = NewOrderParams::market("BTCUSDC", OrderSide::Buy, OrderType::Market, 150.0)
+            .new_order_resp_type(OrderResponseType::Ack);
 
         let response = trading_api.post_new_order(params);
 

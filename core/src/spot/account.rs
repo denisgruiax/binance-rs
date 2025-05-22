@@ -46,7 +46,7 @@ where
 }
 
 #[cfg(test)]
-mod market_api {
+mod account_api {
     use std::sync::{Arc, OnceLock};
 
     use super::*;

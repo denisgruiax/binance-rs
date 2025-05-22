@@ -112,31 +112,95 @@ impl<'a> NewOrderParams<'a> {
         self
     }
 
-    pub fn limit(
-        symbol: &'a str,
-        side: OrderSide,
-        r#type: OrderType,
-        price: f64,
-        quantity: f64,
-        time_in_force: TimeInForce,
-    ) -> Self {
+    pub fn limit(symbol: &'a str, side: OrderSide, price: f64, quantity: f64) -> Self {
         NewOrderParams {
             symbol,
             side,
-            r#type,
+            r#type: OrderType::Limit,
             price: Some(price),
             quantity: Some(quantity),
-            time_in_force: Some(time_in_force),
+            time_in_force: Some(TimeInForce::Gtc),
             ..Default::default()
         }
     }
 
-    pub fn market(symbol: &'a str, side: OrderSide, r#type: OrderType, quote_order_qty: f64) -> Self {
+    pub fn market(symbol: &'a str, side: OrderSide, quote_order_qty: f64) -> Self {
         NewOrderParams {
             symbol,
             side,
-            r#type,
+            r#type: OrderType::Market,
             quote_order_qty: Some(quote_order_qty),
+            ..Default::default()
+        }
+    }
+
+    pub fn stop_loss(symbol: &'a str, side: OrderSide, quantity: f64, stop_price: f64) -> Self {
+        NewOrderParams {
+            symbol,
+            side,
+            r#type: OrderType::StopLoss,
+            quantity: Some(quantity),
+            stop_price: Some(stop_price),
+            ..Default::default()
+        }
+    }
+
+    pub fn stop_loss_limit(
+        symbol: &'a str,
+        side: OrderSide,
+        price: f64,
+        quantity: f64,
+        stop_price: f64,
+    ) -> Self {
+        NewOrderParams {
+            symbol,
+            side,
+            r#type: OrderType::StopLossLimit,
+            price: Some(price),
+            quantity: Some(quantity),
+            stop_price: Some(stop_price),
+            time_in_force: Some(TimeInForce::Gtc),
+            ..Default::default()
+        }
+    }
+
+    pub fn take_profit(symbol: &'a str, side: OrderSide, quantity: f64, stop_price: f64) -> Self {
+        NewOrderParams {
+            symbol,
+            side,
+            r#type: OrderType::TakeProfit,
+            quantity: Some(quantity),
+            stop_price: Some(stop_price),
+            ..Default::default()
+        }
+    }
+
+    pub fn take_profit_limit(
+        symbol: &'a str,
+        side: OrderSide,
+        price: f64,
+        quantity: f64,
+        stop_price: f64,
+    ) -> Self {
+        NewOrderParams {
+            symbol,
+            side,
+            r#type: OrderType::TakeProfitLimit,
+            price: Some(price),
+            quantity: Some(quantity),
+            stop_price: Some(stop_price),
+            time_in_force: Some(TimeInForce::Gtc),
+            ..Default::default()
+        }
+    }
+
+    pub fn limit_maker(symbol: &'a str, side: OrderSide, price: f64, quantity: f64) -> Self {
+        NewOrderParams {
+            symbol,
+            side,
+            r#type: OrderType::LimitMaker,
+            price: Some(price),
+            quantity: Some(quantity),
             ..Default::default()
         }
     }

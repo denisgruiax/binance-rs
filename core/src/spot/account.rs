@@ -106,7 +106,6 @@ mod market_api {
         let unffiled_order_count = account_api
             .get_unfilled_order_count(UnfilledOrderCountParams::new())
             .unwrap();
-        println!("{:#?}", unffiled_order_count);
 
         assert!(
             unffiled_order_count

@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use serde_with::{serde_as, DisplayFromStr};
+use serde_with::{DisplayFromStr, serde_as};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -9,6 +9,13 @@ pub struct AckResponse {
     order_list_id: i64,
     client_order_id: String,
     transact_time: u64,
+}
+
+#[derive(Clone, Debug)]
+pub enum OrderResponse {
+    Ack(AckResponse),
+    Result(ResultResponse),
+    Full(FullResponse),
 }
 
 #[serde_as]

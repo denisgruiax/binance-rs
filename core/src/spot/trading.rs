@@ -1,6 +1,10 @@
 use binance_api::{
     endpoint::route::Trading,
-    model::{BinanceError, params::trading::NewOrderParams},
+    model::{
+        BinanceError,
+        params::{binance::OrderResponseType, trading::NewOrderParams},
+        response::trading::{AckResponse, FullResponse, OrderResponse, ResultResponse},
+    },
 };
 
 use crate::client::{signer::signature::Signature, synchronous::Client};
@@ -20,7 +24,35 @@ where
         TradingApi { client }
     }
 
-    pub fn post_new_order(
+    pub fn post_new_order(&self, params: NewOrderParams) -> Result<OrderResponse, BinanceError> {
+        if let Some(order_response_type) = &params.new_order_resp_type {
+            match order_response_type {
+                OrderResponseType::Ack => {
+                    return Ok(OrderResponse::Ack(
+                        self.client.post::<AckResponse>(Trading::NewOrder, params)?,
+                    ));
+                }
+                OrderResponseType::Result => {
+                    return Ok(OrderResponse::Result(
+                        self.client
+                            .post::<ResultResponse>(Trading::NewOrder, params)?,
+                    ));
+                }
+                OrderResponseType::Full => {
+                    return Ok(OrderResponse::Full(
+                        self.client
+                            .post::<FullResponse>(Trading::NewOrder, params)?,
+                    ));
+                }
+            }
+        }
+
+        Ok(OrderResponse::Ack(
+            self.client.post::<AckResponse>(Trading::NewOrder, params)?,
+        ))
+    }
+
+    pub fn post_new_test_order(
         &self,
         params: NewOrderParams,
     ) -> Result<serde_json::Value, BinanceError> {
@@ -80,7 +112,7 @@ mod trading_api {
         let params = NewOrderParams::market(SYMBOL, OrderSide::Buy, 1000.0)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trading_api.post_new_order(params);
+        let response = trading_api.post_new_test_order(params);
 
         match response {
             Ok(_) => assert!(true),
@@ -99,7 +131,7 @@ mod trading_api {
         let params = NewOrderParams::limit(SYMBOL, OrderSide::Buy, limit_price, 1.0)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trading_api.post_new_order(params);
+        let response = trading_api.post_new_test_order(params);
 
         match response {
             Ok(_) => assert!(true),
@@ -118,7 +150,7 @@ mod trading_api {
         let params = NewOrderParams::stop_loss(SYMBOL, OrderSide::Buy, 0.1, stop_price)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trading_api.post_new_order(params);
+        let response = trading_api.post_new_test_order(params);
 
         match response {
             Ok(_) => assert!(true),
@@ -137,7 +169,7 @@ mod trading_api {
         let params = NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, 0.1, stop_price)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trading_api.post_new_order(params);
+        let response = trading_api.post_new_test_order(params);
 
         match response {
             Ok(_) => assert!(true),
@@ -158,7 +190,7 @@ mod trading_api {
             NewOrderParams::take_profit_limit(SYMBOL, OrderSide::Sell, sell_price, 0.1, stop_price)
                 .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trading_api.post_new_order(params);
+        let response = trading_api.post_new_test_order(params);
 
         match response {
             Ok(_) => assert!(true),

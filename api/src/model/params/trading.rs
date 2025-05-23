@@ -205,3 +205,41 @@ impl<'a> NewOrderParams<'a> {
         }
     }
 }
+
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetOrderParams<'a> {
+    pub symbol: &'a str,
+    pub order_id: Option<u64>,
+    pub orig_client_order_id: Option<&'a str>,
+    pub recv_window: Option<u16>,
+}
+
+impl<'a> GetOrderParams<'a> {
+    pub fn new(symbol: &'a str) -> Self {
+        GetOrderParams {
+            symbol,
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn order_id(mut self, order_id: u64) -> Self {
+        self.order_id = Some(order_id);
+        self
+    }
+
+    pub fn orig_client_order_id(mut self, orig_client_order_id: &'a str) -> Self {
+        self.orig_client_order_id = Some(orig_client_order_id);
+        self
+    }
+
+    pub fn recv_window(mut self, recv_window: u16) -> Self {
+        self.recv_window = Some(recv_window);
+        self
+    }
+}

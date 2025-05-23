@@ -2,8 +2,13 @@ use binance_api::{
     endpoint::route::Trading,
     model::{
         BinanceError,
-        params::{binance::OrderResponseType, trading::NewOrderParams},
-        response::trading::{AckResponse, FullResponse, OrderResponse, ResultResponse},
+        params::{
+            binance::OrderResponseType,
+            trading::{GetOrderParams, NewOrderParams},
+        },
+        response::trading::{
+            AckResponse, FullResponse, OrderIdResponse, OrderResponse, ResultResponse,
+        },
     },
 };
 
@@ -58,6 +63,10 @@ where
     ) -> Result<serde_json::Value, BinanceError> {
         self.client.post(Trading::TestOrder, params)
     }
+
+    pub fn get_order(&self, params: GetOrderParams) -> Result<OrderIdResponse, BinanceError> {
+        self.client.get_signed(Trading::GetOrder, params)
+    }
 }
 
 #[cfg(test)]
@@ -73,7 +82,7 @@ mod trading_api {
         endpoint::host::Host,
         model::params::{
             binance::{OrderResponseType, OrderSide},
-            trading::NewOrderParams,
+            trading::{GetOrderParams, NewOrderParams},
         },
     };
     use std::sync::{Arc, OnceLock};

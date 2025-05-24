@@ -81,6 +81,27 @@ where
         Self::handle(response)
     }
 
+    pub fn delete<T>(
+        &self,
+        path: impl AsRef<str>,
+        params: impl UrlEncoded,
+    ) -> Result<T, BinanceError>
+    where
+        T: DeserializeOwned,
+    {
+        let request = self.signature.build_blocking_request(
+            &self.inner_client,
+            self.host,
+            path.as_ref(),
+            params.to_url_encoded().as_str(),
+            Method::DELETE,
+        )?;
+
+        let response = RequestBuilder::send(request);
+
+        Self::handle(response)
+    }
+
     pub fn handle<T: DeserializeOwned>(
         response: Result<Response, reqwest::Error>,
     ) -> Result<T, BinanceError> {

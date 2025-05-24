@@ -246,6 +246,17 @@ impl<'a> GetOrderParams<'a> {
 
 #[derive(Default, Serialize)]
 #[serde(rename_all = "camelCase")]
+pub struct CancelOrderParams<'a> {
+    pub symbol: &'a str,
+    pub order_id: Option<u64>,
+    pub orig_client_order_id: Option<&'a str>,
+    pub new_client_order_id: Option<&'a str>,
+    pub cancel_restrictions: Option<CancelRestrictions>,
+    pub recv_window: Option<u16>,
+}
+
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CancelAllOrdersParms<'a> {
     pub symbol: &'a str,
     pub recv_window: Option<u16>,

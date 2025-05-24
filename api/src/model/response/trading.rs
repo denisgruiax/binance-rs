@@ -173,7 +173,7 @@ pub struct OrderIdResponse {
 }
 
 #[serde_as]
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CancelOrderResponse {
     pub symbol: String,

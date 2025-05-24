@@ -4,7 +4,7 @@ use binance_api::{
         BinanceError,
         params::{
             binance::OrderResponseType,
-            trading::{CancelAllOrdersParms, GetOrderParams, NewOrderParams},
+            trading::{CancelAllOrdersParms, CancelOrderParams, GetOrderParams, NewOrderParams},
         },
         response::trading::{
             AckResponse, CancelOrderResponse, FullResponse, OrderIdResponse, OrderResponse,
@@ -67,6 +67,13 @@ where
 
     pub fn get_order(&self, params: GetOrderParams) -> Result<OrderIdResponse, BinanceError> {
         self.client.get_signed(Trading::GetOrder, params)
+    }
+
+    pub fn cancel_order(
+        &self,
+        params: CancelOrderParams,
+    ) -> Result<CancelOrderResponse, BinanceError> {
+        self.client.delete(Trading::CancelOrder, params)
     }
 
     pub fn cancel_open_orders(

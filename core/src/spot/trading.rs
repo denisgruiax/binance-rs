@@ -4,11 +4,14 @@ use binance_api::{
         BinanceError,
         params::{
             binance::OrderResponseType,
-            trading::{CancelAllOrdersParms, CancelOrderParams, GetOrderParams, NewOrderParams},
+            trading::{
+                CancelAllOrdersParms, CancelOrderParams, GetOrderParams, NewOrderParams,
+                OpenOrdersParams,
+            },
         },
         response::trading::{
-            AckResponse, CancelOrderResponse, FullResponse, OrderIdResponse, OrderResponse,
-            ResultResponse,
+            AckResponse, CancelOrderResponse, FullResponse, OpenOrderResponse, OrderIdResponse,
+            OrderResponse, ResultResponse,
         },
     },
 };
@@ -82,6 +85,13 @@ where
     ) -> Result<Vec<CancelOrderResponse>, BinanceError> {
         self.client.delete(Trading::CancelAllOrders, params)
     }
+
+    pub fn get_open_orders(
+        &self,
+        params: OpenOrdersParams,
+    ) -> Result<Vec<OpenOrderResponse>, BinanceError> {
+        self.client.get_signed(Trading::OpenOrders, params)
+    }
 }
 
 #[cfg(test)]
@@ -95,9 +105,13 @@ mod trading_api {
     use crate::spot::secret::{API_KEY, SECRET_KEY};
     use binance_api::{
         endpoint::host::Host,
-        model::params::{
-            binance::{OrderResponseType, OrderSide},
-            trading::NewOrderParams,
+        model::{
+            params::{
+                self,
+                binance::{OrderResponseType, OrderSide},
+                trading::{NewOrderParams, OpenOrdersParams},
+            },
+            response,
         },
     };
     use std::sync::{Arc, OnceLock};

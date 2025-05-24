@@ -201,3 +201,46 @@ pub struct CancelOrderResponse {
     pub side: String,
     pub self_trade_prevention_mode: String,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenOrderResponse {
+    pub symbol: String,
+    pub order_id: u64,
+    pub order_list_id: i64,
+    pub client_order_id: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub orig_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub executed_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub cummulative_quote_qty: f64,
+
+    pub status: String,
+    pub time_in_force: String,
+    pub r#type: String,
+    pub side: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub stop_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub iceberg_qty: f64,
+
+    pub time: u64,
+    pub update_time: u64,
+    pub is_working: bool,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub orig_quote_order_qty: f64,
+
+    pub working_time: u64,
+    pub self_trade_prevention_mode: String,
+}

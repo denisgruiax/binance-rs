@@ -134,7 +134,6 @@ pub struct OrderIdResponse {
     pub update_time: u64,
     pub is_working: bool,
     pub working_time: u64,
-
     // #[serde_as(as = "DisplayFromStr")]
     // #[serde(default)]
     // pub stop_price: Option<f64>,
@@ -149,7 +148,7 @@ pub struct OrderIdResponse {
 
     // #[serde(default)]
     // pub prevented_match_id: Option<u64>,
-    
+
     // #[serde_as(as = "DisplayFromStr")]
     // #[serde(default)]
     // pub prevented_quantity: Option<f64>,
@@ -171,4 +170,34 @@ pub struct OrderIdResponse {
 
     // #[serde(default)]
     // pub working_floor: Option<String>,
+}
+
+#[serde_as]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CancelOrderResponse {
+    pub symbol: String,
+    pub orig_client_order_id: String,
+    pub order_id: u64,
+    pub order_list_id: i64,
+    pub client_order_id: String,
+    pub transact_time: u64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub orig_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub executed_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub cummulative_quote_qty: f64,
+
+    pub status: String,
+    pub time_in_force: String,
+    pub r#type: String,
+    pub side: String,
+    pub self_trade_prevention_mode: String,
 }

@@ -243,3 +243,29 @@ impl<'a> GetOrderParams<'a> {
         self
     }
 }
+
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CancelAllOrdersParms<'a> {
+    pub symbol: &'a str,
+    pub recv_window: Option<u16>,
+}
+
+impl<'a> CancelAllOrdersParms<'a> {
+    pub fn new(symbol: &'a str) -> Self {
+        CancelAllOrdersParms {
+            symbol,
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn recv_window(mut self, recv_window: u16) -> Self {
+        self.recv_window = Some(recv_window);
+        self
+    }
+}

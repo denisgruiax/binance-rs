@@ -287,3 +287,72 @@ pub struct OpenOrdersParams<'a> {
     pub symbol: &'a str,
     pub recv_window: Option<u16>,
 }
+
+impl<'a> OpenOrdersParams<'a> {
+    pub fn new(symbol: &'a str) -> Self {
+        OpenOrdersParams {
+            symbol,
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn recv_window(mut self, recv_window: u16) -> Self {
+        self.recv_window = Some(recv_window);
+        self
+    }
+}
+
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AllOrderParams<'a> {
+    pub symbol: &'a str,          // mandatory
+    pub order_id: Option<u64>,    // optional
+    pub start_time: Option<u64>,  // optional
+    pub end_time: Option<u64>,    // optional
+    pub limit: Option<u16>,       // optional, max 1000
+    pub recv_window: Option<u16>, // optional, max 60000
+}
+
+impl<'a> AllOrderParams<'a> {
+    pub fn new(symbol: &'a str) -> Self {
+        AllOrderParams {
+            symbol,
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn order_id(mut self, order_id: u64) -> Self {
+        self.order_id = Some(order_id);
+        self
+    }
+
+    pub fn start_time(mut self, start_time: u64) -> Self {
+        self.start_time = Some(start_time);
+        self
+    }
+
+    pub fn end_time(mut self, end_time: u64) -> Self {
+        self.end_time = Some(end_time);
+        self
+    }
+
+    pub fn limit(mut self, limit: u16) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn recv_window(mut self, recv_window: u16) -> Self {
+        self.recv_window = Some(recv_window);
+        self
+    }
+}

@@ -5,8 +5,8 @@ use binance_api::{
         params::{
             binance::OrderResponseType,
             trading::{
-                CancelAllOrdersParms, CancelOrderParams, GetOrderParams, NewOrderParams,
-                OpenOrdersParams,
+                AllOrderParams, CancelAllOrdersParms, CancelOrderParams, GetOrderParams,
+                NewOrderParams, OpenOrdersParams,
             },
         },
         response::trading::{
@@ -92,6 +92,13 @@ where
     ) -> Result<Vec<OpenOrderResponse>, BinanceError> {
         self.client.get_signed(Trading::OpenOrders, params)
     }
+
+    pub fn get_all_order(
+        &self,
+        params: AllOrderParams,
+    ) -> Result<Vec<OpenOrderResponse>, BinanceError> {
+        self.client.get_signed(Trading::AllOrders, params)
+    }
 }
 
 #[cfg(test)]
@@ -107,7 +114,7 @@ mod trading_api {
         endpoint::host::Host,
         model::params::{
             binance::{OrderResponseType, OrderSide},
-            trading::NewOrderParams,
+            trading::{AllOrderParams, NewOrderParams},
         },
     };
     use std::sync::{Arc, OnceLock};

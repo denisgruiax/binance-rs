@@ -105,13 +105,9 @@ mod trading_api {
     use crate::spot::secret::{API_KEY, SECRET_KEY};
     use binance_api::{
         endpoint::host::Host,
-        model::{
-            params::{
-                self,
-                binance::{OrderResponseType, OrderSide},
-                trading::{NewOrderParams, OpenOrdersParams},
-            },
-            response,
+        model::params::{
+            binance::{OrderResponseType, OrderSide},
+            trading::NewOrderParams,
         },
     };
     use std::sync::{Arc, OnceLock};

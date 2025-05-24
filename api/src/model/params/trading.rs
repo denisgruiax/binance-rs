@@ -280,3 +280,10 @@ impl<'a> CancelAllOrdersParms<'a> {
         self
     }
 }
+
+#[derive(Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenOrdersParams<'a> {
+    pub symbol: &'a str,
+    pub recv_window: Option<u16>,
+}

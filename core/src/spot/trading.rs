@@ -114,7 +114,7 @@ mod trading_api {
         endpoint::host::Host,
         model::params::{
             binance::{OrderResponseType, OrderSide},
-            trading::{AllOrderParams, NewOrderParams},
+            trading::NewOrderParams,
         },
     };
     use std::sync::{Arc, OnceLock};

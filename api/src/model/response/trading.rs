@@ -12,7 +12,7 @@ pub struct AckResponse {
 }
 
 #[derive(Clone, Debug)]
-pub enum OrderResponse {
+pub enum NewOrderResponse {
     Ack(AckResponse),
     Result(ResultResponse),
     Full(FullResponse),
@@ -205,7 +205,7 @@ pub struct CancelOrderResponse {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct OpenOrderResponse {
+pub struct OrderResponse {
     pub symbol: String,
     pub order_id: u64,
     pub order_list_id: i64,

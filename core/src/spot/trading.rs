@@ -10,7 +10,7 @@ use binance_api::{
             },
         },
         response::trading::{
-            AckResponse, CancelOrderResponse, FullResponse, OpenOrderResponse, OrderIdResponse,
+            AckResponse, CancelOrderResponse, FullResponse, NewOrderResponse, OrderIdResponse,
             OrderResponse, ResultResponse,
         },
     },
@@ -33,22 +33,22 @@ where
         TradingApi { client }
     }
 
-    pub fn post_new_order(&self, params: NewOrderParams) -> Result<OrderResponse, BinanceError> {
+    pub fn post_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
         if let Some(order_response_type) = &params.new_order_resp_type {
             match order_response_type {
                 OrderResponseType::Ack => {
-                    return Ok(OrderResponse::Ack(
+                    return Ok(NewOrderResponse::Ack(
                         self.client.post::<AckResponse>(Trading::NewOrder, params)?,
                     ));
                 }
                 OrderResponseType::Result => {
-                    return Ok(OrderResponse::Result(
+                    return Ok(NewOrderResponse::Result(
                         self.client
                             .post::<ResultResponse>(Trading::NewOrder, params)?,
                     ));
                 }
                 OrderResponseType::Full => {
-                    return Ok(OrderResponse::Full(
+                    return Ok(NewOrderResponse::Full(
                         self.client
                             .post::<FullResponse>(Trading::NewOrder, params)?,
                     ));
@@ -56,7 +56,7 @@ where
             }
         }
 
-        Ok(OrderResponse::Ack(
+        Ok(NewOrderResponse::Ack(
             self.client.post::<AckResponse>(Trading::NewOrder, params)?,
         ))
     }
@@ -89,14 +89,14 @@ where
     pub fn get_open_orders(
         &self,
         params: OpenOrdersParams,
-    ) -> Result<Vec<OpenOrderResponse>, BinanceError> {
+    ) -> Result<Vec<OrderResponse>, BinanceError> {
         self.client.get_signed(Trading::OpenOrders, params)
     }
 
     pub fn get_all_order(
         &self,
         params: AllOrderParams,
-    ) -> Result<Vec<OpenOrderResponse>, BinanceError> {
+    ) -> Result<Vec<OrderResponse>, BinanceError> {
         self.client.get_signed(Trading::AllOrders, params)
     }
 }

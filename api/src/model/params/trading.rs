@@ -310,12 +310,12 @@ impl<'a> OpenOrdersParams<'a> {
 #[derive(Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AllOrderParams<'a> {
-    pub symbol: &'a str,          // mandatory
-    pub order_id: Option<u64>,    // optional
-    pub start_time: Option<u64>,  // optional
-    pub end_time: Option<u64>,    // optional
-    pub limit: Option<u16>,       // optional, max 1000
-    pub recv_window: Option<u16>, // optional, max 60000
+    pub symbol: &'a str,
+    pub order_id: Option<u64>,
+    pub start_time: Option<u64>,
+    pub end_time: Option<u64>,
+    pub limit: Option<u16>,
+    pub recv_window: Option<u16>,
 }
 
 impl<'a> AllOrderParams<'a> {

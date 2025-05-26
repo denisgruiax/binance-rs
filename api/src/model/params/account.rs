@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InfoParams {
     pub omit_zero_balances: Option<bool>,
@@ -23,7 +23,7 @@ impl InfoParams {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MyTradesParams<'a> {
     pub symbol: &'a str,
@@ -74,7 +74,7 @@ impl<'a> MyTradesParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnfilledOrderCountParams {
     pub recv_window: Option<u16>,

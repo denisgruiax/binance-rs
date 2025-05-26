@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct ExchangeInformationParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,

@@ -1,7 +1,7 @@
 use super::binance::*;
 use serde::Serialize;
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NewOrderParams<'a> {
     pub symbol: &'a str,
@@ -206,7 +206,7 @@ impl<'a> NewOrderParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetOrderParams<'a> {
     pub symbol: &'a str,
@@ -244,7 +244,7 @@ impl<'a> GetOrderParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CancelOrderParams<'a> {
     pub symbol: &'a str,
@@ -255,7 +255,7 @@ pub struct CancelOrderParams<'a> {
     pub recv_window: Option<u16>,
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CancelAllOrdersParms<'a> {
     pub symbol: &'a str,
@@ -281,7 +281,7 @@ impl<'a> CancelAllOrdersParms<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OpenOrdersParams<'a> {
     pub symbol: &'a str,
@@ -307,7 +307,7 @@ impl<'a> OpenOrdersParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AllOrderParams<'a> {
     pub symbol: &'a str,

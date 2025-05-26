@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct DepthParams<'a> {
     pub symbol: &'a str,
 
@@ -27,7 +27,7 @@ impl<'a> DepthParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct TradesParams<'a> {
     pub symbol: &'a str,
 
@@ -54,7 +54,7 @@ impl<'a> TradesParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HistoricalTradesParams<'a> {
     pub symbol: &'a str,
@@ -90,7 +90,7 @@ impl<'a> HistoricalTradesParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct KlinesParams<'a> {
     pub symbol: &'a str,
@@ -165,7 +165,7 @@ impl<'a> AvgPriceParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct Ticker24hParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
@@ -198,7 +198,7 @@ impl<'a> Ticker24hParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct TickerDayParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
@@ -239,7 +239,7 @@ impl<'a> TickerDayParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct PriceTickerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
@@ -264,7 +264,7 @@ impl<'a> PriceTickerParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct BookTickerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,
@@ -289,7 +289,7 @@ impl<'a> BookTickerParams<'a> {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct RollingTickerParams<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub symbol: Option<&'a str>,

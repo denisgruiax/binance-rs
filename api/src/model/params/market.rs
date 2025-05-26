@@ -110,10 +110,10 @@ pub struct KlinesParams<'a> {
 }
 
 impl<'a> KlinesParams<'a> {
-    pub fn new(symbol: &'a str, interval: &'a str) -> Self {
+    pub fn new(symbol: &'a str, interval: &'a impl AsRef<str>) -> Self {
         Self {
             symbol,
-            interval,
+            interval: interval.as_ref(),
             ..Default::default()
         }
     }

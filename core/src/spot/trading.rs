@@ -128,7 +128,7 @@ mod trading_api {
         TRADING_CLIENT
             .get_or_init(|| {
                 Arc::new(TradingApi::new(Client::new(
-                    Host::Api.as_ref(),
+                    &Host::Api,
                     HmacSha256::new(API_KEY, SECRET_KEY),
                 )))
             })
@@ -139,7 +139,7 @@ mod trading_api {
         MARKET_CLIENT
             .get_or_init(|| {
                 Arc::new(MarketApi::new(Client::new(
-                    Host::Api.as_ref(),
+                    &Host::Api,
                     HmacSha256::new(API_KEY, SECRET_KEY),
                 )))
             })

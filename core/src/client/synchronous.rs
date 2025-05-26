@@ -20,9 +20,9 @@ impl<'a, S> Client<'a, S>
 where
     S: Signature<'a>,
 {
-    pub fn new(host: &'a str, signature: S) -> Client<'a, S> {
+    pub fn new(host: &'a impl AsRef<str>, signature: S) -> Client<'a, S> {
         Client {
-            host,
+            host: host.as_ref(),
             signature,
             inner_client: reqwest::blocking::Client::new(),
         }

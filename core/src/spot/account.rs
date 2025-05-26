@@ -59,7 +59,7 @@ mod account_api {
         CLIENT
             .get_or_init(|| {
                 Arc::new(AccountApi::new(Client::new(
-                    Host::Api.as_ref(),
+                    &Host::Api,
                     HmacSha256::new(API_KEY, SECRET_KEY),
                 )))
             })

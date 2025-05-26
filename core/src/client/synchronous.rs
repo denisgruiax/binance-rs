@@ -30,13 +30,13 @@ where
 
     pub fn get<T>(
         &self,
-        path: &str,
+        path: impl AsRef<str>,
         params: impl UrlEncoded,
     ) -> std::result::Result<T, BinanceError>
     where
         T: DeserializeOwned,
     {
-        let endpoint = format!("{}{}{}", self.host, path, params.to_url_encoded());
+        let endpoint = format!("{}{}{}", self.host, path.as_ref(), params.to_url_encoded());
 
         let response = self.inner_client.get(endpoint).send();
 

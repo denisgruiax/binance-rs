@@ -22,6 +22,7 @@ pub trait Signature<'a> {
         host: &str,
         path: &str,
         params: &str,
+        method: Method,
     ) -> Result<reqwest::RequestBuilder, BinanceError>;
 
     fn sign(&self, host: &str, path: &str, params: &str) -> Result<String, BinanceError>;

@@ -46,10 +46,16 @@ impl<'a> Signature<'a> for HmacSha256<'a> {
         host: &str,
         path: &str,
         params: &str,
+        method: Method,
     ) -> Result<reqwest::RequestBuilder, BinanceError> {
         let url = self.sign(host, path, params)?;
 
-        Ok(client.get(url).header("X-MBX-APIKEY", self.api_key))
+        match method {
+            Method::GET => Ok(client.get(url).header("X-MBX-APIKEY", self.api_key)),
+            _ => Err(BinanceError::Unknown(String::from(
+                "Invalid method to send the reuqest!",
+            ))),
+        }
     }
 
     fn sign(&self, host: &str, path: &str, params: &str) -> Result<String, BinanceError> {

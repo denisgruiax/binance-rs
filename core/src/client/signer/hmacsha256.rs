@@ -51,7 +51,9 @@ impl<'a> Signature<'a> for HmacSha256<'a> {
         let url = self.sign(host, path, params)?;
 
         match method {
+            Method::DELETE => Ok(client.delete(url).header("X-MBX-APIKEY", self.api_key)),
             Method::GET => Ok(client.get(url).header("X-MBX-APIKEY", self.api_key)),
+            Method::POST => Ok(client.post(url).header("X-MBX-APIKEY", self.api_key)),
             _ => Err(BinanceError::Unknown(String::from(
                 "Invalid method to send the reuqest!",
             ))),

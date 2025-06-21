@@ -33,22 +33,6 @@ where
         self.inner_client.get(endpoint).send()
     }
 
-    pub fn get_signed(
-        &self,
-        path: &'a impl AsRef<str>,
-        params: impl UrlEncoded,
-    ) -> Result<impl Future<Output = Result<Response, reqwest::Error>>, BinanceError> {
-        let request = self.signature.build_request(
-            &self.inner_client,
-            self.host,
-            path.as_ref(),
-            params.to_url_encoded().as_str(),
-            Method::GET,
-        )?;
-
-        Ok(RequestBuilder::send(request))
-    }
-
     pub fn send(
         &self,
         path: &'a impl AsRef<str>,

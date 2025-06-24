@@ -1,12 +1,12 @@
-use crate::client::{signer::signature::Signature, synchronous::Client};
-use binance_api::endpoint::route::Market;
-use binance_api::model::params::market::*;
-use binance_api::model::response::market::{
+use binance_core::client::{signer::signature::Signature, synchronous::Client};
+use binance_common::endpoint::route::Market;
+use binance_common::model::params::market::*;
+use binance_common::model::response::market::{
     AvgPriceResponse, BookTickerResponse, HistoricalTradesResponse, KlinesResponse,
     PriceTickerResponse, RollingTickerMiniResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
     TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
 };
-use binance_api::model::{BinanceError, response::market::DepthResponse};
+use binance_common::model::{BinanceError, response::market::DepthResponse};
 
 pub struct MarketApi<'a, S>
 where
@@ -171,8 +171,8 @@ where
 #[cfg(test)]
 mod market_api {
     use super::MarketApi;
-    use crate::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
-    use binance_api::{
+    use binance_core::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
+    use binance_common::{
         endpoint::host::Host,
         model::{
             params::{

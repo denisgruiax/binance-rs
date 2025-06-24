@@ -1,4 +1,4 @@
-use binance_api::{
+use binance_common::{
     endpoint::route::Account,
     model::{
         BinanceError,
@@ -8,7 +8,7 @@ use binance_api::{
 };
 use reqwest::Method;
 
-use crate::client::{signer::signature::Signature, synchronous::Client};
+use binance_core::client::{signer::signature::Signature, synchronous::Client};
 
 pub struct AccountApi<'a, S>
 where
@@ -52,9 +52,9 @@ mod account_api {
     use std::sync::{Arc, OnceLock};
 
     use super::*;
-    use crate::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
+    use binance_core::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
     use crate::spot::secret::{API_KEY, SECRET_KEY};
-    use binance_api::endpoint::host::Host;
+    use binance_common::endpoint::host::Host;
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();
 
     fn shared_test_account() -> Arc<AccountApi<'static, HmacSha256<'static>>> {

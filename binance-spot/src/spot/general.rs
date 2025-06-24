@@ -1,8 +1,8 @@
-use crate::client::{signer::signature::Signature, synchronous::Client};
-use binance_api::endpoint::route::General;
-use binance_api::model::BinanceError;
-use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};
-use binance_api::model::response::general::{
+use binance_core::client::{signer::signature::Signature, synchronous::Client};
+use binance_common::endpoint::route::General;
+use binance_common::model::BinanceError;
+use binance_common::model::params::{EmptyParams, general::ExchangeInformationParams};
+use binance_common::model::response::general::{
     EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
 };
 
@@ -40,11 +40,11 @@ where
 #[cfg(test)]
 mod general_api {
     use super::GeneralApi;
-    use crate::client::{
+    use binance_core::client::{
         signer::{hmacsha256::HmacSha256, signature::Signature},
         synchronous::Client,
     };
-    use binance_api::{
+    use binance_common::{
         endpoint::host::Host,
         model::{params::general::ExchangeInformationParams, response::general::EmptyResponse},
     };

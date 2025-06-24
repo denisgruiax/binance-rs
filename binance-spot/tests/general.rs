@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod general_integration {
-    use binance_api::endpoint::host::Host;
-    use binance_api::endpoint::route::General;
-    use binance_api::model::params::{EmptyParams, general::ExchangeInformationParams};
-    use binance_api::model::response::general::{
+    use binance_common::endpoint::host::Host;
+    use binance_common::endpoint::route::General;
+    use binance_common::model::params::{EmptyParams, general::ExchangeInformationParams};
+    use binance_common::model::response::general::{
         EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
     };
     use binance_core::client::asynchronous::Client;

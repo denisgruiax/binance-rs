@@ -1,4 +1,4 @@
-use binance_api::model::BinanceError;
+use binance_common::model::BinanceError;
 use chrono::Utc;
 use reqwest::Method;
 

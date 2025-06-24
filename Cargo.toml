@@ -1,3 +1,2 @@
 [workspace]
-members = ["api", "core"]
-
+members = ["binance-common", "binance-core", "binance-spot"]

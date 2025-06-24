@@ -1,5 +1,5 @@
 use crate::client::signer::signature::Signature;
-use binance_api::model::{BinanceError, params::url::UrlEncoded};
+use binance_common::model::{BinanceError, params::url::UrlEncoded};
 use reqwest::{Method, RequestBuilder, Response};
 
 pub struct Client<'a, S>

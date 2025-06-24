@@ -15,6 +15,7 @@ use binance_api::{
         },
     },
 };
+use reqwest::Method;
 
 use crate::client::{signer::signature::Signature, synchronous::Client};
 
@@ -37,67 +38,77 @@ where
         if let Some(order_response_type) = &params.new_order_resp_type {
             match order_response_type {
                 OrderResponseType::Ack => {
-                    return Ok(NewOrderResponse::Ack(
-                        self.client.post::<AckResponse>(Trading::NewOrder, params)?,
-                    ));
+                    return Ok(NewOrderResponse::Ack(self.client.send::<AckResponse>(
+                        Trading::NewOrder,
+                        params,
+                        Method::POST,
+                    )?));
                 }
                 OrderResponseType::Result => {
                     return Ok(NewOrderResponse::Result(
-                        self.client
-                            .post::<ResultResponse>(Trading::NewOrder, params)?,
+                        self.client.send::<ResultResponse>(
+                            Trading::NewOrder,
+                            params,
+                            Method::POST,
+                        )?,
                     ));
                 }
                 OrderResponseType::Full => {
-                    return Ok(NewOrderResponse::Full(
-                        self.client
-                            .post::<FullResponse>(Trading::NewOrder, params)?,
-                    ));
+                    return Ok(NewOrderResponse::Full(self.client.send::<FullResponse>(
+                        Trading::NewOrder,
+                        params,
+                        Method::POST,
+                    )?));
                 }
             }
         }
 
-        Ok(NewOrderResponse::Ack(
-            self.client.post::<AckResponse>(Trading::NewOrder, params)?,
-        ))
+        Ok(NewOrderResponse::Ack(self.client.send::<AckResponse>(
+            Trading::NewOrder,
+            params,
+            Method::POST,
+        )?))
     }
 
     pub fn post_new_test_order(
         &self,
         params: NewOrderParams,
     ) -> Result<serde_json::Value, BinanceError> {
-        self.client.post(Trading::TestOrder, params)
+        self.client.send(Trading::TestOrder, params, Method::POST)
     }
 
     pub fn get_order(&self, params: GetOrderParams) -> Result<OrderIdResponse, BinanceError> {
-        self.client.get_signed(Trading::GetOrder, params)
+        self.client.send(Trading::GetOrder, params, Method::GET)
     }
 
     pub fn cancel_order(
         &self,
         params: CancelOrderParams,
     ) -> Result<CancelOrderResponse, BinanceError> {
-        self.client.delete(Trading::CancelOrder, params)
+        self.client
+            .send(Trading::CancelOrder, params, Method::DELETE)
     }
 
     pub fn cancel_open_orders(
         &self,
         params: CancelAllOrdersParms,
     ) -> Result<Vec<CancelOrderResponse>, BinanceError> {
-        self.client.delete(Trading::CancelAllOrders, params)
+        self.client
+            .send(Trading::CancelAllOrders, params, Method::DELETE)
     }
 
     pub fn get_open_orders(
         &self,
         params: OpenOrdersParams,
     ) -> Result<Vec<OrderResponse>, BinanceError> {
-        self.client.get_signed(Trading::OpenOrders, params)
+        self.client.send(Trading::OpenOrders, params, Method::GET)
     }
 
     pub fn get_all_order(
         &self,
         params: AllOrderParams,
     ) -> Result<Vec<OrderResponse>, BinanceError> {
-        self.client.get_signed(Trading::AllOrders, params)
+        self.client.send(Trading::AllOrders, params, Method::GET)
     }
 }
 

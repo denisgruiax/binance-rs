@@ -43,59 +43,16 @@ where
         Self::handle::<T>(response)
     }
 
-    pub fn get_signed<T>(
+    pub fn send<T>(
         &self,
         path: impl AsRef<str>,
         params: impl UrlEncoded,
+        method: Method,
     ) -> Result<T, BinanceError>
     where
         T: DeserializeOwned,
     {
-        let request = self.signature.build_blocking_request(
-            &self.inner_client,
-            self.host,
-            path.as_ref(),
-            params.to_url_encoded().as_str(),
-            Method::GET,
-        )?;
-
-        let response = RequestBuilder::send(request);
-
-        Self::handle::<T>(response)
-    }
-
-    pub fn post<T>(&self, path: impl AsRef<str>, params: impl UrlEncoded) -> Result<T, BinanceError>
-    where
-        T: DeserializeOwned,
-    {
-        let request = self.signature.build_blocking_request(
-            &self.inner_client,
-            self.host,
-            path.as_ref(),
-            params.to_url_encoded().as_str(),
-            Method::POST,
-        )?;
-
-        let response = RequestBuilder::send(request);
-
-        Self::handle(response)
-    }
-
-    pub fn delete<T>(
-        &self,
-        path: impl AsRef<str>,
-        params: impl UrlEncoded,
-    ) -> Result<T, BinanceError>
-    where
-        T: DeserializeOwned,
-    {
-        let request = self.signature.build_blocking_request(
-            &self.inner_client,
-            self.host,
-            path.as_ref(),
-            params.to_url_encoded().as_str(),
-            Method::DELETE,
-        )?;
+        let request = self.signature.build_blocking_request(&self.inner_client, self.host, path.as_ref(), params.to_url_encoded().as_str(), method)?;
 
         let response = RequestBuilder::send(request);
 

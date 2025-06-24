@@ -6,6 +6,7 @@ use binance_api::{
         response::account::{InfoResponse, MyTradesResponse, UnfilledOrderCountResponse},
     },
 };
+use reqwest::Method;
 
 use crate::client::{signer::signature::Signature, synchronous::Client};
 
@@ -26,7 +27,7 @@ where
 
     pub fn get_info(&self, params: InfoParams) -> Result<InfoResponse, BinanceError> {
         self.client
-            .get_signed::<InfoResponse>(Account::Info, params)
+            .send::<InfoResponse>(Account::Info, params, Method::GET)
     }
 
     pub fn get_my_trades(
@@ -34,14 +35,15 @@ where
         params: MyTradesParams,
     ) -> Result<Vec<MyTradesResponse>, BinanceError> {
         self.client
-            .get_signed::<Vec<MyTradesResponse>>(Account::MyTrades, params)
+            .send::<Vec<MyTradesResponse>>(Account::MyTrades, params, Method::GET)
     }
 
     pub fn get_unfilled_order_count(
         &self,
         params: UnfilledOrderCountParams,
     ) -> Result<Vec<UnfilledOrderCountResponse>, BinanceError> {
-        self.client.get_signed(Account::UnfilledOrderCount, params)
+        self.client
+            .send(Account::UnfilledOrderCount, params, Method::GET)
     }
 }
 

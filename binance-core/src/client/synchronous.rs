@@ -52,7 +52,13 @@ where
     where
         T: DeserializeOwned,
     {
-        let request = self.signature.build_blocking_request(&self.inner_client, self.host, path.as_ref(), params.to_url_encoded().as_str(), method)?;
+        let request = self.signature.build_blocking_request(
+            &self.inner_client,
+            self.host,
+            path.as_ref(),
+            params.to_url_encoded().as_str(),
+            method,
+        )?;
 
         let response = RequestBuilder::send(request);
 
@@ -63,35 +69,41 @@ where
         response: Result<Response, reqwest::Error>,
     ) -> Result<T, BinanceError> {
         match response {
-            Ok(response) => match response.status() {
-                StatusCode::BAD_REQUEST => {
-                    let api_error: binance_common::spot::model::error::ApiError =
-                        serde_json::from_slice(&response.bytes()?)
-                            .map_err(|error| BinanceError::Deserialize(error))?;
-                    Err(BinanceError::Api(api_error))
+            Ok(response) => {
+                let status = response.status();
+                let body = response.bytes()?;
+
+                match status {
+                    StatusCode::BAD_REQUEST => {
+                        let api_error: binance_common::spot::model::error::ApiError =
+                            serde_json::from_slice(&body)
+                                .map_err(|error| BinanceError::Deserialize(error))?;
+                        Err(BinanceError::Api(api_error))
+                    }
+
+                    StatusCode::IM_A_TEAPOT => Err(BinanceError::IpBanned),
+
+                    StatusCode::INTERNAL_SERVER_ERROR => Err(BinanceError::InternalServer),
+
+                    StatusCode::OK => Ok(serde_json::from_slice::<T>(&body)
+                        .map_err(|error| BinanceError::Deserialize(error))?),
+
+                    StatusCode::REQUEST_TIMEOUT => Err(BinanceError::RequestTimeout),
+                    StatusCode::UNAUTHORIZED => {
+                        let api_error: binance_common::spot::model::error::ApiError =
+                            serde_json::from_slice(&body)
+                                .map_err(|error| BinanceError::Deserialize(error))?;
+
+                        Err(BinanceError::Api(api_error))
+                    }
+                    StatusCode::TOO_MANY_REQUESTS => Err(BinanceError::TooManyRequest),
+                    status_code => Err(BinanceError::Unknown(format!(
+                        "Response Status Code: {}",
+                        status_code
+                    ))),
                 }
+            }
 
-                StatusCode::IM_A_TEAPOT => Err(BinanceError::IpBanned),
-
-                StatusCode::INTERNAL_SERVER_ERROR => Err(BinanceError::InternalServer),
-
-                StatusCode::OK => Ok(serde_json::from_slice::<T>(&response.bytes()?)
-                    .map_err(|error| BinanceError::Deserialize(error))?),
-
-                StatusCode::REQUEST_TIMEOUT => Err(BinanceError::RequestTimeout),
-                StatusCode::UNAUTHORIZED => {
-                    let api_error: binance_common::spot::model::error::ApiError =
-                        serde_json::from_slice(&response.bytes()?)
-                            .map_err(|error| BinanceError::Deserialize(error))?;
-
-                    Err(BinanceError::Api(api_error))
-                }
-                StatusCode::TOO_MANY_REQUESTS => Err(BinanceError::TooManyRequest),
-                status_code => Err(BinanceError::Unknown(format!(
-                    "Response Status Code: {}",
-                    status_code
-                ))),
-            },
             Err(error) => Err(BinanceError::Request(error)),
         }
     }

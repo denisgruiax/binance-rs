@@ -1,2 +1,2 @@
 [workspace]
-members = ["binance-common", "binance-core", "binance-spot"]
+members = ["binance-common", "binance-core", "binance-spot", "binance-websocket"]

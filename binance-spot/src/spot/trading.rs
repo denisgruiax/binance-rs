@@ -1,4 +1,4 @@
-use binance_common::{
+use binance_common::spot::{
     endpoint::route::Trading,
     model::{
         BinanceError,
@@ -17,7 +17,7 @@ use binance_common::{
 };
 use reqwest::Method;
 
-use binance_core::client::{signer::signature::Signature, synchronous::Client};
+use binance_core::{client::synchronous::Client, signer::signature::Signature};
 
 pub struct TradingApi<'a, S>
 where
@@ -115,11 +115,11 @@ where
 #[cfg(test)]
 mod trading_api {
     use crate::spot::market::MarketApi;
-    use binance_core::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
+    use binance_core::{signer::hmacsha256::HmacSha256, client::synchronous::Client};
 
     use super::TradingApi;
     use crate::spot::secret::{API_KEY, SECRET_KEY};
-    use binance_common::{
+    use binance_common::spot::{
         endpoint::host::Host,
         model::params::{
             binance::{OrderResponseType, OrderSide},

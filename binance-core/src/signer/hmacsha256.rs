@@ -1,9 +1,9 @@
-use binance_common::model::BinanceError;
+use binance_common::spot::model::BinanceError;
 use hmac::{Hmac, Mac};
 use reqwest::Method;
 use sha2::Sha256;
 
-use crate::client::signer::signature::Signature;
+use crate::signer::signature::Signature;
 
 pub struct HmacSha256<'a> {
     pub api_key: &'a str,

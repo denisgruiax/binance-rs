@@ -1,10 +1,10 @@
-use binance_core::client::{signer::signature::Signature, synchronous::Client};
-use binance_common::endpoint::route::General;
-use binance_common::model::BinanceError;
-use binance_common::model::params::{EmptyParams, general::ExchangeInformationParams};
-use binance_common::model::response::general::{
+use binance_common::spot::endpoint::route::General;
+use binance_common::spot::model::BinanceError;
+use binance_common::spot::model::params::{EmptyParams, general::ExchangeInformationParams};
+use binance_common::spot::model::response::general::{
     EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
 };
+use binance_core::{client::synchronous::Client, signer::signature::Signature};
 
 pub struct GeneralApi<'a, S>
 where
@@ -40,13 +40,13 @@ where
 #[cfg(test)]
 mod general_api {
     use super::GeneralApi;
-    use binance_core::client::{
-        signer::{hmacsha256::HmacSha256, signature::Signature},
-        synchronous::Client,
-    };
-    use binance_common::{
+    use binance_common::spot::{
         endpoint::host::Host,
         model::{params::general::ExchangeInformationParams, response::general::EmptyResponse},
+    };
+    use binance_core::{
+        client::synchronous::Client,
+        signer::{hmacsha256::HmacSha256, signature::Signature},
     };
     use std::sync::{Arc, OnceLock};
 
@@ -82,7 +82,7 @@ mod general_api {
     #[test]
     fn test_get_exchange_info() {
         let general_api: Arc<GeneralApi<HmacSha256>> = shared_test_client::<HmacSha256>();
-        
+
         let params = ExchangeInformationParams::new().symbol("BTCUSDC");
 
         let exchange_info = general_api.get_exchange_info(params).unwrap();

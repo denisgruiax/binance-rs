@@ -1,12 +1,12 @@
-use binance_core::client::{signer::signature::Signature, synchronous::Client};
-use binance_common::endpoint::route::Market;
-use binance_common::model::params::market::*;
-use binance_common::model::response::market::{
+use binance_common::spot::endpoint::route::Market;
+use binance_common::spot::model::params::market::*;
+use binance_common::spot::model::response::market::{
     AvgPriceResponse, BookTickerResponse, HistoricalTradesResponse, KlinesResponse,
     PriceTickerResponse, RollingTickerMiniResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
     TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
 };
-use binance_common::model::{BinanceError, response::market::DepthResponse};
+use binance_common::spot::model::{BinanceError, response::market::DepthResponse};
+use binance_core::{client::synchronous::Client, signer::signature::Signature};
 
 pub struct MarketApi<'a, S>
 where
@@ -171,8 +171,7 @@ where
 #[cfg(test)]
 mod market_api {
     use super::MarketApi;
-    use binance_core::client::{signer::hmacsha256::HmacSha256, synchronous::Client};
-    use binance_common::{
+    use binance_common::spot::{
         endpoint::host::Host,
         model::{
             params::{
@@ -189,6 +188,7 @@ mod market_api {
             },
         },
     };
+    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     use std::sync::{Arc, OnceLock};
 
     static CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();

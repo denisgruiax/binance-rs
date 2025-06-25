@@ -1,13 +1,13 @@
 #[cfg(test)]
 mod general_integration {
-    use binance_common::endpoint::host::Host;
-    use binance_common::endpoint::route::General;
-    use binance_common::model::params::{EmptyParams, general::ExchangeInformationParams};
-    use binance_common::model::response::general::{
+    use binance_common::spot::endpoint::host::Host;
+    use binance_common::spot::endpoint::route::General;
+    use binance_common::spot::model::params::{EmptyParams, general::ExchangeInformationParams};
+    use binance_common::spot::model::response::general::{
         EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,
     };
     use binance_core::client::asynchronous::Client;
-    use binance_core::client::signer::hmacsha256::HmacSha256;
+    use binance_core::signer::hmacsha256::HmacSha256;
 
     #[tokio::test]
     async fn test_ping() {

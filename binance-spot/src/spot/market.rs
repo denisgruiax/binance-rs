@@ -112,7 +112,7 @@ where
     pub fn get_price_ticker(&self, symbol: &str) -> Result<PriceTickerResponse, BinanceError> {
         let params = PriceTickerParams::new().symbol(symbol);
 
-        self.client.get(Market::PriceTicker, params)
+        self.client.get(Market::TickerPrice, params)
     }
 
     pub fn get_price_ticker_list(
@@ -121,7 +121,7 @@ where
     ) -> Result<Vec<PriceTickerResponse>, BinanceError> {
         let params = PriceTickerParams::new().symbols(symbols);
 
-        self.client.get(Market::PriceTicker, params)
+        self.client.get(Market::TickerPrice, params)
     }
 
     pub fn get_book_ticker(&self, symbol: &str) -> Result<BookTickerResponse, BinanceError> {

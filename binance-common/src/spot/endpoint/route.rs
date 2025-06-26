@@ -24,7 +24,7 @@ pub enum Market {
     AvgPrice,
     Ticker24h,
     TickerDay,
-    PriceTicker,
+    TickerPrice,
     BookTicker,
     RollingTicker,
 }
@@ -41,7 +41,7 @@ impl AsRef<str> for Market {
             Market::AvgPrice => "/api/v3/avgPrice?",
             Market::Ticker24h => "/api/v3/ticker/24hr?",
             Market::TickerDay => "/api/v3/ticker/tradingDay?",
-            Market::PriceTicker => "/api/v3/ticker/price?",
+            Market::TickerPrice => "/api/v3/ticker/price?",
             Market::BookTicker => "/api/v3/ticker/bookTicker?",
             Market::RollingTicker => "/api/v3/ticker?",
         }

@@ -330,7 +330,7 @@ mod market_integration {
 
         let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
 
-        let response = client.get(&Market::PriceTicker, params);
+        let response = client.get(&Market::TickerPrice, params);
 
         let bytes = response.await.unwrap().bytes().await.unwrap();
         let prices: Vec<PriceTickerResponse> = serde_json::from_slice(&bytes).unwrap();

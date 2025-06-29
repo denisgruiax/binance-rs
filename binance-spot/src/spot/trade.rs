@@ -1,6 +1,6 @@
 use binance_common::error::BinanceError;
 use binance_common::spot::{
-    endpoint::route::Trading,
+    endpoint::route::Trade,
     model::{
         params::{
             binance::OrderResponseType,
@@ -39,7 +39,7 @@ where
             match order_response_type {
                 OrderResponseType::Ack => {
                     return Ok(NewOrderResponse::Ack(self.client.send::<AckResponse>(
-                        Trading::NewOrder,
+                        Trade::NewOrder,
                         params,
                         Method::POST,
                     )?));
@@ -47,7 +47,7 @@ where
                 OrderResponseType::Result => {
                     return Ok(NewOrderResponse::Result(
                         self.client.send::<ResultResponse>(
-                            Trading::NewOrder,
+                            Trade::NewOrder,
                             params,
                             Method::POST,
                         )?,
@@ -55,7 +55,7 @@ where
                 }
                 OrderResponseType::Full => {
                     return Ok(NewOrderResponse::Full(self.client.send::<FullResponse>(
-                        Trading::NewOrder,
+                        Trade::NewOrder,
                         params,
                         Method::POST,
                     )?));
@@ -64,7 +64,7 @@ where
         }
 
         Ok(NewOrderResponse::Ack(self.client.send::<AckResponse>(
-            Trading::NewOrder,
+            Trade::NewOrder,
             params,
             Method::POST,
         )?))
@@ -74,11 +74,11 @@ where
         &self,
         params: NewOrderParams,
     ) -> Result<serde_json::Value, BinanceError> {
-        self.client.send(Trading::TestOrder, params, Method::POST)
+        self.client.send(Trade::TestOrder, params, Method::POST)
     }
 
     pub fn get_order(&self, params: GetOrderParams) -> Result<OrderIdResponse, BinanceError> {
-        self.client.send(Trading::GetOrder, params, Method::GET)
+        self.client.send(Trade::GetOrder, params, Method::GET)
     }
 
     pub fn cancel_order(
@@ -86,7 +86,7 @@ where
         params: CancelOrderParams,
     ) -> Result<CancelOrderResponse, BinanceError> {
         self.client
-            .send(Trading::CancelOrder, params, Method::DELETE)
+            .send(Trade::CancelOrder, params, Method::DELETE)
     }
 
     pub fn cancel_open_orders(
@@ -94,21 +94,21 @@ where
         params: CancelAllOrdersParms,
     ) -> Result<Vec<CancelOrderResponse>, BinanceError> {
         self.client
-            .send(Trading::CancelAllOrders, params, Method::DELETE)
+            .send(Trade::CancelAllOrders, params, Method::DELETE)
     }
 
     pub fn get_open_orders(
         &self,
         params: OpenOrdersParams,
     ) -> Result<Vec<OrderResponse>, BinanceError> {
-        self.client.send(Trading::OpenOrders, params, Method::GET)
+        self.client.send(Trade::OpenOrders, params, Method::GET)
     }
 
     pub fn get_all_order(
         &self,
         params: AllOrderParams,
     ) -> Result<Vec<OrderResponse>, BinanceError> {
-        self.client.send(Trading::AllOrders, params, Method::GET)
+        self.client.send(Trade::AllOrders, params, Method::GET)
     }
 }
 

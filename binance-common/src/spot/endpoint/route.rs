@@ -48,7 +48,7 @@ impl AsRef<str> for Market {
     }
 }
 
-pub enum Trading {
+pub enum Trade {
     NewOrder,
     TestOrder,
     GetOrder,
@@ -68,26 +68,26 @@ pub enum Trading {
     TestSorOrder,
 }
 
-impl AsRef<str> for Trading {
+impl AsRef<str> for Trade {
     fn as_ref(&self) -> &'static str {
         match self {
-            Trading::NewOrder => "/api/v3/order?",
-            Trading::TestOrder => "/api/v3/order/test?",
-            Trading::GetOrder => "/api/v3/order?",
-            Trading::CancelOrder => "/api/v3/order?",
-            Trading::CancelAllOrders => "/api/v3/openOrders?",
-            Trading::CancelReplaceOrder => "/api/v3/order/cancelReplace?",
-            Trading::AmendOrderPriority => "/api/v3/order/amend/keepPriority?",
-            Trading::OpenOrders => "/api/v3/openOrders?",
-            Trading::AllOrders => "/api/v3/allOrders?",
-            Trading::OcoOrderList => "/api/v3/orderList/oco?",
-            Trading::OtoOrderList => "/api/v3/orderList/oto?",
-            Trading::OtocoOrderList => "/api/v3/orderList/otoco?",
-            Trading::GetOrderList => "/api/v3/orderList?",
-            Trading::AllOrderLists => "/api/v3/allOrderList?",
-            Trading::OpenOrderLists => "/api/v3/openOrderList?",
-            Trading::SorOrder => "/api/v3/sor/order?",
-            Trading::TestSorOrder => "/api/v3/sor/order/test?",
+            Trade::NewOrder => "/api/v3/order?",
+            Trade::TestOrder => "/api/v3/order/test?",
+            Trade::GetOrder => "/api/v3/order?",
+            Trade::CancelOrder => "/api/v3/order?",
+            Trade::CancelAllOrders => "/api/v3/openOrders?",
+            Trade::CancelReplaceOrder => "/api/v3/order/cancelReplace?",
+            Trade::AmendOrderPriority => "/api/v3/order/amend/keepPriority?",
+            Trade::OpenOrders => "/api/v3/openOrders?",
+            Trade::AllOrders => "/api/v3/allOrders?",
+            Trade::OcoOrderList => "/api/v3/orderList/oco?",
+            Trade::OtoOrderList => "/api/v3/orderList/oto?",
+            Trade::OtocoOrderList => "/api/v3/orderList/otoco?",
+            Trade::GetOrderList => "/api/v3/orderList?",
+            Trade::AllOrderLists => "/api/v3/allOrderList?",
+            Trade::OpenOrderLists => "/api/v3/openOrderList?",
+            Trade::SorOrder => "/api/v3/sor/order?",
+            Trade::TestSorOrder => "/api/v3/sor/order/test?",
         }
     }
 }

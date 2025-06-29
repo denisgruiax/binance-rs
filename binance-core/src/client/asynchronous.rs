@@ -1,6 +1,6 @@
 use crate::signer::signature::Signature;
 use binance_common::error::BinanceError;
-use binance_common::spot::model::params::url::UrlEncoded;
+use binance_common::url::UrlEncoded;
 use reqwest::{Method, RequestBuilder, Response};
 
 pub struct Client<'a, S>

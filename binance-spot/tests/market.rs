@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod market_integration {
+    use binance_common::enums::Interval;
     use binance_common::spot::endpoint::host::Host;
     use binance_common::spot::endpoint::route::Market;
-    use binance_common::spot::model::params::binance::Interval;
     use binance_common::spot::model::params::market::*;
     use binance_common::spot::model::response::market::*;
     use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256};

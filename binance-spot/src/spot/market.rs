@@ -171,15 +171,13 @@ where
 #[cfg(test)]
 mod market_api {
     use super::MarketApi;
+    use binance_common::enums::Interval;
     use binance_common::spot::{
         endpoint::host::Host,
         model::{
-            params::{
-                binance::Interval,
-                market::{
-                    AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams,
-                    Ticker24hParams, TickerDayParams, TradesParams,
-                },
+            params::market::{
+                AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams, Ticker24hParams,
+                TickerDayParams, TradesParams,
             },
             response::market::{
                 AvgPriceResponse, BookTickerResponse, DepthResponse, HistoricalTradesResponse,

@@ -1,4 +1,4 @@
-use super::binance::*;
+use crate::enums::*;
 use serde::Serialize;
 
 #[derive(Clone, Debug, Default, Serialize)]

@@ -1,15 +1,13 @@
+use binance_common::enums::OrderResponseType;
 use binance_common::error::BinanceError;
 use binance_common::spot::{
     endpoint::route::Trade,
     model::{
-        params::{
-            binance::OrderResponseType,
-            trading::{
-                AllOrderParams, CancelAllOrdersParms, CancelOrderParams, GetOrderParams,
-                NewOrderParams, OpenOrdersParams,
-            },
+        params::trade::{
+            AllOrderParams, CancelAllOrdersParms, CancelOrderParams, GetOrderParams,
+            NewOrderParams, OpenOrdersParams,
         },
-        response::trading::{
+        response::trade::{
             AckResponse, CancelOrderResponse, FullResponse, NewOrderResponse, OrderIdResponse,
             OrderResponse, ResultResponse,
         },
@@ -85,8 +83,7 @@ where
         &self,
         params: CancelOrderParams,
     ) -> Result<CancelOrderResponse, BinanceError> {
-        self.client
-            .send(Trade::CancelOrder, params, Method::DELETE)
+        self.client.send(Trade::CancelOrder, params, Method::DELETE)
     }
 
     pub fn cancel_open_orders(
@@ -114,18 +111,14 @@ where
 
 #[cfg(test)]
 mod trading_api {
-    use crate::spot::market::MarketApi;
-    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
-
     use super::TradingApi;
+    use crate::spot::market::MarketApi;
     use crate::spot::secret::{API_KEY, SECRET_KEY};
-    use binance_common::spot::{
-        endpoint::host::Host,
-        model::params::{
-            binance::{OrderResponseType, OrderSide},
-            trading::NewOrderParams,
-        },
-    };
+
+    use binance_common::enums::{OrderResponseType, OrderSide};
+    use binance_common::spot::endpoint::host::Host;
+    use binance_common::spot::model::params::trade::NewOrderParams;
+    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     use std::sync::{Arc, OnceLock};
 
     static MARKET_CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();

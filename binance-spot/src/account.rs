@@ -52,7 +52,7 @@ mod account_api {
     use std::sync::{Arc, OnceLock};
 
     use super::*;
-    use crate::spot::secret::{API_KEY, SECRET_KEY};
+    use crate::secret::{API_KEY, SECRET_KEY};
     use binance_common::spot::endpoint::host::Host;
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();

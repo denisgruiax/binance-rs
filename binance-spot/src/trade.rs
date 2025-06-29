@@ -112,8 +112,8 @@ where
 #[cfg(test)]
 mod trading_api {
     use super::TradingApi;
-    use crate::spot::market::MarketApi;
-    use crate::spot::secret::{API_KEY, SECRET_KEY};
+    use crate::market::MarketApi;
+    use crate::secret::{API_KEY, SECRET_KEY};
 
     use binance_common::enums::{OrderResponseType, OrderSide};
     use binance_common::spot::endpoint::host::Host;

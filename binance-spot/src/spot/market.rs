@@ -5,7 +5,7 @@ use binance_common::spot::model::response::market::{
     PriceTickerResponse, RollingTickerMiniResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
     TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
 };
-use binance_common::spot::model::{BinanceError, response::market::DepthResponse};
+use binance_common::{error::BinanceError, spot::model::response::market::DepthResponse};
 use binance_core::{client::synchronous::Client, signer::signature::Signature};
 
 pub struct MarketApi<'a, S>

@@ -1,5 +1,5 @@
+use binance_common::error::BinanceError;
 use binance_common::spot::endpoint::route::General;
-use binance_common::spot::model::BinanceError;
 use binance_common::spot::model::params::{EmptyParams, general::ExchangeInformationParams};
 use binance_common::spot::model::response::general::{
     EmptyResponse, ExchangeInformationResponse, ServerTimeResponse,

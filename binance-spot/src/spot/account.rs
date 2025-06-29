@@ -1,7 +1,7 @@
+use binance_common::error::BinanceError;
 use binance_common::spot::{
     endpoint::route::Account,
     model::{
-        BinanceError,
         params::account::{InfoParams, MyTradesParams, UnfilledOrderCountParams},
         response::account::{InfoResponse, MyTradesResponse, UnfilledOrderCountResponse},
     },

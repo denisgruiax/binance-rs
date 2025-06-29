@@ -1,7 +1,7 @@
+use binance_common::error::BinanceError;
 use binance_common::spot::{
     endpoint::route::Trading,
     model::{
-        BinanceError,
         params::{
             binance::OrderResponseType,
             trading::{
@@ -115,7 +115,7 @@ where
 #[cfg(test)]
 mod trading_api {
     use crate::spot::market::MarketApi;
-    use binance_core::{signer::hmacsha256::HmacSha256, client::synchronous::Client};
+    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
 
     use super::TradingApi;
     use crate::spot::secret::{API_KEY, SECRET_KEY};

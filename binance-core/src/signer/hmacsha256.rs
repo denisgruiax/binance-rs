@@ -1,4 +1,4 @@
-use binance_common::spot::model::BinanceError;
+use binance_common::error::BinanceError;
 use hmac::{Hmac, Mac};
 use reqwest::Method;
 use sha2::Sha256;

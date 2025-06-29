@@ -1,4 +1,5 @@
-use binance_common::spot::model::{BinanceError, params::url::UrlEncoded};
+use binance_common::error::BinanceError;
+use binance_common::spot::model::params::url::UrlEncoded;
 use reqwest::{
     Method, StatusCode,
     blocking::{RequestBuilder, Response},
@@ -75,7 +76,7 @@ where
 
                 match status {
                     StatusCode::BAD_REQUEST => {
-                        let api_error: binance_common::spot::model::error::ApiError =
+                        let api_error: binance_common::error::ApiError =
                             serde_json::from_slice(&body)
                                 .map_err(|error| BinanceError::Deserialize(error))?;
                         Err(BinanceError::Api(api_error))
@@ -90,7 +91,7 @@ where
 
                     StatusCode::REQUEST_TIMEOUT => Err(BinanceError::RequestTimeout),
                     StatusCode::UNAUTHORIZED => {
-                        let api_error: binance_common::spot::model::error::ApiError =
+                        let api_error: binance_common::error::ApiError =
                             serde_json::from_slice(&body)
                                 .map_err(|error| BinanceError::Deserialize(error))?;
 

@@ -47,3 +47,21 @@ impl<'a> Ticker24hParams<'a> {
         self
     }
 }
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct TickerPriceParams<'a> {
+    pub symbol: Option<&'a str>,
+}
+
+impl<'a> TickerPriceParams<'a> {
+    pub fn new(symbol: &'a str) -> Self {
+        TickerPriceParams {
+            symbol: Some(symbol),
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = Some(symbol);
+        self
+    }
+}

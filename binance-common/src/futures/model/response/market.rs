@@ -163,3 +163,15 @@ pub struct Ticker24hResponse {
     pub last_id: u64,
     pub count: u64,
 }
+
+#[serde_as]
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TickerPriceResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+    
+    pub time: u64,
+}

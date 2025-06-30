@@ -3,11 +3,11 @@ mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
     use binance_common::futures::model::params::market::{
         DepthParams, FundingRateHistoryParams, KlinesParams, MarkPriceParams, Ticker24hParams,
-        TradesParams,
+        TickerPriceParams, TradesParams,
     };
     use binance_common::futures::model::response::market::{
         DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, KlinesResponse,
-        MarkPriceResponse, Ticker24hResponse, TradesResponse,
+        MarkPriceResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -201,6 +201,28 @@ mod futures_market_api_integration_tests {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
         let ticker24h_list: Vec<Ticker24hResponse> = market_api.get_ticker24h_list().unwrap();
+
+        assert!(ticker24h_list.len() > 0);
+    }
+
+    #[test]
+    fn test_get_ticker_price() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: TickerPriceParams = TickerPriceParams::new("BTCUSDT");
+
+        let ticker24h: TickerPriceResponse = market_api.get_ticker_price(params).unwrap();
+
+        assert_eq!(ticker24h.symbol, "BTCUSDT");
+        assert!(ticker24h.price > 0.0);
+        assert!(ticker24h.time > 0)
+    }
+
+    #[test]
+    fn test_get_ticker_price_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let ticker24h_list: Vec<TickerPriceResponse> = market_api.get_ticker_price_list().unwrap();
 
         assert!(ticker24h_list.len() > 0);
     }

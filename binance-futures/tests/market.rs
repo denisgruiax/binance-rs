@@ -226,4 +226,27 @@ mod futures_market_api_integration_tests {
 
         assert!(ticker24h_list.len() > 0);
     }
+
+    #[test]
+    fn test_get_ticker_price_v2() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: TickerPriceParams = TickerPriceParams::new("BTCUSDT");
+
+        let ticker24h: TickerPriceResponse = market_api.get_ticker_price_v2(params).unwrap();
+
+        assert_eq!(ticker24h.symbol, "BTCUSDT");
+        assert!(ticker24h.price > 0.0);
+        assert!(ticker24h.time > 0)
+    }
+
+    #[test]
+    fn test_get_ticker_price_v2_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let ticker24h_list: Vec<TickerPriceResponse> =
+            market_api.get_ticker_price_v2_list().unwrap();
+
+        assert!(ticker24h_list.len() > 0);
+    }
 }

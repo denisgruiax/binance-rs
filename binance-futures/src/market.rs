@@ -111,4 +111,16 @@ where
         self.client
             .get(Market::TickerPrice, TickerPriceParams::default())
     }
+
+    pub fn get_ticker_price_v2(
+        &self,
+        params: TickerPriceParams,
+    ) -> Result<TickerPriceResponse, BinanceError> {
+        self.client.get(Market::TickerPriceV2, params)
+    }
+
+    pub fn get_ticker_price_v2_list(&self) -> Result<Vec<TickerPriceResponse>, BinanceError> {
+        self.client
+            .get(Market::TickerPriceV2, TickerPriceParams::default())
+    }
 }

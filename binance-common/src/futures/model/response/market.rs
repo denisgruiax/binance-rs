@@ -80,3 +80,28 @@ pub struct HistoricalTradesResponse {
     pub time: u64,
     pub is_buyer_maker: bool,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MarkPriceResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub mark_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub index_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub estimated_settle_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub last_funding_rate: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub interest_rate: f64,
+
+    pub next_funding_time: u64,
+    pub time: u64,
+}

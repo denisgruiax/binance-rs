@@ -92,4 +92,9 @@ where
     ) -> Result<Ticker24hResponse, BinanceError> {
         self.client.get(Market::Ticker24h, params)
     }
+
+    pub fn get_ticker24h_list(&self) -> Result<Vec<Ticker24hResponse>, BinanceError> {
+        self.client
+            .get(Market::Ticker24h, Ticker24hParams::default())
+    }
 }

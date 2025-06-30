@@ -195,4 +195,13 @@ mod futures_market_api_integration_tests {
         assert!(ticker24h.high_price > 0.0);
         assert!(ticker24h.low_price > 0.0);
     }
+
+    #[test]
+    fn test_get_ticker24_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let ticker24h_list: Vec<Ticker24hResponse> = market_api.get_ticker24h_list().unwrap();
+
+        assert!(ticker24h_list.len() > 0);
+    }
 }

@@ -2,11 +2,12 @@
 mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
     use binance_common::futures::model::params::market::{
-        DepthParams, FundingRateHistoryParams, KlinesParams, MarkPriceParams, TradesParams,
+        DepthParams, FundingRateHistoryParams, KlinesParams, MarkPriceParams, Ticker24hParams,
+        TradesParams,
     };
     use binance_common::futures::model::response::market::{
         DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, KlinesResponse,
-        MarkPriceResponse, TradesResponse,
+        MarkPriceResponse, Ticker24hResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -178,5 +179,20 @@ mod futures_market_api_integration_tests {
         assert!(funding_rate_history.iter().all(|funding_rate| {
             funding_rate.mark_price > 0.0 && funding_rate.funding_time > 0
         }));
+    }
+
+    #[test]
+    fn test_get_ticker24() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: Ticker24hParams = Ticker24hParams::new("BTCUSDT");
+
+        let ticker24h: Ticker24hResponse = market_api.get_ticker24h(params).unwrap();
+
+        assert_eq!(ticker24h.symbol, "BTCUSDT");
+        assert!(ticker24h.last_price > 0.0);
+        assert!(ticker24h.open_price > 0.0);
+        assert!(ticker24h.high_price > 0.0);
+        assert!(ticker24h.low_price > 0.0);
     }
 }

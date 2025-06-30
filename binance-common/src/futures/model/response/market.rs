@@ -1,5 +1,5 @@
 pub use crate::spot::model::response::general::{EmptyResponse, ServerTimeResponse};
-pub use crate::spot::model::response::market::{Asks, Bids};
+pub use crate::spot::model::response::market::{Asks, Bids, KlinesResponse};
 pub use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, serde_as};
 

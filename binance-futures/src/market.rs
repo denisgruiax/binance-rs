@@ -9,6 +9,8 @@ use binance_common::futures::model::{
     },
     response::market::{EmptyResponse, ExchangeInformationResponse, ServerTimeResponse},
 };
+use binance_common::spot::model::params::market::KlinesParams;
+use binance_common::spot::model::response::market::KlinesResponse;
 use binance_core::{client::synchronous::Client, signer::signature::Signature};
 use reqwest::Method;
 
@@ -56,5 +58,9 @@ where
     ) -> Result<Vec<HistoricalTradesResponse>, BinanceError> {
         self.client
             .send(Market::HistoricalTrades, params, Method::GET)
+    }
+
+    pub fn get_klines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
+        self.client.get(Market::Klines, params)
     }
 }

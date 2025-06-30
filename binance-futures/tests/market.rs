@@ -1,8 +1,9 @@
 #[cfg(test)]
 mod futures_market_api_integration_tests {
-    use binance_common::futures::model::params::market::{DepthParams, TradesParams};
+    use binance_common::enums::Interval;
+    use binance_common::futures::model::params::market::{DepthParams, KlinesParams, TradesParams};
     use binance_common::futures::model::response::market::{
-        DepthResponse, HistoricalTradesResponse, TradesResponse,
+        DepthResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -101,5 +102,31 @@ mod futures_market_api_integration_tests {
             market_api.get_historical_trades(params).unwrap();
 
         assert_eq!(historical_trades.len(), 10);
+    }
+
+    fn check_kline(kline: &KlinesResponse) -> bool {
+        kline.open_time > 0
+            && kline.open > 0.0
+            && kline.high > 0.0
+            && kline.low > 0.0
+            && kline.close > 0.0
+            && kline.volume > 0.0
+            && kline.close_time > 0
+            && kline.quote_asset_volume > 0.0
+            && kline.number_of_trades > 0
+            && kline.taker_buy_base_asset_volume > 0.0
+            && kline.taker_buy_quote_asset_volume > 0.0
+    }
+
+    #[test]
+    fn test_get_klines() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params = KlinesParams::new("ETHUSDC", &Interval::Minutes5).limit(30);
+
+        let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
+
+        assert_eq!(klines.len(), 30);
+        assert!(klines.iter().all(check_kline));
     }
 }

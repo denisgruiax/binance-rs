@@ -33,8 +33,8 @@ pub struct SymbolResponse {
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
 pub struct DepthResponse {
+    #[serde(rename = "lastUpdateId")]
     pub last_update_id: u64,
 
     #[serde(rename = "E")]

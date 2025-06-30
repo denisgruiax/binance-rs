@@ -1,7 +1,8 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
+use binance_common::futures::model::response::market::DepthResponse;
 use binance_common::futures::model::{
-    params::market::{EmptyParams, ExchangeInformationParams},
+    params::market::{DepthParams, EmptyParams, ExchangeInformationParams},
     response::market::{EmptyResponse, ExchangeInformationResponse, ServerTimeResponse},
 };
 use binance_core::{client::synchronous::Client, signer::signature::Signature};
@@ -35,11 +36,17 @@ where
     ) -> Result<ExchangeInformationResponse, BinanceError> {
         self.client.get(Market::ExchangeInfo, params)
     }
+
+    pub fn get_depth(&self, params: DepthParams) -> Result<DepthResponse, BinanceError> {
+        self.client.get(Market::Depth, params)
+    }
 }
 
 #[cfg(test)]
 mod futures_market_api {
     use super::MarketApi;
+    use binance_common::futures::model::params::market::DepthParams;
+    use binance_common::futures::model::response::market::DepthResponse;
     use binance_common::futures::{
         endpoint::host::Host,
         model::{params::market::ExchangeInformationParams, response::market::EmptyResponse},
@@ -68,24 +75,24 @@ mod futures_market_api {
 
     #[test]
     fn test_ping() {
-        let general_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
 
-        assert_eq!(general_api.ping().unwrap(), EmptyResponse {});
+        assert_eq!(market_api.ping().unwrap(), EmptyResponse {});
     }
     #[test]
     fn test_get_server_time() {
-        let general_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>().clone();
 
-        assert!(general_api.get_server_time().unwrap().server_time > 0);
+        assert!(market_api.get_server_time().unwrap().server_time > 0);
     }
 
     #[test]
     fn test_get_exchange_info() {
-        let general_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
         let params = ExchangeInformationParams::new().symbol("BTCUSDT");
 
-        let exchange_info = general_api.get_exchange_info(params).unwrap();
+        let exchange_info = market_api.get_exchange_info(params).unwrap();
 
         assert_eq!(exchange_info.timezone, "UTC");
         assert!(exchange_info.server_time > 0);
@@ -96,5 +103,20 @@ mod futures_market_api {
         assert_eq!(exchange_info.symbols[0].quote_asset, "USDT");
         assert_eq!(exchange_info.symbols[0].base_asset_precision, 8);
         assert!(exchange_info.symbols[0].order_types.len() == 7);
+    }
+
+    #[test]
+    fn test_get_depth() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params = DepthParams::new("BTCUSDT").limit(5);
+
+        let depth: DepthResponse = market_api.get_depth(params).unwrap();
+
+        assert!(depth.last_update_id > 0);
+        assert!(depth.e > 0);
+        assert!(depth.t > 0);
+        assert_eq!(depth.bids.len(), 5);
+        assert_eq!(depth.asks.len(), 5);
     }
 }

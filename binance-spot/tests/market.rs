@@ -1,45 +1,57 @@
 #[cfg(test)]
-mod market_integration {
+mod spot_market_api_integration_tests {
+    use binance_spot::market::MarketApi;
     use binance_common::enums::Interval;
-    use binance_common::spot::endpoint::host::Host;
-    use binance_common::spot::endpoint::route::Market;
-    use binance_common::spot::model::params::market::*;
-    use binance_common::spot::model::response::market::*;
-    use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256};
-    use serde_json::Value;
+    use binance_common::spot::{
+        endpoint::host::Host,
+        model::{
+            params::market::{
+                AvgPriceParams, DepthParams, HistoricalTradesParams, KlinesParams, Ticker24hParams,
+                TickerDayParams, TradesParams,
+            },
+            response::market::{
+                AvgPriceResponse, BookTickerResponse, DepthResponse, HistoricalTradesResponse,
+                KlinesResponse, PriceTickerResponse, Ticker24hFullResponse, Ticker24hMiniResponse,
+                TickerDayFullResponse, TickerDayMiniResponse, TradesResponse,
+            },
+        },
+    };
+    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
+    use std::sync::{Arc, OnceLock};
 
-    #[tokio::test]
-    async fn test_depth() {
-        let params = DepthParams {
-            symbol: "EGLDUSDC",
-            limit: Some(10),
-        };
+    static CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
-
-        let response = client.get(&Market::Depth, params);
-        let bytes = response.await.unwrap().bytes().await.unwrap();
-
-        let depth: DepthResponse = serde_json::from_slice(&bytes).unwrap();
-
-        assert!(depth.last_update_id > 0);
-        assert_eq!(depth.bids.len(), 10);
-        assert_eq!(depth.asks.len(), 10);
+    fn shared_test_market() -> Arc<MarketApi<'static, HmacSha256<'static>>> {
+        CLIENT
+            .get_or_init(|| {
+                Arc::new(MarketApi::new(Client::new(
+                    &Host::Api,
+                    HmacSha256::new("api_key", "secret_key"),
+                )))
+            })
+            .clone()
     }
 
-    #[tokio::test]
-    async fn test_trades() {
-        let params = TradesParams {
-            symbol: "SOLUSDC",
-            limit: Some(20),
-        };
+    #[test]
+    fn test_get_depth() {
+        let market_api = shared_test_market();
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+        let params = DepthParams::new("BTCUSDC").limit(20);
 
-        let response = client.get(&Market::Trades, params);
-        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let depth: DepthResponse = market_api.get_depth(params).unwrap();
 
-        let trades: Vec<TradesResponse> = serde_json::from_slice(&bytes).unwrap();
+        assert!(depth.last_update_id > 0);
+        assert_eq!(depth.bids.len(), 20);
+        assert_eq!(depth.asks.len(), 20);
+    }
+
+    #[test]
+    fn test_get_trades() {
+        let market_api = shared_test_market();
+
+        let params = TradesParams::new("SOLUSDC").limit(25);
+
+        let trades: Vec<TradesResponse> = market_api.get_trades(params).unwrap();
 
         let check_trade = |trade: &TradesResponse| {
             trade.id > 0
@@ -49,24 +61,18 @@ mod market_integration {
                 && trade.time > 0
         };
 
-        assert_eq!(trades.len(), 20);
+        assert_eq!(trades.len(), 25);
         assert!(trades.iter().all(check_trade));
     }
 
-    #[tokio::test]
-    async fn test_historical_trades() {
-        let params = HistoricalTradesParams {
-            symbol: "SOLUSDC",
-            limit: Some(17),
-            from_id: None,
-        };
+    #[test]
+    fn test_get_historical_trades() {
+        let market_api = shared_test_market();
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+        let params = HistoricalTradesParams::new("SOLUSDC").limit(40);
 
-        let response = client.get(&Market::HistoricalTrades, params);
-        let bytes = response.await.unwrap().bytes().await.unwrap();
-
-        let trades: Vec<HistoricalTradesResponse> = serde_json::from_slice(&bytes).unwrap();
+        let trades: Vec<HistoricalTradesResponse> =
+            market_api.get_historical_trades(params).unwrap();
 
         let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
@@ -76,266 +82,292 @@ mod market_integration {
                 && trade.time > 0
         };
 
-        assert_eq!(trades.len(), 17);
+        assert_eq!(trades.len(), 40);
         assert!(trades.iter().all(check_trade));
     }
 
-    #[tokio::test]
-    async fn test_klines() {
-        let params = KlinesParams {
-            symbol: "ETHUSDC",
-            interval: Interval::Minutes5.as_ref(),
-            start_time: None,
-            end_time: None,
-            time_zone: None,
-            limit: Some(30),
-        };
+    fn check_kline(kline: &KlinesResponse) -> bool {
+        kline.open_time > 0
+            && kline.open > 0.0
+            && kline.high > 0.0
+            && kline.low > 0.0
+            && kline.close > 0.0
+            && kline.volume > 0.0
+            && kline.close_time > 0
+            && kline.quote_asset_volume > 0.0
+            && kline.number_of_trades > 0
+            && kline.taker_buy_base_asset_volume > 0.0
+            && kline.taker_buy_quote_asset_volume > 0.0
+    }
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+    #[test]
+    fn test_get_klines() {
+        let market_api = shared_test_market();
 
-        let response = client.get(&Market::Klines, params);
-        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let params = KlinesParams::new("ETHUSDC", &Interval::Minutes5).limit(30);
 
-        let klines: Vec<KlinesResponse> = serde_json::from_slice::<Vec<Value>>(&bytes)
-            .unwrap()
-            .into_iter()
-            .map(serde_json::from_value::<KlinesResponse>)
-            .map(|result| result.unwrap())
-            .collect();
-
-        let check_kline = |kline: &KlinesResponse| {
-            kline.open_time > 0
-                && kline.open > 0.0
-                && kline.high > 0.0
-                && kline.low > 0.0
-                && kline.close > 0.0
-                && kline.volume > 0.0
-                && kline.close_time > 0
-                && kline.quote_asset_volume > 0.0
-                && kline.number_of_trades > 0
-                && kline.taker_buy_base_asset_volume > 0.0
-                && kline.taker_buy_quote_asset_volume > 0.0
-        };
+        let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
     }
 
-    #[tokio::test]
-    async fn test_uiklines() {
-        let params = KlinesParams {
-            symbol: "ETHUSDC",
-            interval: Interval::Hours1.as_ref(),
-            start_time: None,
-            end_time: None,
-            time_zone: None,
-            limit: Some(50),
-        };
+    #[test]
+    fn test_get_uiklines() {
+        let market_api = shared_test_market();
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+        let params = KlinesParams::new("ETHUSDC", &Interval::Minutes5).limit(30);
 
-        let response = client.get(&Market::UIKlines, params);
-        let bytes = response.await.unwrap().bytes().await.unwrap();
+        let klines: Vec<KlinesResponse> = market_api.get_uiklines(params).unwrap();
 
-        let uiklines: Vec<KlinesResponse> = serde_json::from_slice::<Vec<Value>>(&bytes)
-            .unwrap()
-            .into_iter()
-            .map(serde_json::from_value::<KlinesResponse>)
-            .map(|result| result.unwrap())
-            .collect();
-
-        let check_kline = |uikline: &KlinesResponse| {
-            uikline.open_time > 0
-                && uikline.open > 0.0
-                && uikline.high > 0.0
-                && uikline.low > 0.0
-                && uikline.close > 0.0
-                && uikline.volume > 0.0
-                && uikline.close_time > 0
-                && uikline.quote_asset_volume > 0.0
-                && uikline.number_of_trades > 0
-                && uikline.taker_buy_base_asset_volume > 0.0
-                && uikline.taker_buy_quote_asset_volume > 0.0
-        };
-
-        assert_eq!(uiklines.len(), 50);
-        assert!(uiklines.iter().all(check_kline));
+        assert_eq!(klines.len(), 30);
+        assert!(klines.iter().all(check_kline));
     }
 
-    #[tokio::test]
-    async fn test_average_price() {
-        let params = AvgPriceParams { symbol: "FETUSDC" };
+    #[test]
+    fn test_get_average_price() {
+        let market_api = shared_test_market();
+        let params = AvgPriceParams::new("FETUSDC");
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
-        let response = client.get(&Market::AvgPrice, params);
-        let bytes = response.await.unwrap().bytes().await.unwrap();
-        let price: AvgPriceResponse = serde_json::from_slice(&bytes).unwrap();
+        let average_price: AvgPriceResponse = market_api.get_average_price(params).unwrap();
 
-        assert!(price.mins > 0);
-        assert!(price.price > 0.0);
-        assert!(price.close_time > 0);
+        assert!(average_price.mins > 0);
+        assert!(average_price.price > 0.0);
+        assert!(average_price.close_time > 0);
     }
 
-    #[tokio::test]
-    async fn test_ticker24h() {
-        let params = Ticker24hParams {
-            symbol: Some("BTCUSDC"),
-            symbols: None,
-            r#type: Some("FULL"),
-        };
+    fn check_ticker24h_mini(ticker_statistics: &Ticker24hMiniResponse) -> bool {
+        ticker_statistics.open_price > 0.0
+            && ticker_statistics.high_price > 0.0
+            && ticker_statistics.low_price > 0.0
+            && ticker_statistics.last_price > 0.0
+            && ticker_statistics.volume > 0.0
+            && ticker_statistics.quote_volume > 0.0
+            && ticker_statistics.open_time > 0
+            && ticker_statistics.close_time > 0
+            && ticker_statistics.first_id > 0
+            && ticker_statistics.last_id > 0
+            && ticker_statistics.count > 0
+    }
 
-        let params2 = Ticker24hParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"BNBUSDC\"]"),
-            r#type: Some("MINI"),
-        };
+    fn check_ticker24h_full(ticker_statistics: &Ticker24hFullResponse) -> bool {
+        ticker_statistics.price_change != 0.0
+            && ticker_statistics.price_change_percent != 0.0
+            && ticker_statistics.weighted_avg_price > 0.0
+            && ticker_statistics.prev_close_price > 0.0
+            && ticker_statistics.last_price > 0.0
+            && ticker_statistics.last_qty > 0.0
+            && ticker_statistics.bid_price > 0.0
+            && ticker_statistics.bid_qty > 0.0
+            && ticker_statistics.ask_price > 0.0
+            && ticker_statistics.ask_qty > 0.0
+            && ticker_statistics.open_price > 0.0
+            && ticker_statistics.high_price > 0.0
+            && ticker_statistics.low_price > 0.0
+            && ticker_statistics.volume > 0.0
+            && ticker_statistics.quote_volume > 0.0
+            && ticker_statistics.open_time > 0
+            && ticker_statistics.close_time > 0
+            && ticker_statistics.first_id > 0
+            && ticker_statistics.last_id > 0
+            && ticker_statistics.count > 0
+    }
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+    #[test]
+    fn test_get_ticker24h_mini() {
+        let market_api = shared_test_market();
 
-        let response = client.get(&&Market::Ticker24h, params);
-        let response2 = client.get(&&Market::Ticker24h, params2);
+        let params = Ticker24hParams::new().symbol("BTCUSDC").r#type("MINI");
 
-        let bytes = response.await.unwrap().bytes().await.unwrap();
-        let bytes2 = response2.await.unwrap().bytes().await.unwrap();
+        let ticker24h_mini: Ticker24hMiniResponse = market_api.get_ticker24h_mini(params).unwrap();
 
-        let ticker24h_full: Ticker24hFullResponse = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(ticker24h_mini.symbol, "BTCUSDC");
+        assert!(check_ticker24h_mini(&ticker24h_mini));
+    }
+
+    #[test]
+    fn test_get_ticker24h_full() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams::new().symbol("DOTUSDC").r#type("FULL");
+
+        let ticker24h_full: Ticker24hFullResponse = market_api.get_ticker24h_full(params).unwrap();
+
+        assert_eq!(ticker24h_full.symbol, "DOTUSDC");
+        assert!(check_ticker24h_full(&ticker24h_full));
+    }
+
+    #[test]
+    fn test_get_ticker24h_mini_list() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("MINI");
 
         let ticker24h_mini_list: Vec<Ticker24hMiniResponse> =
-            serde_json::from_slice(&bytes2).unwrap();
+            market_api.get_ticker24h_mini_list(params).unwrap();
 
-        let check_full_ticker24h = |ticker_statistics: &Ticker24hFullResponse| {
-            ticker_statistics.price_change != 0.0
-                && ticker_statistics.price_change_percent != 0.0
-                && ticker_statistics.weighted_avg_price > 0.0
-                && ticker_statistics.prev_close_price > 0.0
-                && ticker_statistics.last_price > 0.0
-                && ticker_statistics.last_qty > 0.0
-                && ticker_statistics.bid_price > 0.0
-                && ticker_statistics.bid_qty > 0.0
-                && ticker_statistics.ask_price > 0.0
-                && ticker_statistics.ask_qty > 0.0
-                && ticker_statistics.open_price > 0.0
-                && ticker_statistics.high_price > 0.0
-                && ticker_statistics.low_price > 0.0
-                && ticker_statistics.volume > 0.0
-                && ticker_statistics.quote_volume > 0.0
-                && ticker_statistics.open_time > 0
-                && ticker_statistics.close_time > 0
-                && ticker_statistics.first_id > 0
-                && ticker_statistics.last_id > 0
-                && ticker_statistics.count > 0
-        };
-
-        let check_mini_ticker24h = |ticker_statistics: &Ticker24hMiniResponse| {
-            ticker_statistics.open_price > 0.0
-                && ticker_statistics.high_price > 0.0
-                && ticker_statistics.low_price > 0.0
-                && ticker_statistics.last_price > 0.0
-                && ticker_statistics.volume > 0.0
-                && ticker_statistics.quote_volume > 0.0
-                && ticker_statistics.open_time > 0
-                && ticker_statistics.close_time > 0
-                && ticker_statistics.first_id > 0
-                && ticker_statistics.last_id > 0
-                && ticker_statistics.count > 0
-        };
-
-        assert_eq!(ticker24h_full.symbol, "BTCUSDC");
-        assert!(check_full_ticker24h(&ticker24h_full));
-
-        assert_eq!(ticker24h_mini_list[0].symbol, "BNBUSDC");
-        assert_eq!(ticker24h_mini_list[1].symbol, "BTCUSDC");
-        assert!(ticker24h_mini_list.iter().all(check_mini_ticker24h));
+        assert_eq!(ticker24h_mini_list[0].symbol, "BTCUSDC");
+        assert_eq!(ticker24h_mini_list[1].symbol, "SOLUSDC");
+        assert!(ticker24h_mini_list.iter().all(check_ticker24h_mini));
     }
 
-    #[tokio::test]
-    async fn test_ticker_day() {
-        let params = TickerDayParams {
-            symbol: Some("DOTUSDC"),
-            symbols: None,
-            time_zone: None,
-            r#type: Some("FULL"),
-        };
+    #[test]
+    fn test_get_ticker24h_full_list() {
+        let market_api = shared_test_market();
+        let params = Ticker24hParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("FULL");
 
-        let params2 = TickerDayParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
-            time_zone: None,
-            r#type: Some("MINI"),
-        };
+        let ticker24h_full_list: Vec<Ticker24hFullResponse> =
+            market_api.get_ticker24h_full_list(params).unwrap();
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+        assert_eq!(ticker24h_full_list[0].symbol, "BTCUSDC");
+        assert_eq!(ticker24h_full_list[1].symbol, "SOLUSDC");
+        assert!(ticker24h_full_list.iter().all(check_ticker24h_full));
+    }
 
-        let response = client.get(&Market::TickerDay, params);
-        let response2 = client.get(&Market::TickerDay, params2);
+    fn check_trading_day_mini(ticker_day: &TickerDayMiniResponse, symbol: &str) -> bool {
+        ticker_day.symbol == symbol
+            && ticker_day.open_price > 0.0
+            && ticker_day.high_price > 0.0
+            && ticker_day.low_price > 0.0
+            && ticker_day.last_price > 0.0
+            && ticker_day.volume > 0.0
+            && ticker_day.quote_volume > 0.0
+            && ticker_day.open_time > 0
+            && ticker_day.close_time > 0
+            && ticker_day.first_id > 0
+            && ticker_day.last_id >= ticker_day.first_id
+            && ticker_day.count > 0
+    }
 
-        let bytes = response.await.unwrap().bytes().await.unwrap();
-        let bytes2 = response2.await.unwrap().bytes().await.unwrap();
+    fn check_ticker_day_full(ticker_day: &TickerDayFullResponse, symbol: &str) -> bool {
+        ticker_day.symbol == symbol
+            && ticker_day.weighted_avg_price > 0.0
+            && ticker_day.open_price > 0.0
+            && ticker_day.high_price > 0.0
+            && ticker_day.low_price > 0.0
+            && ticker_day.last_price > 0.0
+            && ticker_day.volume > 0.0
+            && ticker_day.quote_volume > 0.0
+            && ticker_day.open_time > 0
+            && ticker_day.close_time > 0
+            && ticker_day.first_id > 0
+            && ticker_day.last_id >= ticker_day.first_id
+            && ticker_day.count > 0
+    }
 
-        let ticker_day_full: TickerDayFullResponse = serde_json::from_slice(&bytes).unwrap();
+    #[test]
+    fn test_get_ticker_day_mini() {
+        let market_api = shared_test_market();
+        let params = TickerDayParams::new().symbol("SOLUSDC").r#type("MINI");
 
-        let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
-            serde_json::from_slice(&bytes2).unwrap();
-        let symbols = vec!["BTCUSDC", "SOLUSDC"];
-        let ticker_symbol = ticker_day_mini_list
-            .into_iter()
-            .zip(symbols)
-            .collect::<Vec<(TickerDayMiniResponse, &str)>>();
+        let ticker_day_mini: TickerDayMiniResponse =
+            market_api.get_ticker_day_mini(params).unwrap();
 
-        let check_ticker_day_full = |ticker_day: &TickerDayFullResponse, symbol: &str| {
-            ticker_day.symbol == symbol
-                && ticker_day.weighted_avg_price > 0.0
-                && ticker_day.open_price > 0.0
-                && ticker_day.high_price > 0.0
-                && ticker_day.low_price > 0.0
-                && ticker_day.last_price > 0.0
-                && ticker_day.volume > 0.0
-                && ticker_day.quote_volume > 0.0
-                && ticker_day.open_time > 0
-                && ticker_day.close_time > 0
-                && ticker_day.first_id > 0
-                && ticker_day.last_id >= ticker_day.first_id
-                && ticker_day.count > 0
-        };
+        assert!(check_trading_day_mini(&ticker_day_mini, "SOLUSDC"));
+    }
 
-        let check_trading_day_mini = |ticker_day: &TickerDayMiniResponse, symbol: &str| {
-            ticker_day.symbol == symbol
-                && ticker_day.open_price > 0.0
-                && ticker_day.high_price > 0.0
-                && ticker_day.low_price > 0.0
-                && ticker_day.last_price > 0.0
-                && ticker_day.volume > 0.0
-                && ticker_day.quote_volume > 0.0
-                && ticker_day.open_time > 0
-                && ticker_day.close_time > 0
-                && ticker_day.first_id > 0
-                && ticker_day.last_id >= ticker_day.first_id
-                && ticker_day.count > 0
-        };
+    #[test]
+    fn test_get_ticker_day_full() {
+        let market_api = shared_test_market();
+        let params = TickerDayParams::new().symbol("DOTUSDC").r#type("FULL");
+
+        let ticker_day_full: TickerDayFullResponse =
+            market_api.get_ticker_day_full(params).unwrap();
 
         assert!(check_ticker_day_full(&ticker_day_full, "DOTUSDC"));
+    }
+
+    #[test]
+    fn test_get_ticker_day_mini_list() {
+        let market_api = shared_test_market();
+        let symbols = vec!["BTCUSDC", "SOLUSDC"];
+        let params = TickerDayParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("MINI");
+
+        let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
+            market_api.get_ticker_day_mini_list(params).unwrap();
+
         assert!(
-            ticker_symbol
+            ticker_day_mini_list
+                .into_iter()
+                .zip(symbols)
+                .collect::<Vec<(TickerDayMiniResponse, &str)>>()
                 .iter()
                 .all(|(td, s)| check_trading_day_mini(td, s))
         );
     }
 
-    #[tokio::test]
-    async fn test_price_ticker() {
-        let params = PriceTickerParams {
-            symbol: None,
-            symbols: Some("[\"BTCUSDC\",\"SOLUSDC\"]"),
-        };
+    #[test]
+    fn test_get_ticker_day_full_list() {
+        let market_api = shared_test_market();
+        let symbols = vec!["BTCUSDC", "SOLUSDC"];
+        let params = TickerDayParams::new()
+            .symbols("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .r#type("FULL");
 
-        let client = Client::new(&Host::Api, HmacSha256::new("api_key", "secret_key"));
+        let ticker_day_mini_list: Vec<TickerDayFullResponse> =
+            market_api.get_ticker_day_full_list(params).unwrap();
 
-        let response = client.get(&Market::TickerPrice, params);
+        assert!(
+            ticker_day_mini_list
+                .into_iter()
+                .zip(symbols)
+                .collect::<Vec<(TickerDayFullResponse, &str)>>()
+                .iter()
+                .all(|(td, s)| check_ticker_day_full(td, s))
+        );
+    }
 
-        let bytes = response.await.unwrap().bytes().await.unwrap();
-        let prices: Vec<PriceTickerResponse> = serde_json::from_slice(&bytes).unwrap();
+    #[test]
+    fn test_get_price_ticker() {
+        let market_api = shared_test_market();
 
-        assert_eq!(prices.len(), 2);
-        assert!(prices.iter().all(|p| p.price > 0.0));
+        let egld_usdc: PriceTickerResponse = market_api.get_price_ticker("EGLDUSDC").unwrap();
+
+        assert_eq!(egld_usdc.symbol, "EGLDUSDC");
+        assert!(egld_usdc.price > 0.0);
+    }
+
+    #[test]
+    fn test_get_price_ticker_list() {
+        let market_api = shared_test_market();
+
+        let price_ticker_list: Vec<PriceTickerResponse> = market_api
+            .get_price_ticker_list("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .unwrap();
+
+        assert!(price_ticker_list.iter().all(|p| p.price > 0.0));
+    }
+
+    fn check_book_ticker(book_ticker: &BookTickerResponse, symbol: &str) -> bool {
+        book_ticker.symbol == symbol
+            && book_ticker.bid_price > 0.0
+            && book_ticker.bid_qty > 0.0
+            && book_ticker.ask_price > 0.0
+            && book_ticker.ask_qty > 0.0
+    }
+
+    #[test]
+    fn test_get_book_ticker() {
+        let market_api = shared_test_market();
+
+        let book_ticker: BookTickerResponse = market_api.get_book_ticker("EGLDUSDC").unwrap();
+
+        assert!(check_book_ticker(&book_ticker, "EGLDUSDC"));
+    }
+
+    #[test]
+    fn test_get_book_ticker_list() {
+        let market_api = shared_test_market();
+
+        let book_ticker: Vec<BookTickerResponse> = market_api
+            .get_book_ticker_list("[\"BTCUSDC\",\"SOLUSDC\"]")
+            .unwrap();
+
+        assert!(check_book_ticker(&book_ticker[0], "BTCUSDC"));
+        assert!(check_book_ticker(&book_ticker[1], "SOLUSDC"));
     }
 }

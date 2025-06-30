@@ -144,4 +144,18 @@ mod futures_market_api_integration_tests {
         assert!(mark_price.mark_price > 0.0);
         assert!(mark_price.time > 0);
     }
+
+    #[test]
+    fn test_get_mark_price_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let mark_price_list: Vec<MarkPriceResponse> = market_api.get_mark_price_list().unwrap();
+
+        assert!(mark_price_list.len() > 0);
+        assert!(
+            mark_price_list
+                .iter()
+                .all(|mark_price| { mark_price.mark_price > 0.0 && mark_price.time > 0 })
+        );
+    }
 }

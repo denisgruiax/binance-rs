@@ -71,4 +71,9 @@ where
     ) -> Result<MarkPriceResponse, BinanceError> {
         self.client.get(Market::MarkPrice, params)
     }
+
+    pub fn get_mark_price_list(&self) -> Result<Vec<MarkPriceResponse>, BinanceError> {
+        self.client
+            .get(Market::MarkPrice, MarkPriceParams::default())
+    }
 }

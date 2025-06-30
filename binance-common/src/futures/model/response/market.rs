@@ -105,3 +105,18 @@ pub struct MarkPriceResponse {
     pub next_funding_time: u64,
     pub time: u64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FundingRateHistoryResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub funding_rate: f64,
+
+    pub funding_time: u64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub mark_price: f64,
+}

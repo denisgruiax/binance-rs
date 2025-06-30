@@ -2,10 +2,11 @@
 mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
     use binance_common::futures::model::params::market::{
-        DepthParams, KlinesParams, MarkPriceParams, TradesParams,
+        DepthParams, FundingRateHistoryParams, KlinesParams, MarkPriceParams, TradesParams,
     };
     use binance_common::futures::model::response::market::{
-        DepthResponse, HistoricalTradesResponse, KlinesResponse, MarkPriceResponse, TradesResponse,
+        DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, KlinesResponse,
+        MarkPriceResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -157,5 +158,25 @@ mod futures_market_api_integration_tests {
                 .iter()
                 .all(|mark_price| { mark_price.mark_price > 0.0 && mark_price.time > 0 })
         );
+    }
+
+    #[test]
+    fn test_get_funding_rate_history() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: FundingRateHistoryParams = FundingRateHistoryParams {
+            symbol: Some("BTCUSDT"),
+            start_time: None,
+            end_time: None,
+            limit: Some(8),
+        };
+
+        let funding_rate_history: Vec<FundingRateHistoryResponse> =
+            market_api.get_funding_rate_history(params).unwrap();
+
+        assert_eq!(funding_rate_history.len(), 8);
+        assert!(funding_rate_history.iter().all(|funding_rate| {
+            funding_rate.mark_price > 0.0 && funding_rate.funding_time > 0
+        }));
     }
 }

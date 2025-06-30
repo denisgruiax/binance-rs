@@ -1,7 +1,9 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
+use binance_common::futures::model::params::market::FundingRateHistoryParams;
 use binance_common::futures::model::response::market::{
-    DepthResponse, HistoricalTradesResponse, MarkPriceResponse, TradesResponse,
+    DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, MarkPriceResponse,
+    TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
@@ -75,5 +77,12 @@ where
     pub fn get_mark_price_list(&self) -> Result<Vec<MarkPriceResponse>, BinanceError> {
         self.client
             .get(Market::MarkPrice, MarkPriceParams::default())
+    }
+
+    pub fn get_funding_rate_history(
+        &self,
+        params: FundingRateHistoryParams,
+    ) -> Result<Vec<FundingRateHistoryResponse>, BinanceError> {
+        self.client.get(Market::FundingRateHistory, params)
     }
 }

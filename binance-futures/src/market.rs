@@ -1,9 +1,9 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
-use binance_common::futures::model::params::market::FundingRateHistoryParams;
+use binance_common::futures::model::params::market::{FundingRateHistoryParams, Ticker24hParams};
 use binance_common::futures::model::response::market::{
     DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, MarkPriceResponse,
-    TradesResponse,
+    Ticker24hResponse, TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
@@ -84,5 +84,12 @@ where
         params: FundingRateHistoryParams,
     ) -> Result<Vec<FundingRateHistoryResponse>, BinanceError> {
         self.client.get(Market::FundingRateHistory, params)
+    }
+
+    pub fn get_ticker24h(
+        &self,
+        params: Ticker24hParams,
+    ) -> Result<Ticker24hResponse, BinanceError> {
+        self.client.get(Market::Ticker24h, params)
     }
 }

@@ -1,7 +1,8 @@
 pub use crate::spot::model::response::general::{EmptyResponse, ServerTimeResponse};
 pub use crate::spot::model::response::market::{Asks, Bids};
 pub use serde::{Deserialize, Serialize};
-use serde_with::serde_as;
+use serde_with::{DisplayFromStr, serde_as};
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExchangeInformationResponse {
@@ -45,4 +46,37 @@ pub struct DepthResponse {
 
     pub bids: Vec<Bids>,
     pub asks: Vec<Asks>,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TradesResponse {
+    pub id: u32,
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+    #[serde_as(as = "DisplayFromStr")]
+    pub qty: f64,
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_qty: f64,
+    pub time: u64,
+    pub is_buyer_maker: bool,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HistoricalTradesResponse {
+    pub id: u64,
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_qty: f64,
+
+    pub time: u64,
+    pub is_buyer_maker: bool,
 }

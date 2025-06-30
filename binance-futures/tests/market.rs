@@ -1,9 +1,11 @@
 #[cfg(test)]
 mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
-    use binance_common::futures::model::params::market::{DepthParams, KlinesParams, TradesParams};
+    use binance_common::futures::model::params::market::{
+        DepthParams, KlinesParams, MarkPriceParams, TradesParams,
+    };
     use binance_common::futures::model::response::market::{
-        DepthResponse, HistoricalTradesResponse, KlinesResponse, TradesResponse,
+        DepthResponse, HistoricalTradesResponse, KlinesResponse, MarkPriceResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -122,11 +124,24 @@ mod futures_market_api_integration_tests {
     fn test_get_klines() {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
-        let params = KlinesParams::new("ETHUSDC", &Interval::Minutes5).limit(30);
+        let params = KlinesParams::new("ETHUSDT", &Interval::Minutes5).limit(30);
 
         let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
+    }
+
+    #[test]
+    fn test_get_mark_price() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params = MarkPriceParams::new("ETHUSDT");
+
+        let mark_price: MarkPriceResponse = market_api.get_mark_price(params).unwrap();
+
+        assert_eq!(mark_price.symbol, "ETHUSDT");
+        assert!(mark_price.mark_price > 0.0);
+        assert!(mark_price.time > 0);
     }
 }

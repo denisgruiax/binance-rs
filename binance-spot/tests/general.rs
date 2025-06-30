@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod general_api {
+mod spot_general_api_integration_tests {
     use binance_spot::general::GeneralApi;
     use binance_common::spot::{
         endpoint::host::Host,

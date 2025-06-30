@@ -30,18 +30,20 @@ pub struct FundingRateHistoryParams<'a> {
     pub limit: Option<u16>,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct Ticker24hParams<'a> {
-    pub symbol: &'a str,
+    pub symbol: Option<&'a str>,
 }
 
 impl<'a> Ticker24hParams<'a> {
     pub fn new(symbol: &'a str) -> Self {
-        Ticker24hParams { symbol }
+        Ticker24hParams {
+            symbol: Some(symbol),
+        }
     }
 
     pub fn symbol(mut self, symbol: &'a str) -> Self {
-        self.symbol = symbol;
+        self.symbol = Some(symbol);
         self
     }
 }

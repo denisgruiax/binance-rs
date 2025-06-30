@@ -1,11 +1,12 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
 use binance_common::futures::model::response::market::{
-    DepthResponse, HistoricalTradesResponse, TradesResponse,
+    DepthResponse, HistoricalTradesResponse, MarkPriceResponse, TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
-        DepthParams, EmptyParams, ExchangeInformationParams, HistoricalTradesParams, TradesParams,
+        DepthParams, EmptyParams, ExchangeInformationParams, HistoricalTradesParams,
+        MarkPriceParams, TradesParams,
     },
     response::market::{EmptyResponse, ExchangeInformationResponse, ServerTimeResponse},
 };
@@ -62,5 +63,12 @@ where
 
     pub fn get_klines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::Klines, params)
+    }
+
+    pub fn get_mark_price(
+        &self,
+        params: MarkPriceParams,
+    ) -> Result<MarkPriceResponse, BinanceError> {
+        self.client.get(Market::MarkPrice, params)
     }
 }

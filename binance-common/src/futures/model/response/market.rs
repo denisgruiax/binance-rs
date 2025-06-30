@@ -172,6 +172,27 @@ pub struct TickerPriceResponse {
 
     #[serde_as(as = "DisplayFromStr")]
     pub price: f64,
-    
+
+    pub time: u64,
+}
+
+#[serde_as]
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BookTickerResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub bid_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub bid_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub ask_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub ask_qty: f64,
+
     pub time: u64,
 }

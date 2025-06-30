@@ -1,16 +1,13 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
-use binance_common::futures::model::params::market::{
-    FundingRateHistoryParams, Ticker24hParams, TickerPriceParams,
-};
+use binance_common::futures::model::params::market::{FundingRateHistoryParams, Symbol};
 use binance_common::futures::model::response::market::{
     DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, MarkPriceResponse,
     Ticker24hResponse, TickerPriceResponse, TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
-        DepthParams, EmptyParams, ExchangeInformationParams, HistoricalTradesParams,
-        MarkPriceParams, TradesParams,
+        DepthParams, EmptyParams, ExchangeInformationParams, HistoricalTradesParams, TradesParams,
     },
     response::market::{EmptyResponse, ExchangeInformationResponse, ServerTimeResponse},
 };
@@ -71,14 +68,14 @@ where
 
     pub fn get_mark_price(
         &self,
-        params: MarkPriceParams,
+        params: Symbol,
     ) -> Result<MarkPriceResponse, BinanceError> {
         self.client.get(Market::MarkPrice, params)
     }
 
     pub fn get_mark_price_list(&self) -> Result<Vec<MarkPriceResponse>, BinanceError> {
         self.client
-            .get(Market::MarkPrice, MarkPriceParams::default())
+            .get(Market::MarkPrice, Symbol::default())
     }
 
     pub fn get_funding_rate_history(
@@ -90,37 +87,37 @@ where
 
     pub fn get_ticker24h(
         &self,
-        params: Ticker24hParams,
+        params: Symbol,
     ) -> Result<Ticker24hResponse, BinanceError> {
         self.client.get(Market::Ticker24h, params)
     }
 
     pub fn get_ticker24h_list(&self) -> Result<Vec<Ticker24hResponse>, BinanceError> {
         self.client
-            .get(Market::Ticker24h, Ticker24hParams::default())
+            .get(Market::Ticker24h, Symbol::default())
     }
 
     pub fn get_ticker_price(
         &self,
-        params: TickerPriceParams,
+        params: Symbol,
     ) -> Result<TickerPriceResponse, BinanceError> {
         self.client.get(Market::TickerPrice, params)
     }
 
     pub fn get_ticker_price_list(&self) -> Result<Vec<TickerPriceResponse>, BinanceError> {
         self.client
-            .get(Market::TickerPrice, TickerPriceParams::default())
+            .get(Market::TickerPrice, Symbol::default())
     }
 
     pub fn get_ticker_price_v2(
         &self,
-        params: TickerPriceParams,
+        params: Symbol,
     ) -> Result<TickerPriceResponse, BinanceError> {
         self.client.get(Market::TickerPriceV2, params)
     }
 
     pub fn get_ticker_price_v2_list(&self) -> Result<Vec<TickerPriceResponse>, BinanceError> {
         self.client
-            .get(Market::TickerPriceV2, TickerPriceParams::default())
+            .get(Market::TickerPriceV2, Symbol::default())
     }
 }

@@ -5,24 +5,6 @@ pub use crate::spot::model::params::{EmptyParams, general::ExchangeInformationPa
 use serde::Serialize;
 
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct MarkPriceParams<'a> {
-    pub symbol: Option<&'a str>,
-}
-
-impl<'a> MarkPriceParams<'a> {
-    pub fn new(symbol: &'a str) -> Self {
-        MarkPriceParams {
-            symbol: Some(symbol),
-        }
-    }
-
-    pub fn symbol(mut self, symbol: &'a str) -> Self {
-        self.symbol = Some(symbol);
-        self
-    }
-}
-
-#[derive(Clone, Debug, Default, Serialize)]
 pub struct FundingRateHistoryParams<'a> {
     pub symbol: Option<&'a str>,
     pub start_time: Option<u64>,
@@ -31,37 +13,17 @@ pub struct FundingRateHistoryParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
-pub struct Ticker24hParams<'a> {
-    pub symbol: Option<&'a str>,
+pub struct Symbol<'a> {
+    pub symbol: &'a str,
 }
 
-impl<'a> Ticker24hParams<'a> {
+impl<'a> Symbol<'a> {
     pub fn new(symbol: &'a str) -> Self {
-        Ticker24hParams {
-            symbol: Some(symbol),
-        }
+        Symbol { symbol }
     }
 
     pub fn symbol(mut self, symbol: &'a str) -> Self {
-        self.symbol = Some(symbol);
-        self
-    }
-}
-
-#[derive(Clone, Debug, Default, Serialize)]
-pub struct TickerPriceParams<'a> {
-    pub symbol: Option<&'a str>,
-}
-
-impl<'a> TickerPriceParams<'a> {
-    pub fn new(symbol: &'a str) -> Self {
-        TickerPriceParams {
-            symbol: Some(symbol),
-        }
-    }
-
-    pub fn symbol(mut self, symbol: &'a str) -> Self {
-        self.symbol = Some(symbol);
+        self.symbol = symbol;
         self
     }
 }

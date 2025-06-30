@@ -2,8 +2,7 @@
 mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
     use binance_common::futures::model::params::market::{
-        DepthParams, FundingRateHistoryParams, KlinesParams, MarkPriceParams, Ticker24hParams,
-        TickerPriceParams, TradesParams,
+        DepthParams, FundingRateHistoryParams, KlinesParams, Symbol, TradesParams,
     };
     use binance_common::futures::model::response::market::{
         DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, KlinesResponse,
@@ -138,7 +137,7 @@ mod futures_market_api_integration_tests {
     fn test_get_mark_price() {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
-        let params = MarkPriceParams::new("ETHUSDT");
+        let params: Symbol = Symbol::new("ETHUSDT");
 
         let mark_price: MarkPriceResponse = market_api.get_mark_price(params).unwrap();
 
@@ -185,7 +184,7 @@ mod futures_market_api_integration_tests {
     fn test_get_ticker24() {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
-        let params: Ticker24hParams = Ticker24hParams::new("BTCUSDT");
+        let params: Symbol = Symbol::new("BTCUSDT");
 
         let ticker24h: Ticker24hResponse = market_api.get_ticker24h(params).unwrap();
 
@@ -209,7 +208,7 @@ mod futures_market_api_integration_tests {
     fn test_get_ticker_price() {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
-        let params: TickerPriceParams = TickerPriceParams::new("BTCUSDT");
+        let params: Symbol = Symbol::new("BTCUSDT");
 
         let ticker24h: TickerPriceResponse = market_api.get_ticker_price(params).unwrap();
 
@@ -231,7 +230,7 @@ mod futures_market_api_integration_tests {
     fn test_get_ticker_price_v2() {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
-        let params: TickerPriceParams = TickerPriceParams::new("BTCUSDT");
+        let params: Symbol = Symbol::new("BTCUSDT");
 
         let ticker24h: TickerPriceResponse = market_api.get_ticker_price_v2(params).unwrap();
 

@@ -1,6 +1,7 @@
 pub use crate::spot::model::response::general::{EmptyResponse, ServerTimeResponse};
+pub use crate::spot::model::response::market::{Asks, Bids};
 pub use serde::{Deserialize, Serialize};
-
+use serde_with::serde_as;
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ExchangeInformationResponse {
@@ -10,7 +11,7 @@ pub struct ExchangeInformationResponse {
     pub symbols: Vec<SymbolResponse>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RateLimitResponse {
     pub rate_limit_type: String,
@@ -19,7 +20,7 @@ pub struct RateLimitResponse {
     pub limit: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SymbolResponse {
     pub symbol: String,
@@ -28,4 +29,20 @@ pub struct SymbolResponse {
     pub base_asset_precision: u64,
     pub quote_asset: String,
     pub order_types: Vec<String>,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DepthResponse {
+    pub last_update_id: u64,
+
+    #[serde(rename = "E")]
+    pub e: u64,
+
+    #[serde(rename = "T")]
+    pub t: u64,
+
+    pub bids: Vec<Bids>,
+    pub asks: Vec<Asks>,
 }

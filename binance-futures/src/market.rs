@@ -3,8 +3,8 @@ use binance_common::futures::endpoint::route::Market;
 use binance_common::futures::model::params::market::{FundingRateHistoryParams, Pair, Symbol};
 use binance_common::futures::model::response::market::{
     BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
-    HistoricalTradesResponse, MarkPriceResponse, Ticker24hResponse, TickerPriceResponse,
-    TradesResponse,
+    HistoricalTradesResponse, MarkPriceResponse, OpenInterestResponse, Ticker24hResponse,
+    TickerPriceResponse, TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
@@ -119,5 +119,9 @@ where
         params: Pair,
     ) -> Result<Vec<DeliveryPriceResponse>, BinanceError> {
         self.client.get(Market::DeliveryPrice, params)
+    }
+
+    pub fn get_open_interest(&self, params: Symbol) -> Result<OpenInterestResponse, BinanceError> {
+        self.client.get(Market::OpenInterest, params)
     }
 }

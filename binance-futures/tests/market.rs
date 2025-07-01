@@ -2,11 +2,12 @@
 mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
     use binance_common::futures::model::params::market::{
-        DepthParams, FundingRateHistoryParams, KlinesParams, Symbol, TradesParams,
+        DepthParams, FundingRateHistoryParams, KlinesParams, Pair, Symbol, TradesParams,
     };
     use binance_common::futures::model::response::market::{
-        BookTickerResponse, DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse,
-        KlinesResponse, MarkPriceResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
+        BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
+        HistoricalTradesResponse, KlinesResponse, MarkPriceResponse, Ticker24hResponse,
+        TickerPriceResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -267,6 +268,17 @@ mod futures_market_api_integration_tests {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
         let book_ticker: Vec<BookTickerResponse> = market_api.get_book_ticker_list().unwrap();
+
+        assert!(book_ticker.len() > 0);
+    }
+
+    #[test]
+    fn test_get_delivery_price_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let book_ticker: Vec<DeliveryPriceResponse> = market_api
+            .get_delivery_price_list(Pair::new("BTCUSDT"))
+            .unwrap();
 
         assert!(book_ticker.len() > 0);
     }

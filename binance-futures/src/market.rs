@@ -1,9 +1,10 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
-use binance_common::futures::model::params::market::{FundingRateHistoryParams, Symbol};
+use binance_common::futures::model::params::market::{FundingRateHistoryParams, Pair, Symbol};
 use binance_common::futures::model::response::market::{
-    BookTickerResponse, DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse,
-    MarkPriceResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
+    BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
+    HistoricalTradesResponse, MarkPriceResponse, Ticker24hResponse, TickerPriceResponse,
+    TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
@@ -111,5 +112,12 @@ where
 
     pub fn get_book_ticker_list(&self) -> Result<Vec<BookTickerResponse>, BinanceError> {
         self.client.get(Market::BookTicker, Symbol::default())
+    }
+
+    pub fn get_delivery_price_list(
+        &self,
+        params: Pair,
+    ) -> Result<Vec<DeliveryPriceResponse>, BinanceError> {
+        self.client.get(Market::DeliveryPrice, params)
     }
 }

@@ -46,7 +46,7 @@ impl AsRef<str> for Market {
             Market::TickerPrice => "/fapi/v1/ticker/price?",
             Market::TickerPriceV2 => "/fapi/v2/ticker/price?",
             Market::BookTicker => "/fapi/v1/ticker/bookTicker?",
-            Market::DeliveryPrice => "/fapi/v1/deliveryPrice?",
+            Market::DeliveryPrice => "/futures/data/delivery-price?",
             Market::OpenInterest => "/fapi/v1/openInterest?",
             Market::OpenInterestHistory => "/fapi/v1/openInterestHist?",
             Market::TopLongShortPositionRatio => "/futures/data/topLongShortAccountRatio?",

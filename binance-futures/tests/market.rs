@@ -5,8 +5,8 @@ mod futures_market_api_integration_tests {
         DepthParams, FundingRateHistoryParams, KlinesParams, Symbol, TradesParams,
     };
     use binance_common::futures::model::response::market::{
-        DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse, KlinesResponse,
-        MarkPriceResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
+        BookTickerResponse, DepthResponse, FundingRateHistoryResponse, HistoricalTradesResponse,
+        KlinesResponse, MarkPriceResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -247,5 +247,27 @@ mod futures_market_api_integration_tests {
             market_api.get_ticker_price_v2_list().unwrap();
 
         assert!(ticker24h_list.len() > 0);
+    }
+
+    #[test]
+    fn test_get_book_ticker() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: Symbol = Symbol::new("ETHUSDT");
+
+        let book_ticker = market_api.get_book_ticker(params).unwrap();
+
+        assert_eq!(book_ticker.symbol, "ETHUSDT");
+        assert!(book_ticker.bid_price > 0.0);
+        assert!(book_ticker.ask_qty > 0.0);
+    }
+
+    #[test]
+    fn test_get_book_ticker_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let book_ticker: Vec<BookTickerResponse> = market_api.get_book_ticker_list().unwrap();
+
+        assert!(book_ticker.len() > 0);
     }
 }

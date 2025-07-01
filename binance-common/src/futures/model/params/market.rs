@@ -27,3 +27,19 @@ impl<'a> Symbol<'a> {
         self
     }
 }
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct Pair<'a> {
+    pub pair: &'a str,
+}
+
+impl<'a> Pair<'a> {
+    pub fn new(pair: &'a str) -> Self {
+        Pair { pair }
+    }
+
+    pub fn symbol(mut self, pair: &'a str) -> Self {
+        self.pair = pair;
+        self
+    }
+}

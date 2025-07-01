@@ -203,3 +203,14 @@ pub struct DeliveryPriceResponse {
     pub delivery_time: u64,
     pub delivery_price: f64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenInterestResponse {
+    #[serde_as(as = "DisplayFromStr")]
+    pub open_interest: f64,
+
+    pub symbol: String,
+    pub time: u64,
+}

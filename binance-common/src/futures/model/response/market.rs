@@ -122,7 +122,7 @@ pub struct FundingRateHistoryResponse {
 }
 
 #[serde_as]
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Ticker24hResponse {
     pub symbol: String,
@@ -165,7 +165,7 @@ pub struct Ticker24hResponse {
 }
 
 #[serde_as]
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TickerPriceResponse {
     pub symbol: String,
@@ -177,7 +177,7 @@ pub struct TickerPriceResponse {
 }
 
 #[serde_as]
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BookTickerResponse {
     pub symbol: String,
@@ -195,4 +195,11 @@ pub struct BookTickerResponse {
     pub ask_qty: f64,
 
     pub time: u64,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DeliveryPriceResponse {
+    pub delivery_time: u64,
+    pub delivery_price: f64,
 }

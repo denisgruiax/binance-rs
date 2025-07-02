@@ -5,8 +5,11 @@ mod futures_account_api_integration_tests {
     use binance_common::futures::{
         endpoint::host::Host,
         model::{
-            params::account::{FuturesAccountParams, FuturesBalanceParams, PositionSideParams},
-            response::account::FuturesBalanceResponse,
+            params::account::{
+                CommissionRateParams, FuturesAccountParams, FuturesBalanceParams,
+                PositionSideParams,
+            },
+            response::account::{CommissionRateResponse, FuturesBalanceResponse},
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
@@ -82,5 +85,17 @@ mod futures_account_api_integration_tests {
         let futures_account = account_api.get_futures_account(params).unwrap();
 
         assert!(futures_account.total_cross_wallet_balance > 0.0);
+    }
+
+    #[test]
+    fn test_get_comission_rate() {
+        let account_api: Arc<AccountApi<HmacSha256<'static>>> = shared_test_client::<HmacSha256>();
+
+        let params: CommissionRateParams = CommissionRateParams::new("SOLUSDT");
+
+        let comission_rates: CommissionRateResponse =
+            account_api.get_comission_rate(params).unwrap();
+
+        assert_eq!(comission_rates.symbol, "SOLUSDT");
     }
 }

@@ -136,7 +136,7 @@ impl AsRef<str> for Account {
             Account::FuturesBalanceV3 => "/fapi/v3/balance?",
             Account::FuturesAccount => "/fapi/v3/account?",
             Account::TransactionHistory => "/fapi/v1/transactionHistory?",
-            Account::CommissionRate => "/fapi/v1/commissionRate?symbol=",
+            Account::CommissionRate => "/fapi/v1/commissionRate?",
             Account::Configuration => "/fapi/v1/configuration?",
             Account::SymbolConfiguration => "/fapi/v1/symbolConfiguration?symbol=",
             Account::OrderRateLimit => "/fapi/v1/orderRateLimit?symbol=",

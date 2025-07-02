@@ -266,24 +266,37 @@ impl<'a> TakerBuySellVolumeParams<'a> {
 
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct BasisParams<'a> {
-    pub symbol: &'a str,
+    pub pair: &'a str,
+    pub contract_type: &'a str,
     pub period: &'a str,
-    pub limit: Option<u16>,
+    pub limit: u16,
     pub start_time: Option<u64>,
     pub end_time: Option<u64>,
 }
 
 impl<'a> BasisParams<'a> {
-    pub fn new(symbol: &'a str, period: &'a impl AsRef<str>) -> Self {
+    pub fn new(
+        pair: &'a str,
+        contract_type: &'a impl AsRef<str>,
+        period: &'a impl AsRef<str>,
+        limit: u16,
+    ) -> Self {
         BasisParams {
-            symbol,
+            pair,
+            contract_type: contract_type.as_ref(),
             period: period.as_ref(),
+            limit,
             ..Default::default()
         }
     }
 
-    pub fn symbol(mut self, symbol: &'a str) -> Self {
-        self.symbol = symbol;
+    pub fn pair(mut self, pair: &'a str) -> Self {
+        self.pair = pair;
+        self
+    }
+
+    pub fn contract_type(mut self, contract_type: &'a impl AsRef<str>) -> Self {
+        self.contract_type = contract_type.as_ref();
         self
     }
 
@@ -293,7 +306,7 @@ impl<'a> BasisParams<'a> {
     }
 
     pub fn limit(mut self, limit: u16) -> Self {
-        self.limit = Some(limit);
+        self.limit = limit;
         self
     }
 

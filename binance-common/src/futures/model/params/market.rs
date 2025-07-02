@@ -1,3 +1,4 @@
+use crate::enums::ContractType;
 pub use crate::spot::model::params::market::{
     DepthParams, HistoricalTradesParams, KlinesParams, TradesParams,
 };
@@ -5,6 +6,7 @@ pub use crate::spot::model::params::{EmptyParams, general::ExchangeInformationPa
 use serde::Serialize;
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct FundingRateHistoryParams<'a> {
     pub symbol: Option<&'a str>,
     pub start_time: Option<u64>,
@@ -13,6 +15,7 @@ pub struct FundingRateHistoryParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Symbol<'a> {
     pub symbol: &'a str,
 }
@@ -45,6 +48,7 @@ impl<'a> Pair<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct OpenInterestHistoryParams<'a> {
     pub symbol: &'a str,
     pub period: &'a str,
@@ -89,6 +93,7 @@ impl<'a> OpenInterestHistoryParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TopLongShortPositionRatioParams<'a> {
     pub symbol: &'a str,
     pub period: &'a str,
@@ -133,6 +138,7 @@ impl<'a> TopLongShortPositionRatioParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TopLongShortAccountRatioParams<'a> {
     pub symbol: &'a str,
     pub period: &'a str,
@@ -177,6 +183,7 @@ impl<'a> TopLongShortAccountRatioParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GlobalLongShortAccountRatioParams<'a> {
     pub symbol: &'a str,
     pub period: &'a str,
@@ -221,6 +228,7 @@ impl<'a> GlobalLongShortAccountRatioParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TakerBuySellVolumeParams<'a> {
     pub symbol: &'a str,
     pub period: &'a str,
@@ -265,9 +273,10 @@ impl<'a> TakerBuySellVolumeParams<'a> {
 }
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BasisParams<'a> {
     pub pair: &'a str,
-    pub contract_type: &'a str,
+    pub contract_type: ContractType,
     pub period: &'a str,
     pub limit: u16,
     pub start_time: Option<u64>,
@@ -277,13 +286,13 @@ pub struct BasisParams<'a> {
 impl<'a> BasisParams<'a> {
     pub fn new(
         pair: &'a str,
-        contract_type: &'a impl AsRef<str>,
+        contract_type: ContractType,
         period: &'a impl AsRef<str>,
         limit: u16,
     ) -> Self {
         BasisParams {
             pair,
-            contract_type: contract_type.as_ref(),
+            contract_type,
             period: period.as_ref(),
             limit,
             ..Default::default()
@@ -295,8 +304,8 @@ impl<'a> BasisParams<'a> {
         self
     }
 
-    pub fn contract_type(mut self, contract_type: &'a impl AsRef<str>) -> Self {
-        self.contract_type = contract_type.as_ref();
+    pub fn contract_type(mut self, contract_type: ContractType) -> Self {
+        self.contract_type = contract_type;
         self
     }
 

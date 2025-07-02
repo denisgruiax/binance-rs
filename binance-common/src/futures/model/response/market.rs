@@ -263,7 +263,6 @@ pub struct TopLongShortAccountRatioResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub short_account: f64,
 
-    #[serde_as(as = "DisplayFromStr")]
     pub timestamp: u64,
 }
 
@@ -282,7 +281,6 @@ pub struct GlobalLongShortAccountRatioResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub short_account: f64,
 
-    #[serde_as(as = "DisplayFromStr")]
     pub timestamp: u64,
 }
 
@@ -299,7 +297,6 @@ pub struct TakerBuySellVolumeResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub sell_vol: f64,
 
-    #[serde_as(as = "DisplayFromStr")]
     pub timestamp: u64,
 }
 
@@ -318,7 +315,6 @@ pub struct BasisResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub futures_price: f64,
 
-    // This can be empty string or number; let's use Option<String>
     pub annualized_basis_rate: Option<String>,
 
     #[serde_as(as = "DisplayFromStr")]

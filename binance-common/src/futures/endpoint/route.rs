@@ -22,10 +22,6 @@ pub enum Market {
     GlobalLongShortAccountRatio,
     TakerBuySellVolume,
     Basis,
-    IndexInfo,
-    AssetIndex,
-    IndexConstituents,
-    InsuranceBalance,
 }
 
 impl AsRef<str> for Market {
@@ -52,12 +48,8 @@ impl AsRef<str> for Market {
             Market::TopLongShortPositionRatio => "/futures/data/topLongShortPositionRatio?",
             Market::TopLongShortAccountRatio => "/futures/data/topLongShortAccountRatio?",
             Market::GlobalLongShortAccountRatio => "/futures/data/globalLongShortAccountRatio?",
-            Market::TakerBuySellVolume => "/futures/data/takerlongshortRatio?symbol=",
-            Market::Basis => "/futures/data/basis?symbol=",
-            Market::IndexInfo => "/vapi/indexInfo?symbol=",
-            Market::AssetIndex => "/vapi/assetIndex?symbol=",
-            Market::IndexConstituents => "/vapi/indexConstituents?symbol=",
-            Market::InsuranceBalance => "/vapi/insuranceBalance?symbol=",
+            Market::TakerBuySellVolume => "/futures/data/takerlongshortRatio?",
+            Market::Basis => "/futures/data/basis?",
         }
     }
 }
@@ -118,7 +110,6 @@ impl AsRef<str> for Trade {
             Trade::TestNewOrder => "/fapi/v1/testOrder?",
         }
     }
-    
 }
 
 pub enum Account {

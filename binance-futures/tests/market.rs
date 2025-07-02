@@ -2,12 +2,13 @@
 mod futures_market_api_integration_tests {
     use binance_common::enums::Interval;
     use binance_common::futures::model::params::market::{
-        DepthParams, FundingRateHistoryParams, KlinesParams, Pair, Symbol, TradesParams,
+        DepthParams, FundingRateHistoryParams, KlinesParams, OpenInterestHistoryParams, Pair,
+        Symbol, TradesParams,
     };
     use binance_common::futures::model::response::market::{
         BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
-        HistoricalTradesResponse, KlinesResponse, MarkPriceResponse, OpenInterestResponse,
-        Ticker24hResponse, TickerPriceResponse, TradesResponse,
+        HistoricalTradesResponse, KlinesResponse, MarkPriceResponse, OpenInterestHistoryResponse,
+        OpenInterestResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -294,5 +295,18 @@ mod futures_market_api_integration_tests {
         assert!(open_interest.open_interest > 0.0);
         assert_eq!(open_interest.symbol, "SOLUSDT");
         assert!(open_interest.time > 0);
+    }
+
+    #[test]
+    fn test_get_open_interest_history_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: OpenInterestHistoryParams =
+            OpenInterestHistoryParams::new("SOLUSDT", &Interval::Minutes5);
+
+        let open_interet_history: Vec<OpenInterestHistoryResponse> =
+            market_api.get_open_interest_history_list(params).unwrap();
+
+        assert!(open_interet_history.len() > 0);
     }
 }

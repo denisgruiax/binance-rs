@@ -144,7 +144,7 @@ impl AsRef<str> for Account {
             Account::OrderRateLimit => "/fapi/v1/orderRateLimit?symbol=",
             Account::LeverageBracket => "/fapi/v1/leverageBracket?symbol=",
             Account::MultiAssetsMargin => "/vapi/multiAssetsMarginConfig?symbol=",
-            Account::PositionSide => "/vapi/positionSideDualConfig?symbol=",
+            Account::PositionSide => "/fapi/v1/positionSide/dual?",
             Account::IncomeHistory => "/vapi/incomeHistory?symbol=",
         }
     }

@@ -87,3 +87,223 @@ impl<'a> OpenInterestHistoryParams<'a> {
         self
     }
 }
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct TopLongShortPositionRatioParams<'a> {
+    pub symbol: &'a str,
+    pub period: &'a str,
+    pub limit: Option<u16>,
+    pub start_time: Option<u64>,
+    pub end_time: Option<u64>,
+}
+
+impl<'a> TopLongShortPositionRatioParams<'a> {
+    pub fn new(symbol: &'a str, period: &'a impl AsRef<str>) -> Self {
+        TopLongShortPositionRatioParams {
+            symbol,
+            period: period.as_ref(),
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn period(mut self, period: &'a impl AsRef<str>) -> Self {
+        self.period = period.as_ref();
+        self
+    }
+
+    pub fn limit(mut self, limit: u16) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn start_time(mut self, start_time: u64) -> Self {
+        self.start_time = Some(start_time);
+        self
+    }
+
+    pub fn end_time(mut self, end_time: u64) -> Self {
+        self.end_time = Some(end_time);
+        self
+    }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct TopLongShortAccountRatioParams<'a> {
+    pub symbol: &'a str,
+    pub period: &'a str,
+    pub limit: Option<u16>,
+    pub start_time: Option<u64>,
+    pub end_time: Option<u64>,
+}
+
+impl<'a> TopLongShortAccountRatioParams<'a> {
+    pub fn new(symbol: &'a str, period: &'a impl AsRef<str>) -> Self {
+        TopLongShortAccountRatioParams {
+            symbol,
+            period: period.as_ref(),
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn period(mut self, period: &'a impl AsRef<str>) -> Self {
+        self.period = period.as_ref();
+        self
+    }
+
+    pub fn limit(mut self, limit: u16) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn start_time(mut self, start_time: u64) -> Self {
+        self.start_time = Some(start_time);
+        self
+    }
+
+    pub fn end_time(mut self, end_time: u64) -> Self {
+        self.end_time = Some(end_time);
+        self
+    }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct GlobalLongShortAccountRatioParams<'a> {
+    pub symbol: &'a str,
+    pub period: &'a str,
+    pub limit: Option<u16>,
+    pub start_time: Option<u64>,
+    pub end_time: Option<u64>,
+}
+
+impl<'a> GlobalLongShortAccountRatioParams<'a> {
+    pub fn new(symbol: &'a str, period: &'a impl AsRef<str>) -> Self {
+        GlobalLongShortAccountRatioParams {
+            symbol,
+            period: period.as_ref(),
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn period(mut self, period: &'a impl AsRef<str>) -> Self {
+        self.period = period.as_ref();
+        self
+    }
+
+    pub fn limit(mut self, limit: u16) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn start_time(mut self, start_time: u64) -> Self {
+        self.start_time = Some(start_time);
+        self
+    }
+
+    pub fn end_time(mut self, end_time: u64) -> Self {
+        self.end_time = Some(end_time);
+        self
+    }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct TakerBuySellVolumeParams<'a> {
+    pub symbol: &'a str,
+    pub period: &'a str,
+    pub limit: Option<u16>,
+    pub start_time: Option<u64>,
+    pub end_time: Option<u64>,
+}
+
+impl<'a> TakerBuySellVolumeParams<'a> {
+    pub fn new(symbol: &'a str, period: &'a impl AsRef<str>) -> Self {
+        TakerBuySellVolumeParams {
+            symbol,
+            period: period.as_ref(),
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn period(mut self, period: &'a impl AsRef<str>) -> Self {
+        self.period = period.as_ref();
+        self
+    }
+
+    pub fn limit(mut self, limit: u16) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn start_time(mut self, start_time: u64) -> Self {
+        self.start_time = Some(start_time);
+        self
+    }
+
+    pub fn end_time(mut self, end_time: u64) -> Self {
+        self.end_time = Some(end_time);
+        self
+    }
+}
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct BasisParams<'a> {
+    pub symbol: &'a str,
+    pub period: &'a str,
+    pub limit: Option<u16>,
+    pub start_time: Option<u64>,
+    pub end_time: Option<u64>,
+}
+
+impl<'a> BasisParams<'a> {
+    pub fn new(symbol: &'a str, period: &'a impl AsRef<str>) -> Self {
+        BasisParams {
+            symbol,
+            period: period.as_ref(),
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn period(mut self, period: &'a impl AsRef<str>) -> Self {
+        self.period = period.as_ref();
+        self
+    }
+
+    pub fn limit(mut self, limit: u16) -> Self {
+        self.limit = Some(limit);
+        self
+    }
+
+    pub fn start_time(mut self, start_time: u64) -> Self {
+        self.start_time = Some(start_time);
+        self
+    }
+
+    pub fn end_time(mut self, end_time: u64) -> Self {
+        self.end_time = Some(end_time);
+        self
+    }
+}

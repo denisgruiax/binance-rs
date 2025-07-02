@@ -1,14 +1,17 @@
 #[cfg(test)]
 mod futures_market_api_integration_tests {
-    use binance_common::enums::Interval;
+    use binance_common::enums::{ContractType, Interval};
     use binance_common::futures::model::params::market::{
-        DepthParams, FundingRateHistoryParams, KlinesParams, OpenInterestHistoryParams, Pair,
-        Symbol, TradesParams,
+        BasisParams, DepthParams, FundingRateHistoryParams, GlobalLongShortAccountRatioParams,
+        KlinesParams, OpenInterestHistoryParams, Pair, Symbol, TakerBuySellVolumeParams,
+        TopLongShortAccountRatioParams, TopLongShortPositionRatioParams, TradesParams,
     };
     use binance_common::futures::model::response::market::{
-        BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
-        HistoricalTradesResponse, KlinesResponse, MarkPriceResponse, OpenInterestHistoryResponse,
-        OpenInterestResponse, Ticker24hResponse, TickerPriceResponse, TradesResponse,
+        BasisResponse, BookTickerResponse, DeliveryPriceResponse, DepthResponse,
+        FundingRateHistoryResponse, GlobalLongShortAccountRatioResponse, HistoricalTradesResponse,
+        KlinesResponse, MarkPriceResponse, OpenInterestHistoryResponse, OpenInterestResponse,
+        TakerBuySellVolumeResponse, Ticker24hResponse, TickerPriceResponse,
+        TopLongShortAccountRatioResponse, TopLongShortPositionRatioResponse, TradesResponse,
     };
     use binance_common::futures::{
         endpoint::host::Host,
@@ -308,5 +311,70 @@ mod futures_market_api_integration_tests {
             market_api.get_open_interest_history_list(params).unwrap();
 
         assert!(open_interet_history.len() > 0);
+    }
+
+    #[test]
+    fn test_get_top_long_position_ratio_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: TopLongShortPositionRatioParams =
+            TopLongShortPositionRatioParams::new("SOLUSDT", &Interval::Minutes5);
+
+        let data: Vec<TopLongShortPositionRatioResponse> =
+            market_api.get_top_long_position_ratio_list(params).unwrap();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn test_get_top_long_account_ratio_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: TopLongShortAccountRatioParams =
+            TopLongShortAccountRatioParams::new("SOLUSDT", &Interval::Minutes5);
+
+        let data: Vec<TopLongShortAccountRatioResponse> =
+            market_api.get_top_long_account_ratio_list(params).unwrap();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn test_get_global_long_account_ratio_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: GlobalLongShortAccountRatioParams =
+            GlobalLongShortAccountRatioParams::new("SOLUSDT", &Interval::Minutes5);
+
+        let data: Vec<GlobalLongShortAccountRatioResponse> = market_api
+            .get_global_long_account_ratio_list(params)
+            .unwrap();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn test_get_taker_buy_sell_volume_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: TakerBuySellVolumeParams =
+            TakerBuySellVolumeParams::new("SOLUSDT", &Interval::Minutes5);
+
+        let data: Vec<TakerBuySellVolumeResponse> =
+            market_api.get_taker_buy_sell_volume_list(params).unwrap();
+
+        assert!(data.len() > 0);
+    }
+
+    #[test]
+    fn test_get_basis_list() {
+        let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
+
+        let params: BasisParams =
+            BasisParams::new("SOLUSDT", ContractType::Perpetual, &Interval::Minutes5, 17);
+
+        let data: Vec<BasisResponse> = market_api.get_basis_list(params).unwrap();
+
+        assert_eq!(data.len(), 17);
     }
 }

@@ -1,10 +1,12 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
-use binance_common::futures::model::params::market::{FundingRateHistoryParams, Pair, Symbol};
+use binance_common::futures::model::params::market::{
+    FundingRateHistoryParams, OpenInterestHistoryParams, Pair, Symbol,
+};
 use binance_common::futures::model::response::market::{
     BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
-    HistoricalTradesResponse, MarkPriceResponse, OpenInterestResponse, Ticker24hResponse,
-    TickerPriceResponse, TradesResponse,
+    HistoricalTradesResponse, MarkPriceResponse, OpenInterestHistoryResponse, OpenInterestResponse,
+    Ticker24hResponse, TickerPriceResponse, TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
@@ -123,5 +125,12 @@ where
 
     pub fn get_open_interest(&self, params: Symbol) -> Result<OpenInterestResponse, BinanceError> {
         self.client.get(Market::OpenInterest, params)
+    }
+
+    pub fn get_open_interest_history_list(
+        &self,
+        params: OpenInterestHistoryParams,
+    ) -> Result<Vec<OpenInterestHistoryResponse>, BinanceError> {
+        self.client.get(Market::OpenInterestHistory, params)
     }
 }

@@ -147,3 +147,16 @@ pub struct FuturesPosition {
 
     pub update_time: u64,
 }
+
+#[serde_as]
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CommissionRateResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub maker_commission_rate: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub taker_commission_rate: f64,
+}

@@ -3,8 +3,10 @@ use binance_common::{
     futures::{
         endpoint::route::Account,
         model::{
-            params::account::{FuturesBalanceParams, PositionSideParams},
-            response::account::{FuturesBalanceResponse, PositionSideResponse},
+            params::account::{FuturesAccountParams, FuturesBalanceParams, PositionSideParams},
+            response::account::{
+                FuturesAccountResponse, FuturesBalanceResponse, PositionSideResponse,
+            },
         },
     },
 };
@@ -47,5 +49,13 @@ where
         params: PositionSideParams,
     ) -> Result<PositionSideResponse, BinanceError> {
         self.client.send(Account::PositionSide, params, Method::GET)
+    }
+
+    pub fn get_futures_account(
+        &self,
+        params: FuturesAccountParams,
+    ) -> Result<FuturesAccountResponse, BinanceError> {
+        self.client
+            .send(Account::FuturesAccount, params, Method::GET)
     }
 }

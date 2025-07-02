@@ -48,7 +48,7 @@ impl AsRef<str> for Market {
             Market::BookTicker => "/fapi/v1/ticker/bookTicker?",
             Market::DeliveryPrice => "/futures/data/delivery-price?",
             Market::OpenInterest => "/fapi/v1/openInterest?",
-            Market::OpenInterestHistory => "/fapi/v1/openInterestHist?",
+            Market::OpenInterestHistory => "/futures/data/openInterestHist?",
             Market::TopLongShortPositionRatio => "/futures/data/topLongShortAccountRatio?",
             Market::TopLongShortAccountRatio => "/futures/data/topLongShortPositionRatio?",
             Market::GlobalLongShortAccountRatio => "/futures/data/globalLongShortAccountRatio?",

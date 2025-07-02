@@ -5,7 +5,7 @@ mod futures_account_api_integration_tests {
     use binance_common::futures::{
         endpoint::host::Host,
         model::{
-            params::account::{FuturesBalanceParams, PositionSideParams},
+            params::account::{FuturesAccountParams, FuturesBalanceParams, PositionSideParams},
             response::account::FuturesBalanceResponse,
         },
     };
@@ -71,5 +71,16 @@ mod futures_account_api_integration_tests {
         let position_side = account_api.get_position_side(params).unwrap();
 
         assert!(!position_side.dual_side_position);
+    }
+
+    #[test]
+    fn test_get_futures_account() {
+        let account_api: Arc<AccountApi<HmacSha256<'static>>> = shared_test_client::<HmacSha256>();
+
+        let params: FuturesAccountParams = FuturesAccountParams::default();
+
+        let futures_account = account_api.get_futures_account(params).unwrap();
+
+        assert!(futures_account.total_cross_wallet_balance > 0.0);
     }
 }

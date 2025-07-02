@@ -229,3 +229,102 @@ pub struct OpenInterestHistoryResponse {
 
     pub timestamp: u64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TopLongShortPositionRatioResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub long_short_ratio: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub long_account: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub short_account: f64,
+
+    pub timestamp: u64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TopLongShortAccountRatioResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub long_short_ratio: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub long_account: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub short_account: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub timestamp: u64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GlobalLongShortAccountRatioResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub long_short_ratio: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub long_account: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub short_account: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub timestamp: u64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TakerBuySellVolumeResponse {
+    #[serde_as(as = "DisplayFromStr")]
+    pub buy_sell_ratio: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub buy_vol: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub sell_vol: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub timestamp: u64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BasisResponse {
+    #[serde_as(as = "DisplayFromStr")]
+    pub index_price: f64,
+
+    pub contract_type: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub basis_rate: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub futures_price: f64,
+
+    // This can be empty string or number; let's use Option<String>
+    pub annualized_basis_rate: Option<String>,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub basis: f64,
+
+    pub pair: String,
+
+    pub timestamp: u64,
+}

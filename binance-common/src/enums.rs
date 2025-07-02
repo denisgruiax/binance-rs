@@ -42,20 +42,20 @@ impl AsRef<str> for Interval {
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ContingencyType {
     Oco,
     Oto,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum AllocationType {
     Sor,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum OrderType {
     Limit,
@@ -73,7 +73,7 @@ impl Default for OrderType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum OrderResponseType {
     Ack,
@@ -81,14 +81,14 @@ pub enum OrderResponseType {
     Full,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum WorkingFloor {
     Exchange,
     Sor,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum OrderSide {
     Buy,
@@ -101,7 +101,7 @@ impl Default for OrderSide {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum TimeInForce {
     Gtc,
@@ -109,7 +109,7 @@ pub enum TimeInForce {
     Fok,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum StpModes {
     None,
@@ -119,9 +119,23 @@ pub enum StpModes {
     Decrement,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum CancelRestrictions {
     OnlyNew,
     OnlyPartiallyFilled,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ContractType {
+    CurrentQuarter,
+    NextQuarter,
+    Perpetual,
+}
+
+impl Default for ContractType {
+    fn default() -> Self {
+        ContractType::Perpetual
+    }
 }

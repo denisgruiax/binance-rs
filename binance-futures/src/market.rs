@@ -1,12 +1,16 @@
 use binance_common::error::BinanceError;
 use binance_common::futures::endpoint::route::Market;
 use binance_common::futures::model::params::market::{
-    FundingRateHistoryParams, OpenInterestHistoryParams, Pair, Symbol,
+    BasisParams, FundingRateHistoryParams, GlobalLongShortAccountRatioParams,
+    OpenInterestHistoryParams, Pair, Symbol, TakerBuySellVolumeParams,
+    TopLongShortAccountRatioParams, TopLongShortPositionRatioParams,
 };
 use binance_common::futures::model::response::market::{
-    BookTickerResponse, DeliveryPriceResponse, DepthResponse, FundingRateHistoryResponse,
-    HistoricalTradesResponse, MarkPriceResponse, OpenInterestHistoryResponse, OpenInterestResponse,
-    Ticker24hResponse, TickerPriceResponse, TradesResponse,
+    BasisResponse, BookTickerResponse, DeliveryPriceResponse, DepthResponse,
+    FundingRateHistoryResponse, GlobalLongShortAccountRatioResponse, HistoricalTradesResponse,
+    MarkPriceResponse, OpenInterestHistoryResponse, OpenInterestResponse,
+    TakerBuySellVolumeResponse, Ticker24hResponse, TickerPriceResponse,
+    TopLongShortAccountRatioResponse, TopLongShortPositionRatioResponse, TradesResponse,
 };
 use binance_common::futures::model::{
     params::market::{
@@ -132,5 +136,37 @@ where
         params: OpenInterestHistoryParams,
     ) -> Result<Vec<OpenInterestHistoryResponse>, BinanceError> {
         self.client.get(Market::OpenInterestHistory, params)
+    }
+
+    pub fn get_top_long_position_ratio_list(
+        &self,
+        params: TopLongShortPositionRatioParams,
+    ) -> Result<Vec<TopLongShortPositionRatioResponse>, BinanceError> {
+        self.client.get(Market::TopLongShortPositionRatio, params)
+    }
+
+    pub fn get_top_long_account_ratio_list(
+        &self,
+        params: TopLongShortAccountRatioParams,
+    ) -> Result<Vec<TopLongShortAccountRatioResponse>, BinanceError> {
+        self.client.get(Market::TopLongShortAccountRatio, params)
+    }
+
+    pub fn get_global_long_account_ratio_list(
+        &self,
+        params: GlobalLongShortAccountRatioParams,
+    ) -> Result<Vec<GlobalLongShortAccountRatioResponse>, BinanceError> {
+        self.client.get(Market::GlobalLongShortAccountRatio, params)
+    }
+
+    pub fn get_taker_buy_sell_volume_list(
+        &self,
+        params: TakerBuySellVolumeParams,
+    ) -> Result<Vec<TakerBuySellVolumeResponse>, BinanceError> {
+        self.client.get(Market::TakerBuySellVolume, params)
+    }
+
+    pub fn get_basis_list(&self, params: BasisParams) -> Result<Vec<BasisResponse>, BinanceError> {
+        self.client.get(Market::Basis, params)
     }
 }

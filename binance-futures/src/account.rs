@@ -3,9 +3,13 @@ use binance_common::{
     futures::{
         endpoint::route::Account,
         model::{
-            params::account::{FuturesAccountParams, FuturesBalanceParams, PositionSideParams},
+            params::account::{
+                CommissionRateParams, FuturesAccountParams, FuturesBalanceParams,
+                PositionSideParams,
+            },
             response::account::{
-                FuturesAccountResponse, FuturesBalanceResponse, PositionSideResponse,
+                CommissionRateResponse, FuturesAccountResponse, FuturesBalanceResponse,
+                PositionSideResponse,
             },
         },
     },
@@ -57,5 +61,13 @@ where
     ) -> Result<FuturesAccountResponse, BinanceError> {
         self.client
             .send(Account::FuturesAccount, params, Method::GET)
+    }
+
+    pub fn get_comission_rate(
+        &self,
+        params: CommissionRateParams,
+    ) -> Result<CommissionRateResponse, BinanceError> {
+        self.client
+            .send(Account::CommissionRate, params, Method::GET)
     }
 }

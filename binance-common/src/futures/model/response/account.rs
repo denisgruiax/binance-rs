@@ -26,3 +26,10 @@ pub struct FuturesBalanceResponse {
     pub margin_available: bool,
     pub update_time: u64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PositionSideResponse {
+    pub dual_side_position: bool,
+}

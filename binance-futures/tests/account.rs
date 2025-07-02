@@ -4,7 +4,10 @@ mod futures_account_api_integration_tests {
 
     use binance_common::futures::{
         endpoint::host::Host,
-        model::{params::account::FuturesBalanceParams, response::account::FuturesBalanceResponse},
+        model::{
+            params::account::{FuturesBalanceParams, PositionSideParams},
+            response::account::FuturesBalanceResponse,
+        },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     use binance_futures::{
@@ -57,5 +60,16 @@ mod futures_account_api_integration_tests {
             .unwrap();
 
         assert!(wallet.update_time > 0);
+    }
+
+    #[test]
+    fn test_get_position_side() {
+        let account_api: Arc<AccountApi<HmacSha256<'static>>> = shared_test_client::<HmacSha256>();
+
+        let params: PositionSideParams = PositionSideParams::default();
+
+        let position_side = account_api.get_position_side(params).unwrap();
+
+        assert!(!position_side.dual_side_position);
     }
 }

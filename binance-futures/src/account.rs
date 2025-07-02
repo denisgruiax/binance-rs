@@ -2,7 +2,10 @@ use binance_common::{
     error::BinanceError,
     futures::{
         endpoint::route::Account,
-        model::{params::account::FuturesBalanceParams, response::account::FuturesBalanceResponse},
+        model::{
+            params::account::{FuturesBalanceParams, PositionSideParams},
+            response::account::{FuturesBalanceResponse, PositionSideResponse},
+        },
     },
 };
 use binance_core::{client::synchronous::Client, signer::signature::Signature};
@@ -37,5 +40,12 @@ where
     ) -> Result<Vec<FuturesBalanceResponse>, BinanceError> {
         self.client
             .send(Account::FuturesBalanceV3, params, Method::GET)
+    }
+
+    pub fn get_position_side(
+        &self,
+        params: PositionSideParams,
+    ) -> Result<PositionSideResponse, BinanceError> {
+        self.client.send(Account::PositionSide, params, Method::GET)
     }
 }

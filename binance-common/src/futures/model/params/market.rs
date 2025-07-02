@@ -43,3 +43,12 @@ impl<'a> Pair<'a> {
         self
     }
 }
+
+#[derive(Clone, Debug, Default, Serialize)]
+pub struct OpenInterestHistoryParams<'a> {
+    pub symbol: &'a str,
+    pub period: &'a str,
+    pub limit: u16,
+    pub start_time: u64,
+    pub end_time: u64,
+}

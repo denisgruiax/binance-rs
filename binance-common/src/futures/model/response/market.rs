@@ -214,3 +214,18 @@ pub struct OpenInterestResponse {
     pub symbol: String,
     pub time: u64,
 }
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OpenInterestHistoryResponse {
+    pub symbol: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub sum_open_interest: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub sum_open_interest_value: f64,
+
+    pub timestamp: u64,
+}

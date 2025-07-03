@@ -139,3 +139,43 @@ impl Default for ContractType {
         ContractType::Perpetual
     }
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum PositionSide {
+    Both,
+    Long,
+    Short,
+}
+
+impl Default for PositionSide {
+    fn default() -> Self {
+        PositionSide::Both
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum WorkingType {
+    ContractPrice,
+    MarkPrice,
+}
+
+impl Default for WorkingType {
+    fn default() -> Self {
+        WorkingType::ContractPrice
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum PriceMatch {
+    Opponent,
+    Opponent5,
+    Opponent10,
+    Opponent20,
+    Queue,
+    Queue5,
+    Queue10,
+    Queue20,
+}

@@ -59,12 +59,16 @@ pub enum AllocationType {
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum OrderType {
     Limit,
+    LimitMaker,
     Market,
+    Stop,
     StopLoss,
     StopLossLimit,
+    StopMarket,
     TakeProfit,
     TakeProfitLimit,
-    LimitMaker,
+    TakeProfitMarket,
+    TrailingStopMarket,
 }
 
 impl Default for OrderType {

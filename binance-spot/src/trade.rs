@@ -17,19 +17,19 @@ use reqwest::Method;
 
 use binance_core::{client::synchronous::Client, signer::signature::Signature};
 
-pub struct TradingApi<'a, S>
+pub struct TradeApi<'a, S>
 where
     S: Signature<'a>,
 {
     client: Client<'a, S>,
 }
 
-impl<'a, S> TradingApi<'a, S>
+impl<'a, S> TradeApi<'a, S>
 where
     S: Signature<'a>,
 {
     pub fn new(client: Client<'a, S>) -> Self {
-        TradingApi { client }
+        TradeApi { client }
     }
 
     pub fn post_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {

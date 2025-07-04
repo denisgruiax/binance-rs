@@ -2,7 +2,7 @@
 mod spot_trade_api_integration_tests {
     use binance_spot::market::MarketApi;
     use binance_spot::secret::{API_KEY, SECRET_KEY};
-    use binance_spot::trade::TradingApi;
+    use binance_spot::trade::TradeApi;
 
     use binance_common::enums::{OrderResponseType, OrderSide};
     use binance_common::spot::endpoint::host::Host;
@@ -11,14 +11,14 @@ mod spot_trade_api_integration_tests {
     use std::sync::{Arc, OnceLock};
 
     static MARKET_CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
-    static TRADING_CLIENT: OnceLock<Arc<TradingApi<'static, HmacSha256<'static>>>> =
+    static TRADING_CLIENT: OnceLock<Arc<TradeApi<'static, HmacSha256<'static>>>> =
         OnceLock::new();
     static SYMBOL: &'static str = "BTCUSDC";
 
-    fn shared_test_trading() -> Arc<TradingApi<'static, HmacSha256<'static>>> {
+    fn shared_test_trading() -> Arc<TradeApi<'static, HmacSha256<'static>>> {
         TRADING_CLIENT
             .get_or_init(|| {
-                Arc::new(TradingApi::new(Client::new(
+                Arc::new(TradeApi::new(Client::new(
                     &Host::Api,
                     HmacSha256::new(API_KEY, SECRET_KEY),
                 )))

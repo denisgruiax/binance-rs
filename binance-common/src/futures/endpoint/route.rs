@@ -107,7 +107,7 @@ impl AsRef<str> for Trade {
             Trade::GetPositionRiskV2 => "/vapi/positionRiskV2?symbol=",
             Trade::GetPositionRiskV3 => "/vapi/positionRiskV3?symbol=",
             Trade::GetPositionMarginHistory => "/vapi/positionMarginHistory?symbol=",
-            Trade::TestNewOrder => "/fapi/v1/testOrder?",
+            Trade::TestNewOrder => "/fapi/v1/order/test?",
         }
     }
 }

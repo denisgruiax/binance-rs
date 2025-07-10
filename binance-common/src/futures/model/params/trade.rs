@@ -6,6 +6,7 @@ use crate::enums::{
 };
 
 #[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct NewOrderParams<'a> {
     pub symbol: &'a str,
     pub side: OrderSide,
@@ -199,22 +200,29 @@ impl<'a> NewOrderParams<'a> {
         }
     }
 
-    pub fn stop_market(symbol: &'a str, side: OrderSide, stop_price: f64) -> Self {
+    pub fn stop_market(symbol: &'a str, side: OrderSide, stop_price: f64, quantity: f64) -> Self {
         Self {
             symbol,
             side,
             r#type: OrderType::StopMarket,
             stop_price: Some(stop_price),
+            quantity: Some(quantity),
             ..Default::default()
         }
     }
 
-    pub fn take_profit_market(symbol: &'a str, side: OrderSide, stop_price: f64) -> Self {
+    pub fn take_profit_market(
+        symbol: &'a str,
+        side: OrderSide,
+        stop_price: f64,
+        quantity: f64,
+    ) -> Self {
         Self {
             symbol,
             side,
             r#type: OrderType::TakeProfitMarket,
             stop_price: Some(stop_price),
+            quantity: Some(quantity),
             ..Default::default()
         }
     }

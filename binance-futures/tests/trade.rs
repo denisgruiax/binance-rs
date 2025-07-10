@@ -5,7 +5,10 @@ mod futures_trade_api_integration_test {
     use binance_common::{
         enums::OrderSide,
         error::BinanceError,
-        futures::{endpoint::host::Host, model::params::trade::NewOrderParams},
+        futures::{
+            endpoint::host::Host,
+            model::{params::trade::NewOrderParams, response::trade::TestNewOrderResponse},
+        },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     use binance_futures::{
@@ -20,7 +23,7 @@ mod futures_trade_api_integration_test {
         TRADE_CLIENT
             .get_or_init(|| {
                 Arc::new(TradeApi::new(Client::new(
-                    &Host::Api,
+                    &Host::Test,
                     HmacSha256::new(API_KEY, SECRET_KEY),
                 )))
             })
@@ -28,14 +31,78 @@ mod futures_trade_api_integration_test {
     }
 
     #[test]
-    fn test_market() {
+    fn test_new_limit_test_order() {
         let trade_api = shared_test_trade();
 
-        let params: NewOrderParams = NewOrderParams::market(SYMBOL, OrderSide::Buy, 0.1);
+        let params: NewOrderParams = NewOrderParams::limit(SYMBOL, OrderSide::Sell, 300.0, 1.0);
 
-        let response: Result<serde_json::Value, BinanceError> =
+        let new_order: Result<TestNewOrderResponse, BinanceError> =
             trade_api.post_new_test_order(params);
 
-        println!("{:#?}", response);
+        assert!(new_order.is_ok())
+    }
+
+    #[test]
+    fn test_new_market_test_order() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams = NewOrderParams::market(SYMBOL, OrderSide::Buy, 1.0);
+
+        let new_order: Result<TestNewOrderResponse, BinanceError> =
+            trade_api.post_new_test_order(params);
+
+        assert!(new_order.is_ok())
+    }
+
+    #[test]
+    fn test_new_stop_loss_test_order() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams =
+            NewOrderParams::stop(SYMBOL, OrderSide::Buy, 120.0, 100.0, 1.0);
+
+        let new_order: Result<TestNewOrderResponse, BinanceError> =
+            trade_api.post_new_test_order(params);
+
+        assert!(new_order.is_ok())
+    }
+
+    #[test]
+    fn test_new_take_profit_test_order() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams =
+            NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, 250.0, 255.0, 1.0);
+
+        let new_order: Result<TestNewOrderResponse, BinanceError> =
+            trade_api.post_new_test_order(params);
+
+        assert!(new_order.is_ok())
+    }
+
+    #[test]
+    fn test_new_stop_market_test_order() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams =
+            NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, 100.0, 1.0);
+
+        let new_order: Result<TestNewOrderResponse, BinanceError> =
+            trade_api.post_new_test_order(params);
+
+        assert!(new_order.is_ok())
+    }
+
+    #[test]
+    fn test_take_profit_market_test_order() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams =
+            NewOrderParams::take_profit_market(SYMBOL, OrderSide::Sell, 300.0, 1.0);
+
+        let new_order: Result<TestNewOrderResponse, BinanceError> =
+            trade_api.post_new_test_order(params);
+
+        assert!(new_order.is_ok())
     }
 }

@@ -29,3 +29,24 @@ pub struct NewOrderResponse {
     pub self_trade_prevention_mode: String,
     pub good_till_date: Option<u64>,
 }
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TestNewOrderResponse {
+    pub order_id: u64,
+    pub symbol: String,
+    pub status: String,
+    pub client_order_id: String,
+    pub price: String,
+    pub orig_qty: String,
+    pub executed_qty: String,
+    pub cum_quote: String,
+    pub time_in_force: String,
+    pub r#type: String,
+    pub reduce_only: bool,
+    pub close_position: bool,
+    pub side: String,
+    pub stop_price: String,
+    pub price_protect: bool,
+    pub orig_type: String,
+    pub update_time: u64,
+}

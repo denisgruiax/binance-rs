@@ -2,7 +2,10 @@ use binance_common::{
     error::BinanceError,
     futures::{
         endpoint::route::Trade,
-        model::{params::trade::NewOrderParams, response::trade::{NewOrderResponse, TestNewOrderResponse}},
+        model::{
+            params::trade::NewOrderParams,
+            response::trade::{NewOrderResponse, TestNewOrderResponse},
+        },
     },
 };
 use binance_core::{client::synchronous::Client, signer::signature::Signature};
@@ -31,6 +34,6 @@ where
     }
 
     pub fn post_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
-        self.client.send(Trade::TestNewOrder, params, Method::POST)
+        self.client.send(Trade::NewOrder, params, Method::POST)
     }
 }

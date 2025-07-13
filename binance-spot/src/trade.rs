@@ -32,7 +32,7 @@ where
         TradeApi { client }
     }
 
-    pub fn post_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
+    pub fn send_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
         if let Some(order_response_type) = &params.new_order_resp_type {
             match order_response_type {
                 OrderResponseType::Ack => {
@@ -68,7 +68,7 @@ where
         )?))
     }
 
-    pub fn post_new_test_order(
+    pub fn send_new_test_order(
         &self,
         params: NewOrderParams,
     ) -> Result<serde_json::Value, BinanceError> {
@@ -79,14 +79,14 @@ where
         self.client.send(Trade::GetOrder, params, Method::GET)
     }
 
-    pub fn cancel_order(
+    pub fn send_cancel_order(
         &self,
         params: CancelOrderParams,
     ) -> Result<CancelOrderResponse, BinanceError> {
         self.client.send(Trade::CancelOrder, params, Method::DELETE)
     }
 
-    pub fn cancel_open_orders(
+    pub fn send_cancel_open_orders(
         &self,
         params: CancelAllOrdersParms,
     ) -> Result<Vec<CancelOrderResponse>, BinanceError> {

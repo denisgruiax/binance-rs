@@ -1,4 +1,5 @@
 pub use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NewOrderResponse {
@@ -49,4 +50,16 @@ pub struct TestNewOrderResponse {
     pub price_protect: bool,
     pub orig_type: String,
     pub update_time: u64,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SetLeverageResponse {
+    pub leverage: u8,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub max_notional_value: u64,
+
+    pub symbol: String,
 }

@@ -9,8 +9,7 @@ mod futures_trade_api_integration_test {
             endpoint::host::Host,
             model::{
                 params::trade::{
-                    CancelOrderParams, GetOrderParams, NewOrderParams, PositionRiskV3Params,
-                    SetLeverageParams,
+                    CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams, PositionRiskV3Params, SetLeverageParams
                 },
                 response::trade::{
                     GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse,
@@ -21,7 +20,7 @@ mod futures_trade_api_integration_test {
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     use binance_futures::{
-        secret::{API_KEY, SECRET_KEY},
+        secret::{API_KEY_TESTNET, SECRET_KEY_TESTNET},
         trade::TradeApi,
     };
 
@@ -33,7 +32,7 @@ mod futures_trade_api_integration_test {
             .get_or_init(|| {
                 Arc::new(TradeApi::new(Client::new(
                     &Host::Test,
-                    HmacSha256::new(API_KEY, SECRET_KEY),
+                    HmacSha256::new(API_KEY_TESTNET, SECRET_KEY_TESTNET),
                 )))
             })
             .clone()
@@ -156,6 +155,26 @@ mod futures_trade_api_integration_test {
         let params2: GetOrderParams =
             GetOrderParams::new(&new_order.symbol).order_id(new_order.order_id);
         let current_order: GetOrderResponse = trade_api.get_order(params2).unwrap();
+
+        let params3: CancelOrderParams =
+            CancelOrderParams::new(&current_order.symbol).order_id(current_order.order_id);
+
+        let canceled_order: Result<OrderResponse, BinanceError> =
+            trade_api.send_cancel_order(params3);
+
+        assert!(canceled_order.is_ok());
+    }
+
+    #[test]
+    fn test_send_new_order2() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 13.5, 5.0);
+        let new_order = trade_api.send_new_order(params).unwrap();
+
+        let params2: GetOpenOrderParams =
+            GetOpenOrderParams::new(&new_order.symbol).order_id(new_order.order_id);
+        let current_order: GetOrderResponse = trade_api.get_open_order(params2).unwrap();
 
         let params3: CancelOrderParams =
             CancelOrderParams::new(&current_order.symbol).order_id(current_order.order_id);

@@ -3,8 +3,8 @@ use binance_common::{
     futures::{
         endpoint::route::Trade,
         model::{
-            params::trade::NewOrderParams,
-            response::trade::{NewOrderResponse, TestNewOrderResponse},
+            params::trade::{NewOrderParams, SetLeverageParams},
+            response::trade::{NewOrderResponse, SetLeverageResponse, TestNewOrderResponse},
         },
     },
 };
@@ -35,5 +35,13 @@ where
 
     pub fn post_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
         self.client.send(Trade::NewOrder, params, Method::POST)
+    }
+
+    pub fn post_set_leverage(
+        &self,
+        params: SetLeverageParams,
+    ) -> Result<SetLeverageResponse, BinanceError> {
+        self.client
+            .send(Trade::SetLeverage, params, Method::POST)
     }
 }

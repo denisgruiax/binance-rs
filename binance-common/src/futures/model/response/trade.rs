@@ -1,5 +1,7 @@
 pub use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
+
+use crate::enums::{AdlLevel, PositionSide};
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct NewOrderResponse {
@@ -69,4 +71,63 @@ pub struct SetLeverageResponse {
 pub struct CancelAllOrdersResponse {
     pub code: u32,
     pub msg: String,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PositionRiskV3Response {
+    pub symbol: String,
+    pub position_side: PositionSide,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub position_amt: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub entry_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub break_even_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub mark_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub un_realized_profit: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub liquidation_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub isolated_margin: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub notional: f64,
+
+    pub margin_asset: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub isolated_wallet: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub initial_margin: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub maint_margin: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub position_initial_margin: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub open_order_initial_margin: f64,
+
+    pub adl: AdlLevel,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub bid_notional: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub ask_notional: f64,
+
+    pub update_time: u64,
 }

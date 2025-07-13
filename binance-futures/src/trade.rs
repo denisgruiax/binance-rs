@@ -4,11 +4,12 @@ use binance_common::{
         endpoint::route::Trade,
         model::{
             params::trade::{
-                CancelAllOrdersParams, CancelOrderParams, GetOrderParams, NewOrderParams,
-                PositionRiskV3Params, SetLeverageParams,
+                CancelAllOrdersParams, CancelOrderParams, GetOpenOrderParams, GetOrderParams,
+                NewOrderParams, PositionRiskV3Params, SetLeverageParams,
             },
             response::trade::{
-                CancelAllOrdersResponse, GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse, TestOrderResponse
+                CancelAllOrdersResponse, GetOrderResponse, OrderResponse, PositionRiskV3Response,
+                SetLeverageResponse, TestOrderResponse,
             },
         },
     },
@@ -66,6 +67,13 @@ where
 
     pub fn get_order(&self, params: GetOrderParams) -> Result<GetOrderResponse, BinanceError> {
         self.client.send(Trade::GetOrder, params, Method::GET)
+    }
+
+    pub fn get_open_order(
+        &self,
+        params: GetOpenOrderParams,
+    ) -> Result<GetOrderResponse, BinanceError> {
+        self.client.send(Trade::GetOpenOrder, params, Method::GET)
     }
 
     pub fn get_position_risk_v3(

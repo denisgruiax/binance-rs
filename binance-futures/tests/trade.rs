@@ -8,9 +8,13 @@ mod futures_trade_api_integration_test {
         futures::{
             endpoint::host::Host,
             model::{
-                params::trade::{NewOrderParams, PositionRiskV3Params, SetLeverageParams},
+                params::trade::{
+                    CancelOrderParams, GetOrderParams, NewOrderParams, PositionRiskV3Params,
+                    SetLeverageParams,
+                },
                 response::trade::{
-                    PositionRiskV3Response, SetLeverageResponse, TestNewOrderResponse,
+                    GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse,
+                    TestOrderResponse,
                 },
             },
         },
@@ -41,7 +45,7 @@ mod futures_trade_api_integration_test {
 
         let params: NewOrderParams = NewOrderParams::limit(SYMBOL, OrderSide::Sell, 300.0, 1.0);
 
-        let new_order: Result<TestNewOrderResponse, BinanceError> =
+        let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
@@ -53,7 +57,7 @@ mod futures_trade_api_integration_test {
 
         let params: NewOrderParams = NewOrderParams::market(SYMBOL, OrderSide::Buy, 1.0);
 
-        let new_order: Result<TestNewOrderResponse, BinanceError> =
+        let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
@@ -66,7 +70,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop(SYMBOL, OrderSide::Buy, 120.0, 100.0, 1.0);
 
-        let new_order: Result<TestNewOrderResponse, BinanceError> =
+        let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
@@ -79,7 +83,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, 250.0, 255.0, 1.0);
 
-        let new_order: Result<TestNewOrderResponse, BinanceError> =
+        let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
@@ -92,7 +96,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, 100.0, 1.0);
 
-        let new_order: Result<TestNewOrderResponse, BinanceError> =
+        let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
@@ -105,7 +109,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::take_profit_market(SYMBOL, OrderSide::Sell, 300.0, 1.0);
 
-        let new_order: Result<TestNewOrderResponse, BinanceError> =
+        let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
@@ -140,5 +144,25 @@ mod futures_trade_api_integration_test {
         if positions.len() > 0 {
             assert!(positions[0].entry_price > 0.0);
         }
+    }
+
+    #[test]
+    fn test_send_new_order() {
+        let trade_api = shared_test_trade();
+
+        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 13.5, 5.0);
+        let new_order = trade_api.send_new_order(params).unwrap();
+
+        let params2: GetOrderParams =
+            GetOrderParams::new(&new_order.symbol).order_id(new_order.order_id);
+        let current_order: GetOrderResponse = trade_api.get_order(params2).unwrap();
+
+        let params3: CancelOrderParams =
+            CancelOrderParams::new(&current_order.symbol).order_id(current_order.order_id);
+
+        let canceled_order: Result<OrderResponse, BinanceError> =
+            trade_api.send_cancel_order(params3);
+
+        assert!(canceled_order.is_ok());
     }
 }

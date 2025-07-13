@@ -40,7 +40,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams = NewOrderParams::limit(SYMBOL, OrderSide::Sell, 300.0, 1.0);
 
         let new_order: Result<TestNewOrderResponse, BinanceError> =
-            trade_api.post_new_test_order(params);
+            trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
     }
@@ -52,7 +52,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams = NewOrderParams::market(SYMBOL, OrderSide::Buy, 1.0);
 
         let new_order: Result<TestNewOrderResponse, BinanceError> =
-            trade_api.post_new_test_order(params);
+            trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
     }
@@ -65,7 +65,7 @@ mod futures_trade_api_integration_test {
             NewOrderParams::stop(SYMBOL, OrderSide::Buy, 120.0, 100.0, 1.0);
 
         let new_order: Result<TestNewOrderResponse, BinanceError> =
-            trade_api.post_new_test_order(params);
+            trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
     }
@@ -78,7 +78,7 @@ mod futures_trade_api_integration_test {
             NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, 250.0, 255.0, 1.0);
 
         let new_order: Result<TestNewOrderResponse, BinanceError> =
-            trade_api.post_new_test_order(params);
+            trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
     }
@@ -91,7 +91,7 @@ mod futures_trade_api_integration_test {
             NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, 100.0, 1.0);
 
         let new_order: Result<TestNewOrderResponse, BinanceError> =
-            trade_api.post_new_test_order(params);
+            trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
     }
@@ -104,24 +104,24 @@ mod futures_trade_api_integration_test {
             NewOrderParams::take_profit_market(SYMBOL, OrderSide::Sell, 300.0, 1.0);
 
         let new_order: Result<TestNewOrderResponse, BinanceError> =
-            trade_api.post_new_test_order(params);
+            trade_api.send_new_test_order(params);
 
         assert!(new_order.is_ok())
     }
 
     #[test]
-    fn test_post_set_leverage() {
+    fn test_send_set_leverage() {
         let trade_api = shared_test_trade();
 
         let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 5);
 
-        let eth_leverage: SetLeverageResponse = trade_api.post_set_leverage(params).unwrap();
+        let eth_leverage: SetLeverageResponse = trade_api.send_set_leverage(params).unwrap();
 
         assert_eq!(eth_leverage.leverage, 5);
 
         let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 1);
 
-        let eth_leverage: SetLeverageResponse = trade_api.post_set_leverage(params).unwrap();
+        let eth_leverage: SetLeverageResponse = trade_api.send_set_leverage(params).unwrap();
 
         assert_eq!(eth_leverage.leverage, 27);
     }

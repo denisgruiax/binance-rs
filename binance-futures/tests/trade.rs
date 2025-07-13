@@ -8,8 +8,10 @@ mod futures_trade_api_integration_test {
         futures::{
             endpoint::host::Host,
             model::{
-                params::trade::{NewOrderParams, SetLeverageParams},
-                response::trade::{SetLeverageResponse, TestNewOrderResponse},
+                params::trade::{NewOrderParams, PositionRiskV3Params, SetLeverageParams},
+                response::trade::{
+                    PositionRiskV3Response, SetLeverageResponse, TestNewOrderResponse,
+                },
             },
         },
     };
@@ -113,16 +115,30 @@ mod futures_trade_api_integration_test {
     fn test_send_set_leverage() {
         let trade_api = shared_test_trade();
 
-        let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 5);
+        let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 2);
 
         let eth_leverage: SetLeverageResponse = trade_api.send_set_leverage(params).unwrap();
 
-        assert_eq!(eth_leverage.leverage, 5);
+        assert_eq!(eth_leverage.leverage, 2);
 
         let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 1);
 
         let eth_leverage: SetLeverageResponse = trade_api.send_set_leverage(params).unwrap();
 
-        assert_eq!(eth_leverage.leverage, 27);
+        assert_eq!(eth_leverage.leverage, 1);
+    }
+
+    #[test]
+    fn test_get_position_risk() {
+        let trade_api = shared_test_trade();
+
+        let params: PositionRiskV3Params = PositionRiskV3Params::new("SOLUSDT");
+
+        let positions: Vec<PositionRiskV3Response> =
+            trade_api.get_position_risk_v3(params).unwrap();
+
+        if positions.len() > 0 {
+            assert!(positions[0].entry_price > 0.0);
+        }
     }
 }

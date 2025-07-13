@@ -63,3 +63,10 @@ pub struct SetLeverageResponse {
 
     pub symbol: String,
 }
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CancelAllOrdersResponse {
+    pub code: u32,
+    pub msg: String,
+}

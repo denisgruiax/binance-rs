@@ -7,7 +7,10 @@ mod futures_trade_api_integration_test {
         error::BinanceError,
         futures::{
             endpoint::host::Host,
-            model::{params::trade::NewOrderParams, response::trade::TestNewOrderResponse},
+            model::{
+                params::trade::{NewOrderParams, SetLeverageParams},
+                response::trade::{SetLeverageResponse, TestNewOrderResponse},
+            },
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
@@ -104,5 +107,22 @@ mod futures_trade_api_integration_test {
             trade_api.post_new_test_order(params);
 
         assert!(new_order.is_ok())
+    }
+
+    #[test]
+    fn test_post_set_leverage() {
+        let trade_api = shared_test_trade();
+
+        let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 5);
+
+        let eth_leverage: SetLeverageResponse = trade_api.post_set_leverage(params).unwrap();
+
+        assert_eq!(eth_leverage.leverage, 5);
+
+        let params: SetLeverageParams = SetLeverageParams::new("ETHUSDT", 1);
+
+        let eth_leverage: SetLeverageResponse = trade_api.post_set_leverage(params).unwrap();
+
+        assert_eq!(eth_leverage.leverage, 27);
     }
 }

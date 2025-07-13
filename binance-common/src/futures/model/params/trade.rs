@@ -302,3 +302,29 @@ impl<'a> CancelAllOrdersParams<'a> {
         self
     }
 }
+
+#[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PositionRiskV3Params<'a> {
+    pub symbol: &'a str,
+    pub recv_window: Option<u16>,
+}
+
+impl<'a> PositionRiskV3Params<'a> {
+    pub fn new(symbol: &'a str) -> Self {
+        PositionRiskV3Params {
+            symbol,
+            ..Default::default()
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn recv_window(mut self, recv_window: u16) -> Self {
+        self.recv_window = Some(recv_window);
+        self
+    }
+}

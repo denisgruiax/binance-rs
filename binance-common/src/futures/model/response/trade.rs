@@ -2,22 +2,39 @@ pub use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::enums::{AdlLevel, PositionSide};
+
+#[serde_as]
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct NewOrderResponse {
+pub struct OrderResponse {
     pub client_order_id: String,
-    pub cum_qty: String,
-    pub cum_quote: String,
-    pub executed_qty: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub cum_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub cum_quote: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub executed_qty: f64,
+
     pub order_id: u64,
-    pub avg_price: String,
-    pub orig_qty: String,
-    pub price: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub avg_price: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub orig_qty: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+
     pub reduce_only: bool,
     pub side: String,
-    pub position_side: String,
+    pub position_side: PositionSide,
     pub status: String,
     pub stop_price: Option<String>,
+
     pub close_position: bool,
     pub symbol: String,
     pub time_in_force: String,
@@ -34,7 +51,7 @@ pub struct NewOrderResponse {
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TestNewOrderResponse {
+pub struct TestOrderResponse {
     pub order_id: u64,
     pub symbol: String,
     pub status: String,
@@ -130,4 +147,56 @@ pub struct PositionRiskV3Response {
     pub ask_notional: f64,
 
     pub update_time: u64,
+}
+
+#[serde_as]
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetOrderResponse {
+    #[serde_as(as = "DisplayFromStr")]
+    pub avg_price: f64,
+
+    pub client_order_id: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub cum_quote: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub executed_qty: f64,
+
+    pub order_id: u64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub orig_qty: f64,
+
+    pub orig_type: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub price: f64,
+
+    pub reduce_only: bool,
+    pub side: String,
+    pub position_side: String,
+    pub status: String,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub stop_price: f64,
+
+    pub close_position: bool,
+    pub symbol: String,
+    pub time: u64,
+    pub time_in_force: String,
+
+    #[serde(rename = "type")]
+    pub order_type: String,
+
+    pub activate_price: Option<String>,
+    pub price_rate: Option<f64>,
+
+    pub update_time: u64,
+    pub working_type: String,
+    pub price_protect: bool,
+    pub price_match: String,
+    pub self_trade_prevention_mode: String,
+    pub good_till_date: u64,
 }

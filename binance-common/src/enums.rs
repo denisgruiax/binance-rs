@@ -1,3 +1,4 @@
+use serde::{Deserialize, Deserializer, Serialize};
 pub enum Interval {
     Seconds1,
     Minutes1,
@@ -39,8 +40,6 @@ impl AsRef<str> for Interval {
         }
     }
 }
-
-use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -182,4 +181,30 @@ pub enum PriceMatch {
     Queue5,
     Queue10,
     Queue20,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub enum AdlLevel {
+    LowestRisk,
+    LowRisk,
+    Medium,
+    HighRisk,
+    HighestRisk,
+}
+
+impl<'de> Deserialize<'de> for AdlLevel {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let val: u8 = Deserialize::deserialize(deserializer)?;
+        Ok(match val {
+            0 => AdlLevel::LowestRisk,
+            1 => AdlLevel::LowRisk,
+            2 => AdlLevel::Medium,
+            3 => AdlLevel::HighRisk,
+            4 => AdlLevel::HighestRisk,
+            _ => return Err(serde::de::Error::custom("Invalid ADL level")),
+        })
+    }
 }

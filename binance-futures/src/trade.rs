@@ -3,8 +3,11 @@ use binance_common::{
     futures::{
         endpoint::route::Trade,
         model::{
-            params::trade::{NewOrderParams, SetLeverageParams},
-            response::trade::{NewOrderResponse, SetLeverageResponse, TestNewOrderResponse},
+            params::trade::{CancelAllOrdersParams, NewOrderParams, SetLeverageParams},
+            response::trade::{
+                CancelAllOrdersResponse, NewOrderResponse, SetLeverageResponse,
+                TestNewOrderResponse,
+            },
         },
     },
 };
@@ -26,22 +29,29 @@ where
         TradeApi { client }
     }
 
-    pub fn post_new_test_order(
+    pub fn send_new_test_order(
         &self,
         params: NewOrderParams,
     ) -> Result<TestNewOrderResponse, BinanceError> {
         self.client.send(Trade::TestNewOrder, params, Method::POST)
     }
 
-    pub fn post_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
+    pub fn send_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
         self.client.send(Trade::NewOrder, params, Method::POST)
     }
 
-    pub fn post_set_leverage(
+    pub fn send_set_leverage(
         &self,
         params: SetLeverageParams,
     ) -> Result<SetLeverageResponse, BinanceError> {
+        self.client.send(Trade::SetLeverage, params, Method::POST)
+    }
+
+    pub fn send_cancel_all_orders(
+        &self,
+        params: CancelAllOrdersParams,
+    ) -> Result<CancelAllOrdersResponse, BinanceError> {
         self.client
-            .send(Trade::SetLeverage, params, Method::POST)
+            .send(Trade::CancelAllOrders, params, Method::GET)
     }
 }

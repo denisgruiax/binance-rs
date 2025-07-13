@@ -89,7 +89,7 @@ impl AsRef<str> for Trade {
             Trade::ModifyOrder => "/fapi/v1/amendOrder?",
             Trade::ModifyMultipleOrders => "/fapi/v1/amendBatchOrders?",
             Trade::OrderModificationHistory => "/fapi/v1/orderAmendmentHistory?",
-            Trade::CancelOrder => "/fapi/v1/cancelOrder?",
+            Trade::CancelOrder => "/fapi/v1/order?",
             Trade::CancelMultipleOrders => "/fapi/v1/cancelBatchOrders?",
             Trade::CancelAllOrders => "/fapi/v1/allOpenOrders?",
             Trade::AutoCancelAllOpenOrders => "/fapi/v1/autoCancelAllOpenOrders?",

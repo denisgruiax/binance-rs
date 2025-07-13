@@ -243,3 +243,36 @@ impl<'a> NewOrderParams<'a> {
         }
     }
 }
+
+#[derive(Clone, Debug, Default, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SetLeverageParams<'a> {
+    pub symbol: &'a str,
+    pub leverage: u8,
+    pub recv_window: Option<u16>,
+}
+
+impl<'a> SetLeverageParams<'a> {
+    pub fn new(symbol: &'a str, leverage: u8) -> Self {
+        SetLeverageParams {
+            symbol,
+            leverage,
+            recv_window: None,
+        }
+    }
+
+    pub fn symbol(mut self, symbol: &'a str) -> Self {
+        self.symbol = symbol;
+        self
+    }
+
+    pub fn leverage(mut self, leverage: u8) -> Self {
+        self.leverage = leverage;
+        self
+    }
+
+    pub fn recv_window(mut self, recv_window: u16) -> Self {
+        self.recv_window = Some(recv_window);
+        self
+    }
+}

@@ -75,8 +75,8 @@ pub enum Trade {
     SetLeverage,
     SetMultiAssetsMargin,
     UpdatePositionMargin,
-    PositionRisk2,
-    PositionRisk3,
+    PositionRiskV2,
+    PositionRiskV3,
     GetPositionMarginHistory,
     TestNewOrder,
 }
@@ -104,8 +104,8 @@ impl AsRef<str> for Trade {
             Trade::SetLeverage => "/fapi/v1/leverage?",
             Trade::SetMultiAssetsMargin => "/vapi/multiAssetsMargin?symbol=",
             Trade::UpdatePositionMargin => "/vapi/updatePositionMargin?symbol=",
-            Trade::PositionRisk2 => "/fapi/v2/positionRisk",
-            Trade::PositionRisk3 => "/fapi/v3/positionRisk",
+            Trade::PositionRiskV2 => "/fapi/v2/positionRisk?",
+            Trade::PositionRiskV3 => "/fapi/v3/positionRisk?",
             Trade::GetPositionMarginHistory => "/vapi/positionMarginHistory?symbol=",
             Trade::TestNewOrder => "/fapi/v1/order/test?",
         }

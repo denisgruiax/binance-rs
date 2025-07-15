@@ -14,7 +14,7 @@ pub struct NewOrderParams<'a> {
     pub r#type: OrderType,
     pub time_in_force: Option<TimeInForce>,
     pub quantity: Option<f64>,
-    pub reduce_only: Option<&'a str>,
+    pub reduce_only: Option<bool>,
     pub price: Option<f64>,
     pub new_client_order_id: Option<&'a str>,
     pub stop_price: Option<f64>,
@@ -70,7 +70,7 @@ impl<'a> NewOrderParams<'a> {
         self
     }
 
-    pub fn reduce_only(mut self, reduce_only: &'a str) -> Self {
+    pub fn reduce_only(mut self, reduce_only: bool) -> Self {
         self.reduce_only = Some(reduce_only);
         self
     }

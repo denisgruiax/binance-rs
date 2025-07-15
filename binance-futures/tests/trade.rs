@@ -9,7 +9,8 @@ mod futures_trade_api_integration_test {
             endpoint::host::Host,
             model::{
                 params::trade::{
-                    CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams, PositionRiskV3Params, SetLeverageParams
+                    CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams,
+                    PositionRiskV3Params, SetLeverageParams,
                 },
                 response::trade::{
                     GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse,

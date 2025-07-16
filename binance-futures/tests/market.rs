@@ -61,7 +61,7 @@ mod futures_market_api_integration_tests {
 
         let params = ExchangeInformationParams::new().symbol("BTCUSDT");
 
-        let exchange_info = market_api.get_exchange_info(params).unwrap();
+        let exchange_info = market_api.get_exchange_info(&params).unwrap();
 
         assert_eq!(exchange_info.timezone, "UTC");
         assert!(exchange_info.server_time > 0);
@@ -80,7 +80,7 @@ mod futures_market_api_integration_tests {
 
         let params = DepthParams::new("BTCUSDT").limit(5);
 
-        let depth: DepthResponse = market_api.get_depth(params).unwrap();
+        let depth: DepthResponse = market_api.get_depth(&params).unwrap();
 
         assert!(depth.last_update_id > 0);
         assert!(depth.e > 0);
@@ -95,7 +95,7 @@ mod futures_market_api_integration_tests {
 
         let params: TradesParams = TradesParams::new("ICPUSDT").limit(5);
 
-        let trades: Vec<TradesResponse> = market_api.get_trades(params).unwrap();
+        let trades: Vec<TradesResponse> = market_api.get_trades(&params).unwrap();
 
         assert_eq!(trades.len(), 5);
     }
@@ -107,7 +107,7 @@ mod futures_market_api_integration_tests {
         let params: HistoricalTradesParams = HistoricalTradesParams::new("EGLDUSDT").limit(10);
 
         let historical_trades: Vec<HistoricalTradesResponse> =
-            market_api.get_historical_trades(params).unwrap();
+            market_api.get_historical_trades(&params).unwrap();
 
         assert_eq!(historical_trades.len(), 10);
     }
@@ -132,7 +132,7 @@ mod futures_market_api_integration_tests {
 
         let params = KlinesParams::new("ETHUSDT", &Interval::Minutes5).limit(30);
 
-        let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
+        let klines: Vec<KlinesResponse> = market_api.get_klines(&params).unwrap();
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
@@ -144,7 +144,7 @@ mod futures_market_api_integration_tests {
 
         let params: Symbol = Symbol::new("ETHUSDT");
 
-        let mark_price: MarkPriceResponse = market_api.get_mark_price(params).unwrap();
+        let mark_price: MarkPriceResponse = market_api.get_mark_price(&params).unwrap();
 
         assert_eq!(mark_price.symbol, "ETHUSDT");
         assert!(mark_price.mark_price > 0.0);
@@ -177,7 +177,7 @@ mod futures_market_api_integration_tests {
         };
 
         let funding_rate_history: Vec<FundingRateHistoryResponse> =
-            market_api.get_funding_rate_history(params).unwrap();
+            market_api.get_funding_rate_history(&params).unwrap();
 
         assert_eq!(funding_rate_history.len(), 8);
         assert!(funding_rate_history.iter().all(|funding_rate| {
@@ -191,7 +191,7 @@ mod futures_market_api_integration_tests {
 
         let params: Symbol = Symbol::new("BTCUSDT");
 
-        let ticker24h: Ticker24hResponse = market_api.get_ticker24h(params).unwrap();
+        let ticker24h: Ticker24hResponse = market_api.get_ticker24h(&params).unwrap();
 
         assert_eq!(ticker24h.symbol, "BTCUSDT");
         assert!(ticker24h.last_price > 0.0);
@@ -215,7 +215,7 @@ mod futures_market_api_integration_tests {
 
         let params: Symbol = Symbol::new("BTCUSDT");
 
-        let ticker24h: TickerPriceResponse = market_api.get_ticker_price(params).unwrap();
+        let ticker24h: TickerPriceResponse = market_api.get_ticker_price(&params).unwrap();
 
         assert_eq!(ticker24h.symbol, "BTCUSDT");
         assert!(ticker24h.price > 0.0);
@@ -237,7 +237,7 @@ mod futures_market_api_integration_tests {
 
         let params: Symbol = Symbol::new("BTCUSDT");
 
-        let ticker24h: TickerPriceResponse = market_api.get_ticker_price_v2(params).unwrap();
+        let ticker24h: TickerPriceResponse = market_api.get_ticker_price_v2(&params).unwrap();
 
         assert_eq!(ticker24h.symbol, "BTCUSDT");
         assert!(ticker24h.price > 0.0);
@@ -260,7 +260,7 @@ mod futures_market_api_integration_tests {
 
         let params: Symbol = Symbol::new("ETHUSDT");
 
-        let book_ticker = market_api.get_book_ticker(params).unwrap();
+        let book_ticker = market_api.get_book_ticker(&params).unwrap();
 
         assert_eq!(book_ticker.symbol, "ETHUSDT");
         assert!(book_ticker.bid_price > 0.0);
@@ -281,7 +281,7 @@ mod futures_market_api_integration_tests {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
         let book_ticker: Vec<DeliveryPriceResponse> = market_api
-            .get_delivery_price_list(Pair::new("BTCUSDT"))
+            .get_delivery_price_list(&Pair::new("BTCUSDT"))
             .unwrap();
 
         assert!(book_ticker.len() > 0);
@@ -292,7 +292,7 @@ mod futures_market_api_integration_tests {
         let market_api: Arc<MarketApi<HmacSha256>> = shared_test_client::<HmacSha256>();
 
         let open_interest: OpenInterestResponse = market_api
-            .get_open_interest(Symbol::new("SOLUSDT"))
+            .get_open_interest(&Symbol::new("SOLUSDT"))
             .unwrap();
 
         assert!(open_interest.open_interest > 0.0);
@@ -308,7 +308,7 @@ mod futures_market_api_integration_tests {
             OpenInterestHistoryParams::new("SOLUSDT", &Interval::Minutes5);
 
         let open_interet_history: Vec<OpenInterestHistoryResponse> =
-            market_api.get_open_interest_history_list(params).unwrap();
+            market_api.get_open_interest_history_list(&params).unwrap();
 
         assert!(open_interet_history.len() > 0);
     }
@@ -321,7 +321,7 @@ mod futures_market_api_integration_tests {
             TopLongShortPositionRatioParams::new("SOLUSDT", &Interval::Minutes5);
 
         let data: Vec<TopLongShortPositionRatioResponse> =
-            market_api.get_top_long_position_ratio_list(params).unwrap();
+            market_api.get_top_long_position_ratio_list(&params).unwrap();
 
         assert!(data.len() > 0);
     }
@@ -334,7 +334,7 @@ mod futures_market_api_integration_tests {
             TopLongShortAccountRatioParams::new("SOLUSDT", &Interval::Minutes5);
 
         let data: Vec<TopLongShortAccountRatioResponse> =
-            market_api.get_top_long_account_ratio_list(params).unwrap();
+            market_api.get_top_long_account_ratio_list(&params).unwrap();
 
         assert!(data.len() > 0);
     }
@@ -347,7 +347,7 @@ mod futures_market_api_integration_tests {
             GlobalLongShortAccountRatioParams::new("SOLUSDT", &Interval::Minutes5);
 
         let data: Vec<GlobalLongShortAccountRatioResponse> = market_api
-            .get_global_long_account_ratio_list(params)
+            .get_global_long_account_ratio_list(&params)
             .unwrap();
 
         assert!(data.len() > 0);
@@ -361,7 +361,7 @@ mod futures_market_api_integration_tests {
             TakerBuySellVolumeParams::new("SOLUSDT", &Interval::Minutes5);
 
         let data: Vec<TakerBuySellVolumeResponse> =
-            market_api.get_taker_buy_sell_volume_list(params).unwrap();
+            market_api.get_taker_buy_sell_volume_list(&params).unwrap();
 
         assert!(data.len() > 0);
     }
@@ -373,7 +373,7 @@ mod futures_market_api_integration_tests {
         let params: BasisParams =
             BasisParams::new("SOLUSDT", ContractType::Perpetual, &Interval::Minutes5, 17);
 
-        let data: Vec<BasisResponse> = market_api.get_basis_list(params).unwrap();
+        let data: Vec<BasisResponse> = market_api.get_basis_list(&params).unwrap();
 
         assert_eq!(data.len(), 17);
     }

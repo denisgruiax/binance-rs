@@ -31,7 +31,7 @@ where
 
     pub fn get_exchange_info(
         &self,
-        params: ExchangeInformationParams,
+        params: &ExchangeInformationParams,
     ) -> Result<ExchangeInformationResponse, BinanceError> {
         self.client.get(General::ExchangeInfo, params)
     }

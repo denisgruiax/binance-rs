@@ -38,7 +38,7 @@ mod spot_market_api_integration_tests {
 
         let params = DepthParams::new("BTCUSDC").limit(20);
 
-        let depth: DepthResponse = market_api.get_depth(params).unwrap();
+        let depth: DepthResponse = market_api.get_depth(&params).unwrap();
 
         assert!(depth.last_update_id > 0);
         assert_eq!(depth.bids.len(), 20);
@@ -51,7 +51,7 @@ mod spot_market_api_integration_tests {
 
         let params = TradesParams::new("SOLUSDC").limit(25);
 
-        let trades: Vec<TradesResponse> = market_api.get_trades(params).unwrap();
+        let trades: Vec<TradesResponse> = market_api.get_trades(&params).unwrap();
 
         let check_trade = |trade: &TradesResponse| {
             trade.id > 0
@@ -72,7 +72,7 @@ mod spot_market_api_integration_tests {
         let params = HistoricalTradesParams::new("SOLUSDC").limit(40);
 
         let trades: Vec<HistoricalTradesResponse> =
-            market_api.get_historical_trades(params).unwrap();
+            market_api.get_historical_trades(&params).unwrap();
 
         let check_trade = |trade: &HistoricalTradesResponse| {
             trade.id > 0
@@ -106,7 +106,7 @@ mod spot_market_api_integration_tests {
 
         let params = KlinesParams::new("ETHUSDC", &Interval::Minutes5).limit(30);
 
-        let klines: Vec<KlinesResponse> = market_api.get_klines(params).unwrap();
+        let klines: Vec<KlinesResponse> = market_api.get_klines(&params).unwrap();
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
@@ -118,7 +118,7 @@ mod spot_market_api_integration_tests {
 
         let params = KlinesParams::new("ETHUSDC", &Interval::Minutes5).limit(30);
 
-        let klines: Vec<KlinesResponse> = market_api.get_uiklines(params).unwrap();
+        let klines: Vec<KlinesResponse> = market_api.get_uiklines(&params).unwrap();
 
         assert_eq!(klines.len(), 30);
         assert!(klines.iter().all(check_kline));
@@ -129,7 +129,7 @@ mod spot_market_api_integration_tests {
         let market_api = shared_test_market();
         let params = AvgPriceParams::new("FETUSDC");
 
-        let average_price: AvgPriceResponse = market_api.get_average_price(params).unwrap();
+        let average_price: AvgPriceResponse = market_api.get_average_price(&params).unwrap();
 
         assert!(average_price.mins > 0);
         assert!(average_price.price > 0.0);
@@ -179,7 +179,7 @@ mod spot_market_api_integration_tests {
 
         let params = Ticker24hParams::new().symbol("BTCUSDC").r#type("MINI");
 
-        let ticker24h_mini: Ticker24hMiniResponse = market_api.get_ticker24h_mini(params).unwrap();
+        let ticker24h_mini: Ticker24hMiniResponse = market_api.get_ticker24h_mini(&params).unwrap();
 
         assert_eq!(ticker24h_mini.symbol, "BTCUSDC");
         assert!(check_ticker24h_mini(&ticker24h_mini));
@@ -190,7 +190,7 @@ mod spot_market_api_integration_tests {
         let market_api = shared_test_market();
         let params = Ticker24hParams::new().symbol("DOTUSDC").r#type("FULL");
 
-        let ticker24h_full: Ticker24hFullResponse = market_api.get_ticker24h_full(params).unwrap();
+        let ticker24h_full: Ticker24hFullResponse = market_api.get_ticker24h_full(&params).unwrap();
 
         assert_eq!(ticker24h_full.symbol, "DOTUSDC");
         assert!(check_ticker24h_full(&ticker24h_full));
@@ -204,7 +204,7 @@ mod spot_market_api_integration_tests {
             .r#type("MINI");
 
         let ticker24h_mini_list: Vec<Ticker24hMiniResponse> =
-            market_api.get_ticker24h_mini_list(params).unwrap();
+            market_api.get_ticker24h_mini_list(&params).unwrap();
 
         assert_eq!(ticker24h_mini_list[0].symbol, "BTCUSDC");
         assert_eq!(ticker24h_mini_list[1].symbol, "SOLUSDC");
@@ -219,7 +219,7 @@ mod spot_market_api_integration_tests {
             .r#type("FULL");
 
         let ticker24h_full_list: Vec<Ticker24hFullResponse> =
-            market_api.get_ticker24h_full_list(params).unwrap();
+            market_api.get_ticker24h_full_list(&params).unwrap();
 
         assert_eq!(ticker24h_full_list[0].symbol, "BTCUSDC");
         assert_eq!(ticker24h_full_list[1].symbol, "SOLUSDC");
@@ -263,7 +263,7 @@ mod spot_market_api_integration_tests {
         let params = TickerDayParams::new().symbol("SOLUSDC").r#type("MINI");
 
         let ticker_day_mini: TickerDayMiniResponse =
-            market_api.get_ticker_day_mini(params).unwrap();
+            market_api.get_ticker_day_mini(&params).unwrap();
 
         assert!(check_trading_day_mini(&ticker_day_mini, "SOLUSDC"));
     }
@@ -274,7 +274,7 @@ mod spot_market_api_integration_tests {
         let params = TickerDayParams::new().symbol("DOTUSDC").r#type("FULL");
 
         let ticker_day_full: TickerDayFullResponse =
-            market_api.get_ticker_day_full(params).unwrap();
+            market_api.get_ticker_day_full(&params).unwrap();
 
         assert!(check_ticker_day_full(&ticker_day_full, "DOTUSDC"));
     }
@@ -288,7 +288,7 @@ mod spot_market_api_integration_tests {
             .r#type("MINI");
 
         let ticker_day_mini_list: Vec<TickerDayMiniResponse> =
-            market_api.get_ticker_day_mini_list(params).unwrap();
+            market_api.get_ticker_day_mini_list(&params).unwrap();
 
         assert!(
             ticker_day_mini_list
@@ -309,7 +309,7 @@ mod spot_market_api_integration_tests {
             .r#type("FULL");
 
         let ticker_day_mini_list: Vec<TickerDayFullResponse> =
-            market_api.get_ticker_day_full_list(params).unwrap();
+            market_api.get_ticker_day_full_list(&params).unwrap();
 
         assert!(
             ticker_day_mini_list

@@ -32,7 +32,7 @@ mod spot_account_api_integration_tests {
 
         let params = InfoParams::new().omit_zero_balances(true).recv_window(5000);
 
-        let info: InfoResponse = account_api.get_info(params).unwrap();
+        let info: InfoResponse = account_api.get_info(&params).unwrap();
 
         assert!(info.can_trade);
         assert!(info.can_withdraw);
@@ -47,7 +47,7 @@ mod spot_account_api_integration_tests {
 
         let params = MyTradesParams::new("BNBUSDC");
 
-        let my_trades: Vec<MyTradesResponse> = account_api.get_my_trades(params).unwrap();
+        let my_trades: Vec<MyTradesResponse> = account_api.get_my_trades(&params).unwrap();
 
         let check_trade = |trade: &MyTradesResponse| {
             trade.id > 0
@@ -64,7 +64,7 @@ mod spot_account_api_integration_tests {
     fn test_unfilled_order_count() {
         let account_api = shared_test_account();
         let unffiled_order_count: Vec<UnfilledOrderCountResponse> = account_api
-            .get_unfilled_order_count(UnfilledOrderCountParams::new())
+            .get_unfilled_order_count(&UnfilledOrderCountParams::new())
             .unwrap();
 
         assert!(

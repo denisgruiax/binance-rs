@@ -34,7 +34,7 @@ where
 
     pub fn get_futures_balance(
         &self,
-        params: FuturesBalanceParams,
+        params: &FuturesBalanceParams,
     ) -> Result<Vec<FuturesBalanceResponse>, BinanceError> {
         self.client
             .send(Account::FuturesBalance, params, Method::GET)
@@ -42,7 +42,7 @@ where
 
     pub fn get_futures_balance_v3(
         &self,
-        params: FuturesBalanceParams,
+        params: &FuturesBalanceParams,
     ) -> Result<Vec<FuturesBalanceResponse>, BinanceError> {
         self.client
             .send(Account::FuturesBalanceV3, params, Method::GET)
@@ -50,14 +50,14 @@ where
 
     pub fn get_position_side(
         &self,
-        params: PositionSideParams,
+        params: &PositionSideParams,
     ) -> Result<PositionSideResponse, BinanceError> {
         self.client.send(Account::PositionSide, params, Method::GET)
     }
 
     pub fn get_futures_account(
         &self,
-        params: FuturesAccountParams,
+        params: &FuturesAccountParams,
     ) -> Result<FuturesAccountResponse, BinanceError> {
         self.client
             .send(Account::FuturesAccount, params, Method::GET)
@@ -65,7 +65,7 @@ where
 
     pub fn get_comission_rate(
         &self,
-        params: CommissionRateParams,
+        params: &CommissionRateParams,
     ) -> Result<CommissionRateResponse, BinanceError> {
         self.client
             .send(Account::CommissionRate, params, Method::GET)

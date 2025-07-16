@@ -38,7 +38,7 @@ mod futures_account_api_integration_tests {
         let params: FuturesBalanceParams = FuturesBalanceParams::new(5000);
 
         let futures_balance: Vec<FuturesBalanceResponse> =
-            account_api.get_futures_balance(params).unwrap();
+            account_api.get_futures_balance(&params).unwrap();
 
         let wallet = futures_balance
             .iter()
@@ -55,7 +55,7 @@ mod futures_account_api_integration_tests {
         let params: FuturesBalanceParams = FuturesBalanceParams::new(5000);
 
         let futures_balance: Vec<FuturesBalanceResponse> =
-            account_api.get_futures_balance_v3(params).unwrap();
+            account_api.get_futures_balance_v3(&params).unwrap();
 
         let wallet = futures_balance
             .iter()
@@ -71,7 +71,7 @@ mod futures_account_api_integration_tests {
 
         let params: PositionSideParams = PositionSideParams::default();
 
-        let position_side = account_api.get_position_side(params).unwrap();
+        let position_side = account_api.get_position_side(&params).unwrap();
 
         assert!(!position_side.dual_side_position);
     }
@@ -82,7 +82,7 @@ mod futures_account_api_integration_tests {
 
         let params: FuturesAccountParams = FuturesAccountParams::default();
 
-        let futures_account = account_api.get_futures_account(params).unwrap();
+        let futures_account = account_api.get_futures_account(&params).unwrap();
 
         assert!(futures_account.total_cross_wallet_balance > 0.0);
     }
@@ -94,7 +94,7 @@ mod futures_account_api_integration_tests {
         let params: CommissionRateParams = CommissionRateParams::new("SOLUSDT");
 
         let comission_rates: CommissionRateResponse =
-            account_api.get_comission_rate(params).unwrap();
+            account_api.get_comission_rate(&params).unwrap();
 
         assert_eq!(comission_rates.symbol, "SOLUSDT");
     }

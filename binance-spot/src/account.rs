@@ -25,14 +25,14 @@ where
         AccountApi { client }
     }
 
-    pub fn get_info(&self, params: InfoParams) -> Result<InfoResponse, BinanceError> {
+    pub fn get_info(&self, params: &InfoParams) -> Result<InfoResponse, BinanceError> {
         self.client
             .send::<InfoResponse>(Account::Info, params, Method::GET)
     }
 
     pub fn get_my_trades(
         &self,
-        params: MyTradesParams,
+        params: &MyTradesParams,
     ) -> Result<Vec<MyTradesResponse>, BinanceError> {
         self.client
             .send::<Vec<MyTradesResponse>>(Account::MyTrades, params, Method::GET)
@@ -40,7 +40,7 @@ where
 
     pub fn get_unfilled_order_count(
         &self,
-        params: UnfilledOrderCountParams,
+        params: &UnfilledOrderCountParams,
     ) -> Result<Vec<UnfilledOrderCountResponse>, BinanceError> {
         self.client
             .send(Account::UnfilledOrderCount, params, Method::GET)

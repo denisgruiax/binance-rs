@@ -23,88 +23,88 @@ where
         MarketApi { client }
     }
 
-    pub fn get_depth(&self, params: DepthParams) -> Result<DepthResponse, BinanceError> {
+    pub fn get_depth(&self, params: &DepthParams) -> Result<DepthResponse, BinanceError> {
         self.client.get(Market::Depth, params)
     }
 
-    pub fn get_trades(&self, params: TradesParams) -> Result<Vec<TradesResponse>, BinanceError> {
+    pub fn get_trades(&self, params: &TradesParams) -> Result<Vec<TradesResponse>, BinanceError> {
         self.client.get(Market::Trades, params)
     }
 
     pub fn get_historical_trades(
         &self,
-        params: HistoricalTradesParams,
+        params: &HistoricalTradesParams,
     ) -> Result<Vec<HistoricalTradesResponse>, BinanceError> {
         self.client.get(Market::HistoricalTrades, params)
     }
 
-    pub fn get_klines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
+    pub fn get_klines(&self, params: &KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::Klines, params)
     }
 
-    pub fn get_uiklines(&self, params: KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
+    pub fn get_uiklines(&self, params: &KlinesParams) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::UIKlines, params)
     }
 
     pub fn get_average_price(
         &self,
-        params: AvgPriceParams,
+        params: &AvgPriceParams,
     ) -> Result<AvgPriceResponse, BinanceError> {
         self.client.get(Market::AvgPrice, params)
     }
 
     pub fn get_ticker24h_mini(
         &self,
-        params: Ticker24hParams,
+        params: &Ticker24hParams,
     ) -> Result<Ticker24hMiniResponse, BinanceError> {
         self.client.get(Market::Ticker24h, params)
     }
 
     pub fn get_ticker24h_full(
         &self,
-        params: Ticker24hParams,
+        params: &Ticker24hParams,
     ) -> Result<Ticker24hFullResponse, BinanceError> {
         self.client.get(Market::Ticker24h, params)
     }
 
     pub fn get_ticker24h_mini_list(
         &self,
-        params: Ticker24hParams,
+        params: &Ticker24hParams,
     ) -> Result<Vec<Ticker24hMiniResponse>, BinanceError> {
         self.client.get(Market::Ticker24h, params)
     }
 
     pub fn get_ticker24h_full_list(
         &self,
-        params: Ticker24hParams,
+        params: &Ticker24hParams,
     ) -> Result<Vec<Ticker24hFullResponse>, BinanceError> {
         self.client.get(Market::Ticker24h, params)
     }
 
     pub fn get_ticker_day_mini(
         &self,
-        params: TickerDayParams,
+        params: &TickerDayParams,
     ) -> Result<TickerDayMiniResponse, BinanceError> {
         self.client.get(Market::TickerDay, params)
     }
 
     pub fn get_ticker_day_full(
         &self,
-        params: TickerDayParams,
+        params: &TickerDayParams,
     ) -> Result<TickerDayFullResponse, BinanceError> {
         self.client.get(Market::TickerDay, params)
     }
 
     pub fn get_ticker_day_mini_list(
         &self,
-        params: TickerDayParams,
+        params: &TickerDayParams,
     ) -> Result<Vec<TickerDayMiniResponse>, BinanceError> {
         self.client.get(Market::TickerDay, params)
     }
 
     pub fn get_ticker_day_full_list(
         &self,
-        params: TickerDayParams,
+        params: &TickerDayParams,
     ) -> Result<Vec<TickerDayFullResponse>, BinanceError> {
         self.client.get(Market::TickerDay, params)
     }
@@ -141,28 +141,28 @@ where
 
     pub fn get_rolling_ticker_mini(
         &self,
-        params: RollingTickerParams,
+        params: &RollingTickerParams,
     ) -> Result<RollingTickerMiniResponse, BinanceError> {
         self.client.get(Market::RollingTicker, params)
     }
 
     pub fn get_rolling_ticker_mini_list(
         &self,
-        params: RollingTickerParams,
+        params: &RollingTickerParams,
     ) -> Result<Vec<RollingTickerMiniResponse>, BinanceError> {
         self.client.get(Market::RollingTicker, params)
     }
 
     pub fn get_rolling_ticker_full(
         &self,
-        params: RollingTickerParams,
+        params: &RollingTickerParams,
     ) -> Result<RollingTickerMiniResponse, BinanceError> {
         self.client.get(Market::RollingTicker, params)
     }
 
     pub fn get_rolling_ticker_full_list(
         &self,
-        params: RollingTickerParams,
+        params: &RollingTickerParams,
     ) -> Result<Vec<RollingTickerMiniResponse>, BinanceError> {
         self.client.get(Market::RollingTicker, params)
     }

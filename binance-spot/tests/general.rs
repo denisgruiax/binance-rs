@@ -46,7 +46,7 @@ mod spot_general_api_integration_tests {
 
         let params = ExchangeInformationParams::new().symbol("BTCUSDC");
 
-        let exchange_info = general_api.get_exchange_info(params).unwrap();
+        let exchange_info = general_api.get_exchange_info(&params).unwrap();
 
         assert_eq!(exchange_info.timezone, "UTC");
         assert!(exchange_info.server_time > 0);

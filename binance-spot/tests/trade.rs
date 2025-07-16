@@ -44,7 +44,7 @@ mod spot_trade_api_integration_tests {
         let params = NewOrderParams::market(SYMBOL, OrderSide::Buy, 1000.0)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trade_api.send_new_test_order(params);
+        let response = trade_api.send_new_test_order(&params);
 
         match response {
             Ok(_) => assert!(true),
@@ -63,7 +63,7 @@ mod spot_trade_api_integration_tests {
         let params = NewOrderParams::limit(SYMBOL, OrderSide::Buy, limit_price, 1.0)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trade_api.send_new_test_order(params);
+        let response = trade_api.send_new_test_order(&params);
 
         match response {
             Ok(_) => assert!(true),
@@ -82,7 +82,7 @@ mod spot_trade_api_integration_tests {
         let params = NewOrderParams::stop_loss(SYMBOL, OrderSide::Buy, 0.1, stop_price)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trade_api.send_new_test_order(params);
+        let response = trade_api.send_new_test_order(&params);
 
         match response {
             Ok(_) => assert!(true),
@@ -101,7 +101,7 @@ mod spot_trade_api_integration_tests {
         let params = NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, 0.1, stop_price)
             .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trade_api.send_new_test_order(params);
+        let response = trade_api.send_new_test_order(&params);
 
         match response {
             Ok(_) => assert!(true),
@@ -122,7 +122,7 @@ mod spot_trade_api_integration_tests {
             NewOrderParams::take_profit_limit(SYMBOL, OrderSide::Sell, sell_price, 0.1, stop_price)
                 .new_order_resp_type(OrderResponseType::Ack);
 
-        let response = trade_api.send_new_test_order(params);
+        let response = trade_api.send_new_test_order(&params);
 
         match response {
             Ok(_) => assert!(true),

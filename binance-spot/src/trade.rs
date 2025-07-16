@@ -32,7 +32,7 @@ where
         TradeApi { client }
     }
 
-    pub fn send_new_order(&self, params: NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
+    pub fn send_new_order(&self, params: &NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
         if let Some(order_response_type) = &params.new_order_resp_type {
             match order_response_type {
                 OrderResponseType::Ack => {
@@ -70,25 +70,25 @@ where
 
     pub fn send_new_test_order(
         &self,
-        params: NewOrderParams,
+        params: &NewOrderParams,
     ) -> Result<serde_json::Value, BinanceError> {
         self.client.send(Trade::TestOrder, params, Method::POST)
     }
 
-    pub fn get_order(&self, params: GetOrderParams) -> Result<OrderIdResponse, BinanceError> {
+    pub fn get_order(&self, params: &GetOrderParams) -> Result<OrderIdResponse, BinanceError> {
         self.client.send(Trade::GetOrder, params, Method::GET)
     }
 
     pub fn send_cancel_order(
         &self,
-        params: CancelOrderParams,
+        params: &CancelOrderParams,
     ) -> Result<CancelOrderResponse, BinanceError> {
         self.client.send(Trade::CancelOrder, params, Method::DELETE)
     }
 
     pub fn send_cancel_open_orders(
         &self,
-        params: CancelAllOrdersParms,
+        params: &CancelAllOrdersParms,
     ) -> Result<Vec<CancelOrderResponse>, BinanceError> {
         self.client
             .send(Trade::CancelAllOrders, params, Method::DELETE)
@@ -96,14 +96,14 @@ where
 
     pub fn get_open_orders(
         &self,
-        params: OpenOrdersParams,
+        params: &OpenOrdersParams,
     ) -> Result<Vec<OrderResponse>, BinanceError> {
         self.client.send(Trade::OpenOrders, params, Method::GET)
     }
 
     pub fn get_all_order(
         &self,
-        params: AllOrderParams,
+        params: &AllOrderParams,
     ) -> Result<Vec<OrderResponse>, BinanceError> {
         self.client.send(Trade::AllOrders, params, Method::GET)
     }

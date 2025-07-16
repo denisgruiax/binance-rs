@@ -27,7 +27,7 @@ where
 
     pub async fn get(
         &self,
-        path: &'a impl AsRef<str>,
+        path: impl AsRef<str>,
         params: impl UrlEncoded,
     ) -> Result<Response, BinanceError> {
         let endpoint = format!("{}{}{}", self.host, path.as_ref(), params.to_url_encoded());
@@ -37,7 +37,7 @@ where
 
     pub async fn send(
         &self,
-        path: &'a impl AsRef<str>,
+        path: impl AsRef<str>,
         params: impl UrlEncoded,
         method: Method,
     ) -> Result<Response, BinanceError> {

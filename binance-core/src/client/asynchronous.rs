@@ -52,7 +52,7 @@ where
         Ok(RequestBuilder::send(request).await?)
     }
 
-    pub async fn handle<T: DeserializeOwned>(response: Response) -> Result<T, BinanceError> {
+    pub async fn handle<T: DeserializeOwned>(&self, response: Response) -> Result<T, BinanceError> {
         let status = response.status();
         let body = response.bytes().await?;
 

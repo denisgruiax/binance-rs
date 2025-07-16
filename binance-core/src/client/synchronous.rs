@@ -41,7 +41,7 @@ where
 
         let response = self.inner_client.get(endpoint).send()?;
 
-        Self::handle::<T>(response)
+        self.handle::<T>(response)
     }
 
     pub fn send<T>(
@@ -63,10 +63,10 @@ where
 
         let response = RequestBuilder::send(request)?;
 
-        Self::handle(response)
+        self.handle(response)
     }
 
-    pub fn handle<T: DeserializeOwned>(response: Response) -> Result<T, BinanceError> {
+    pub fn handle<T: DeserializeOwned>(&self, response: Response) -> Result<T, BinanceError> {
         let status = response.status();
         let body = response.bytes()?;
 

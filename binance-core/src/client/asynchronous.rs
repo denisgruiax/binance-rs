@@ -1,7 +1,8 @@
 use crate::signer::signature::Signature;
 use binance_common::error::BinanceError;
 use binance_common::url::UrlEncoded;
-use reqwest::{Method, RequestBuilder, Response};
+use reqwest::{Method, RequestBuilder, Response, StatusCode};
+use serde::de::DeserializeOwned;
 
 pub struct Client<'a, S>
 where
@@ -24,22 +25,22 @@ where
         }
     }
 
-    pub fn get(
+    pub async fn get(
         &self,
         path: &'a impl AsRef<str>,
         params: impl UrlEncoded,
-    ) -> impl Future<Output = Result<Response, reqwest::Error>> {
+    ) -> Result<Response, BinanceError> {
         let endpoint = format!("{}{}{}", self.host, path.as_ref(), params.to_url_encoded());
 
-        self.inner_client.get(endpoint).send()
+        Ok(self.inner_client.get(endpoint).send().await?)
     }
 
-    pub fn send(
+    pub async fn send(
         &self,
         path: &'a impl AsRef<str>,
         params: impl UrlEncoded,
         method: Method,
-    ) -> Result<impl Future<Output = Result<Response, reqwest::Error>>, BinanceError> {
+    ) -> Result<Response, BinanceError> {
         let request = self.signature.build_request(
             &self.inner_client,
             self.host,
@@ -48,6 +49,39 @@ where
             method,
         )?;
 
-        Ok(RequestBuilder::send(request))
+        Ok(RequestBuilder::send(request).await?)
+    }
+
+    pub async fn handle<T: DeserializeOwned>(response: Response) -> Result<T, BinanceError> {
+        let status = response.status();
+        let body = response.bytes().await?;
+
+        match status {
+            StatusCode::BAD_REQUEST => {
+                let api_error: binance_common::error::ApiError = serde_json::from_slice(&body)
+                    .map_err(|error| BinanceError::Deserialize(error))?;
+                Err(BinanceError::Api(api_error))
+            }
+
+            StatusCode::IM_A_TEAPOT => Err(BinanceError::IpBanned),
+
+            StatusCode::INTERNAL_SERVER_ERROR => Err(BinanceError::InternalServer),
+
+            StatusCode::OK => Ok(serde_json::from_slice::<T>(&body)
+                .map_err(|error| BinanceError::Deserialize(error))?),
+
+            StatusCode::REQUEST_TIMEOUT => Err(BinanceError::RequestTimeout),
+            StatusCode::UNAUTHORIZED => {
+                let api_error: binance_common::error::ApiError = serde_json::from_slice(&body)
+                    .map_err(|error| BinanceError::Deserialize(error))?;
+
+                Err(BinanceError::Api(api_error))
+            }
+            StatusCode::TOO_MANY_REQUESTS => Err(BinanceError::TooManyRequest),
+            status_code => Err(BinanceError::Unknown(format!(
+                "Response Status Code: {}",
+                status_code
+            ))),
+        }
     }
 }

@@ -86,7 +86,7 @@ impl AsRef<str> for Trade {
         match self {
             Trade::NewOrder => "/fapi/v1/order?",
             Trade::MultipleOrders => "/fapi/v1/batchOrders?",
-            Trade::ModifyOrder => "/fapi/v1/amendOrder?",
+            Trade::ModifyOrder => "/fapi/v1/order?",
             Trade::ModifyMultipleOrders => "/fapi/v1/amendBatchOrders?",
             Trade::OrderModificationHistory => "/fapi/v1/orderAmendmentHistory?",
             Trade::CancelOrder => "/fapi/v1/order?",

@@ -32,7 +32,10 @@ where
         TradeApi { client }
     }
 
-    pub fn send_new_order(&self, params: &NewOrderParams) -> Result<NewOrderResponse, BinanceError> {
+    pub fn send_new_order(
+        &self,
+        params: &NewOrderParams,
+    ) -> Result<NewOrderResponse, BinanceError> {
         if let Some(order_response_type) = &params.new_order_resp_type {
             match order_response_type {
                 OrderResponseType::Ack => {

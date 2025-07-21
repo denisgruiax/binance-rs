@@ -320,8 +320,9 @@ mod futures_market_api_integration_tests {
         let params: TopLongShortPositionRatioParams =
             TopLongShortPositionRatioParams::new("SOLUSDT", &Interval::Minutes5);
 
-        let data: Vec<TopLongShortPositionRatioResponse> =
-            market_api.get_top_long_position_ratio_list(&params).unwrap();
+        let data: Vec<TopLongShortPositionRatioResponse> = market_api
+            .get_top_long_position_ratio_list(&params)
+            .unwrap();
 
         assert!(data.len() > 0);
     }

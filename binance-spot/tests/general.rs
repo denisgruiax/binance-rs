@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod spot_general_api_integration_tests {
-    use binance_spot::general::GeneralApi;
     use binance_common::spot::{
         endpoint::host::Host,
         model::{params::general::ExchangeInformationParams, response::general::EmptyResponse},
@@ -9,6 +8,7 @@ mod spot_general_api_integration_tests {
         client::synchronous::Client,
         signer::{hmacsha256::HmacSha256, signature::Signature},
     };
+    use binance_spot::general::GeneralApi;
     use std::sync::{Arc, OnceLock};
 
     static CLIENT: OnceLock<Arc<GeneralApi<'static, HmacSha256<'static>>>> = OnceLock::new();

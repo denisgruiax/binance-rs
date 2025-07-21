@@ -11,8 +11,7 @@ mod spot_trade_api_integration_tests {
     use std::sync::{Arc, OnceLock};
 
     static MARKET_CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
-    static TRADE_CLIENT: OnceLock<Arc<TradeApi<'static, HmacSha256<'static>>>> =
-        OnceLock::new();
+    static TRADE_CLIENT: OnceLock<Arc<TradeApi<'static, HmacSha256<'static>>>> = OnceLock::new();
     static SYMBOL: &'static str = "BTCUSDC";
 
     fn shared_test_trade() -> Arc<TradeApi<'static, HmacSha256<'static>>> {

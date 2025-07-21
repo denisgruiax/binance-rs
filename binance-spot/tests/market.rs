@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod spot_market_api_integration_tests {
-    use binance_spot::market::MarketApi;
     use binance_common::enums::Interval;
     use binance_common::spot::{
         endpoint::host::Host,
@@ -17,6 +16,7 @@ mod spot_market_api_integration_tests {
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
+    use binance_spot::market::MarketApi;
     use std::sync::{Arc, OnceLock};
 
     static CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();

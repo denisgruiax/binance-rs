@@ -104,7 +104,10 @@ where
         self.client.get(Market::TickerPrice, Symbol::default())
     }
 
-    pub fn get_ticker_price_v2(&self, params: &Symbol) -> Result<TickerPriceResponse, BinanceError> {
+    pub fn get_ticker_price_v2(
+        &self,
+        params: &Symbol,
+    ) -> Result<TickerPriceResponse, BinanceError> {
         self.client.get(Market::TickerPriceV2, params)
     }
 

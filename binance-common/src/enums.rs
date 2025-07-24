@@ -29,7 +29,7 @@ impl AsRef<str> for Interval {
             Interval::Minutes30 => "30m",
             Interval::Hours1 => "1h",
             Interval::Hours2 => "2h",
-            Interval::Hours4 => "3h",
+            Interval::Hours4 => "4h",
             Interval::Hours6 => "6h",
             Interval::Hours8 => "8h",
             Interval::Hours12 => "12h",

@@ -208,3 +208,30 @@ impl<'de> Deserialize<'de> for AdlLevel {
         })
     }
 }
+
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum IncomeType {
+    Transfer,
+    WelcomeBonus,
+    RealizedPnl,
+    FundingFee,
+    Commission,
+    InsuranceClear,
+    ReferralKickback,
+    CommissionRebate,
+    ApiRebate,
+    ContestReward,
+    CrossCollateralTransfer,
+    OptionsPremiumFee,
+    OptionsSettleProfit,
+    InternalTransfer,
+    AutoExchange,
+    DeliveredSettelment,
+    CoinSwapDeposit,
+    CoinSwapWithdraw,
+    PositionLimitIncreaseFee,
+    StrategyUmfuturesTransfer,
+    FeeReturn,
+    BfusdReward,
+}

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use serde_with::{DisplayFromStr, serde_as};
 
+use crate::enums::IncomeType;
+
 #[serde_as]
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -159,4 +161,22 @@ pub struct CommissionRateResponse {
 
     #[serde_as(as = "DisplayFromStr")]
     pub taker_commission_rate: f64,
+}
+
+#[serde_as]
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IncomeHistoryResponse {
+    pub symbol: String,
+    pub income_type: IncomeType,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub income: f64,
+
+    pub asset: String,
+    pub info: String,
+    pub time: u64,
+    pub tran_id: u64,
+
+    pub taker_commission_rate: Option<String>,
 }

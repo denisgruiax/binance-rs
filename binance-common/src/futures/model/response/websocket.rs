@@ -4,8 +4,9 @@ use serde_with::{DisplayFromStr, serde_as};
 #[derive(Debug)]
 pub enum WebSocketResponse {
     AggTrade(AggTradeResponse),
+    Kline(KlineResponse),
     MarkPrice(MarkPriceResponse),
-    Kline(KlineResponse)
+    MiniTicker(MiniTickerResponse),
 }
 
 #[serde_as]
@@ -152,4 +153,41 @@ pub struct Kline {
 
     #[serde(rename = "B")]
     pub ignore: String,
+}
+
+#[serde_as]
+#[derive(Clone, Debug, Deserialize)]
+pub struct MiniTickerResponse {
+    #[serde(rename = "e")]
+    pub event_type: String,
+
+    #[serde(rename = "E")]
+    pub event_time: u64,
+
+    #[serde(rename = "s")]
+    pub symbol: String,
+
+    #[serde(rename = "c")]
+    #[serde_as(as = "DisplayFromStr")]
+    pub close_price: f64,
+
+    #[serde(rename = "o")]
+    #[serde_as(as = "DisplayFromStr")]
+    pub open_price: f64,
+
+    #[serde(rename = "h")]
+    #[serde_as(as = "DisplayFromStr")]
+    pub high_price: f64,
+
+    #[serde(rename = "l")]
+    #[serde_as(as = "DisplayFromStr")]
+    pub low_price: f64,
+
+    #[serde(rename = "v")]
+    #[serde_as(as = "DisplayFromStr")]
+    pub base_volume: f64,
+
+    #[serde(rename = "q")]
+    #[serde_as(as = "DisplayFromStr")]
+    pub quote_volume: f64,
 }

@@ -7,9 +7,11 @@ mod futures_account_api_integration_tests {
         model::{
             params::account::{
                 CommissionRateParams, FuturesAccountParams, FuturesBalanceParams,
-                PositionSideParams,
+                IncomeHistoryParams, PositionSideParams,
             },
-            response::account::{CommissionRateResponse, FuturesBalanceResponse},
+            response::account::{
+                CommissionRateResponse, FuturesBalanceResponse, IncomeHistoryResponse,
+            },
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
@@ -97,5 +99,16 @@ mod futures_account_api_integration_tests {
             account_api.get_comission_rate(&params).unwrap();
 
         assert_eq!(comission_rates.symbol, "SOLUSDT");
+    }
+
+    #[test]
+    fn test_income_history() {
+        let account_api: Arc<AccountApi<HmacSha256<'static>>> = shared_test_client::<HmacSha256>();
+
+        let income_history: Vec<IncomeHistoryResponse> = account_api
+            .get_income_history(&IncomeHistoryParams::new())
+            .unwrap();
+
+        assert!(income_history.len() > 0)
     }
 }

@@ -5,11 +5,11 @@ use binance_common::{
         model::{
             params::account::{
                 CommissionRateParams, FuturesAccountParams, FuturesBalanceParams,
-                PositionSideParams,
+                IncomeHistoryParams, PositionSideParams,
             },
             response::account::{
                 CommissionRateResponse, FuturesAccountResponse, FuturesBalanceResponse,
-                PositionSideResponse,
+                IncomeHistoryResponse, PositionSideResponse,
             },
         },
     },
@@ -69,5 +69,13 @@ where
     ) -> Result<CommissionRateResponse, BinanceError> {
         self.client
             .send(Account::CommissionRate, params, Method::GET)
+    }
+
+    pub fn get_income_history(
+        &self,
+        params: &IncomeHistoryParams,
+    ) -> Result<Vec<IncomeHistoryResponse>, BinanceError> {
+        self.client
+            .send(Account::IncomeHistory, params, Method::GET)
     }
 }

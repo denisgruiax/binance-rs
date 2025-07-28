@@ -6,6 +6,7 @@ use std::fmt::Display;
 pub enum BinanceError {
     Api(ApiError),
     BuildRequest(String),
+    Channel(String),
     Deserialize(serde_json::Error),
     IpBanned,
     InternalServer,
@@ -14,6 +15,8 @@ pub enum BinanceError {
     Signature(InvalidLength),
     TooManyRequest,
     Unknown(String),
+    WebSocket(ApiError),
+    WebSocketInternal(String),
 }
 
 #[derive(Debug, Deserialize)]
@@ -26,20 +29,58 @@ impl Display for BinanceError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             BinanceError::Api(ApiError { code, msg }) => {
-                write!(f, "code: {},\nmsg: {},\n", code, msg)
+                write!(f, "[BinanceError::Api] code: {}, message: {}", code, msg)
             }
-            BinanceError::BuildRequest(msg) => write!(f, "Build request error: {}", msg),
-            BinanceError::Deserialize(e) => write!(f, "Deserialize error: {}", e),
-            BinanceError::IpBanned => write!(
-                f,
-                "IP Auto Banned after receiving the HTTP 429 error code multiple times!"
-            ),
-            BinanceError::InternalServer => write!(f, "Internal Binance server error!"),
-            BinanceError::Request(e) => write!(f, "Request error: {}", e),
-            BinanceError::RequestTimeout => write!(f, "Request timeout!"),
-            BinanceError::Signature(e) => write!(f, "Secret key error: {}", e),
-            BinanceError::TooManyRequest => write!(f, "To many requests sent by the client!"),
-            BinanceError::Unknown(e) => write!(f, "Unknown error: {}", e),
+
+            BinanceError::BuildRequest(msg) => {
+                write!(f, "[BinanceError::BuildRequest] {}", msg)
+            }
+            BinanceError::Channel(msg) => {
+                write!(f, "[BinanceError::Channel] {}", msg)
+            }
+            BinanceError::Deserialize(e) => {
+                write!(f, "[BinanceError::Deserialize] {}", e)
+            }
+            BinanceError::IpBanned => {
+                write!(
+                    f,
+                    "[BinanceError::IpBanned] IP Auto-banned due to repeated 429 responses."
+                )
+            }
+            BinanceError::InternalServer => {
+                write!(
+                    f,
+                    "[BinanceError::InternalServer] Binance internal server error."
+                )
+            }
+            BinanceError::Request(e) => {
+                write!(f, "[BinanceError::Request] {}", e)
+            }
+            BinanceError::RequestTimeout => {
+                write!(f, "[BinanceError::RequestTimeout] Request timed out.")
+            }
+            BinanceError::Signature(e) => {
+                write!(f, "[BinanceError::Signature] Signature error: {}", e)
+            }
+            BinanceError::TooManyRequest => {
+                write!(
+                    f,
+                    "[BinanceError::TooManyRequest] Rate limit exceeded (HTTP 429)."
+                )
+            }
+            BinanceError::Unknown(e) => {
+                write!(f, "[BinanceError::Unknown] {}", e)
+            }
+            BinanceError::WebSocket(ApiError { code, msg }) => {
+                write!(
+                    f,
+                    "[BinanceError::WebSocket] code: {}, message: {}",
+                    code, msg
+                )
+            }
+            BinanceError::WebSocketInternal(msg) => {
+                write!(f, "[BinnaceError::WebSocketInternal] {}", msg)
+            }
         }
     }
 }

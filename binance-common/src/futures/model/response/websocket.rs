@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub enum WebSocketResponse {
     AggTrade(AggTradeResponse),
     Kline(KlineResponse),

@@ -1,20 +1,34 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
+pub struct CombinedStreamResponse {
+    pub stream: String,
+    pub data: WebSocketResponse,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(tag = "e")]
 pub enum WebSocketResponse {
+    #[serde(rename = "aggTrade")]
     AggTrade(AggTradeResponse),
+
+    #[serde(rename = "kline")]
     Kline(KlineResponse),
+
+    #[serde(rename = "markPriceUpdate")]
     MarkPrice(MarkPriceResponse),
+
+    #[serde(rename = "24hrMiniTicker")]
     MiniTicker(MiniTickerResponse),
+
+    #[serde(other)]
+    Init,
 }
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]
 pub struct AggTradeResponse {
-    #[serde(rename = "e")]
-    pub event_type: String,
-
     #[serde(rename = "E")]
     pub event_time: u64,
 
@@ -48,9 +62,6 @@ pub struct AggTradeResponse {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]
 pub struct MarkPriceResponse {
-    #[serde(rename = "e")]
-    pub event_type: String,
-
     #[serde(rename = "E")]
     pub event_time: u64,
 
@@ -79,9 +90,6 @@ pub struct MarkPriceResponse {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct KlineResponse {
-    #[serde(rename = "e")]
-    pub event_type: String,
-
     #[serde(rename = "E")]
     pub event_time: u64,
 
@@ -158,9 +166,6 @@ pub struct Kline {
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]
 pub struct MiniTickerResponse {
-    #[serde(rename = "e")]
-    pub event_type: String,
-
     #[serde(rename = "E")]
     pub event_time: u64,
 

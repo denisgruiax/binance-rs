@@ -1,6 +1,9 @@
 use std::fmt;
 
-use crate::enums::Interval;
+use crate::{
+    enums::{Interval, WebSocketStreamRate},
+    futures::endpoint::host::WebSocketHost,
+};
 
 #[derive(Debug)]
 pub enum WebSocketSymbol {
@@ -78,97 +81,74 @@ impl fmt::Display for WebSocketSymbol {
     }
 }
 
-pub enum WebSocketStreamRate {
-    Milliseconds100,
-    Milliseconds250,
-    Milliseconds500,
-    Seconds1,
-    Seconds3,
-}
-
-impl fmt::Display for WebSocketStreamRate {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let rate: &'static str = match self {
-            WebSocketStreamRate::Milliseconds100 => "100ms",
-            WebSocketStreamRate::Milliseconds250 => "250ms",
-            WebSocketStreamRate::Milliseconds500 => "500ms",
-            WebSocketStreamRate::Seconds1 => "1s",
-            WebSocketStreamRate::Seconds3 => "3s",
-        };
-
-        write!(f, "{}", rate)
-    }
-}
-
 pub struct WebSocketParams {
-    pub streams: String,
+    pub route: String,
 }
 
 impl WebSocketParams {
-    pub fn new() -> Self {
+    pub fn new(host: WebSocketHost) -> Self {
         WebSocketParams {
-            streams: String::new(),
+            route: host.as_ref().to_string(),
         }
     }
 
     pub fn agg_trade(mut self, symbol: WebSocketSymbol) -> Self {
-        self.streams
-            .push_str(format!("{}@aggTrade", symbol).as_str());
+        self.route.push_str(format!("{}@aggTrade", symbol).as_str());
         self
     }
 
     pub fn mark_price(mut self, symbol: WebSocketSymbol, rate: WebSocketStreamRate) -> Self {
-        self.streams
+        self.route
             .push_str(format!("{}@markPrice@{}", symbol, rate).as_str());
         self
     }
 
     pub fn mark_price_all(mut self, rate: WebSocketStreamRate) -> Self {
-        self.streams
+        self.route
             .push_str(format!("!@markPrice@{}", rate).as_str());
         self
     }
 
     pub fn kline_candlesticks(mut self, symbol: WebSocketSymbol, interval: Interval) -> Self {
-        self.streams
+        self.route
             .push_str(format!("{}@kline_{}", symbol, interval.as_ref()).as_str());
         self
     }
 
     pub fn symbol_ticker_mini(mut self, symbol: WebSocketSymbol) -> Self {
-        self.streams
+        self.route
             .push_str(format!("{}@miniTicker", symbol).as_str());
         self
     }
 
     pub fn symbol_ticker_all(mut self) -> Self {
-        self.streams.push_str("!ticker@arr");
+        self.route.push_str("!ticker@arr");
         self
     }
 
     pub fn symbol_ticker(mut self, symbol: WebSocketSymbol) -> Self {
-        self.streams.push_str(format!("{}@ticker", symbol).as_str());
+        self.route.push_str(format!("{}@ticker", symbol).as_str());
         self
     }
 
     pub fn symbol_ticker_all_mini(mut self) -> Self {
-        self.streams.push_str("!miniTicker@arr");
+        self.route.push_str("!miniTicker@arr");
         self
     }
 
     pub fn all_book_tickers(mut self) -> Self {
-        self.streams.push_str("!bookTicker");
+        self.route.push_str("!bookTicker");
         self
     }
 
     pub fn liquidation_order(mut self, symbol: WebSocketSymbol) -> Self {
-        self.streams
+        self.route
             .push_str(format!("{}@forceOrder", symbol).as_str());
         self
     }
 
     pub fn all_market_liquidation_order(mut self) -> Self {
-        self.streams.push_str(format!("!forceOrder@arr").as_str());
+        self.route.push_str(format!("!forceOrder@arr").as_str());
         self
     }
 
@@ -178,7 +158,7 @@ impl WebSocketParams {
         levels: u8,
         milliseconds: WebSocketStreamRate,
     ) -> Self {
-        self.streams
+        self.route
             .push_str(format!("{}@depth{}@{}", symbol, levels, milliseconds).as_str());
         self
     }

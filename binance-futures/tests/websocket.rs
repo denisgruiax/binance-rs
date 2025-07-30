@@ -57,7 +57,6 @@ mod futures_websocket_api_integration_test {
                 }
 
                 let kline = (*kline_stream.borrow()).as_ref().unwrap().clone();
-                println!("{:?}", kline);
 
                 buffer.push(kline);
                 count -= 1;

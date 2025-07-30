@@ -1,5 +1,4 @@
 pub mod account;
 pub mod market;
-pub mod secret;
 pub mod trade;
-pub mod websocket;
+pub mod user;

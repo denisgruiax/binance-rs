@@ -235,3 +235,47 @@ pub enum IncomeType {
     FeeReturn,
     BfusdReward,
 }
+
+#[derive(Debug)]
+pub enum WebSocketCommand {
+    Connect(String),
+    Disconnect,
+    Close,
+    Reconnect,
+}
+
+#[derive(Debug)]
+pub enum WebSocketStatus {
+    Connected,
+    Disconnected,
+    Closed,
+    Idle,
+}
+
+pub enum WebSocketStreamRate {
+    Milliseconds100,
+    Milliseconds250,
+    Milliseconds500,
+    Seconds1,
+    Seconds3,
+}
+
+impl std::fmt::Display for WebSocketStreamRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let rate: &'static str = match self {
+            WebSocketStreamRate::Milliseconds100 => "100ms",
+            WebSocketStreamRate::Milliseconds250 => "250ms",
+            WebSocketStreamRate::Milliseconds500 => "500ms",
+            WebSocketStreamRate::Seconds1 => "1s",
+            WebSocketStreamRate::Seconds3 => "3s",
+        };
+
+        write!(f, "{}", rate)
+    }
+}
+
+#[derive(Debug)]
+pub enum WebSocketType {
+    SingleStream,
+    MultiStream,
+}

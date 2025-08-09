@@ -14,10 +14,10 @@ mod futures_account_api_integration_tests {
             },
         },
     };
-    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
+    use binance_core::{client::synchronous::Client, signer::{ed25519::Ed25519Dalek, hmacsha256::HmacSha256}};
     use binance_futures::{
         account::AccountApi,
-        secret::{API_KEY, SECRET_KEY},
+        secret::{API_KEY, SECRET_KEY, ED25519_API_KEY, ED25519_PRIVATE_KEY},
     };
 
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();
@@ -28,6 +28,19 @@ mod futures_account_api_integration_tests {
                 Arc::new(AccountApi::new(Client::new(
                     &Host::Api,
                     HmacSha256::new(API_KEY, SECRET_KEY),
+                )))
+            })
+            .clone()
+    }
+
+    static CLIENT2: OnceLock<Arc<AccountApi<'static, Ed25519Dalek>>> = OnceLock::new();
+
+    fn shared_test_client2<'a, S>() -> Arc<AccountApi<'static, Ed25519Dalek>> {
+        CLIENT2
+            .get_or_init(|| {
+                Arc::new(AccountApi::new(Client::new(
+                    &Host::Api,
+                    Ed25519Dalek::new(ED25519_API_KEY.to_string(), ED25519_PRIVATE_KEY).unwrap(),
                 )))
             })
             .clone()
@@ -53,6 +66,23 @@ mod futures_account_api_integration_tests {
     #[test]
     fn test_get_futures_balance_v3() {
         let account_api: Arc<AccountApi<HmacSha256<'static>>> = shared_test_client::<HmacSha256>();
+
+        let params: FuturesBalanceParams = FuturesBalanceParams::new(5000);
+
+        let futures_balance: Vec<FuturesBalanceResponse> =
+            account_api.get_futures_balance_v3(&params).unwrap();
+
+        let wallet = futures_balance
+            .iter()
+            .find(|wallet| wallet.asset == "BNFCR")
+            .unwrap();
+
+        assert!(wallet.update_time > 0);
+    }
+
+    #[test]
+    fn test_get_futures_balance_v3_ed25519() {
+        let account_api: Arc<AccountApi<Ed25519Dalek>> = shared_test_client2::<Ed25519Dalek>();
 
         let params: FuturesBalanceParams = FuturesBalanceParams::new(5000);
 

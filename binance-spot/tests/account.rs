@@ -7,10 +7,11 @@ mod spot_account_api_integration_tests {
     use binance_common::spot::model::response::account::{
         InfoResponse, MyTradesResponse, UnfilledOrderCountResponse,
     };
+    use binance_core::signer::ed25519::Ed25519Dalek;
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
     use binance_spot::{
         account::AccountApi,
-        secret::{API_KEY, SECRET_KEY},
+        secret::{API_KEY, ED25519_API_KEY, ED25519_PRIVATE_KEY, SECRET_KEY},
     };
     use std::sync::{Arc, OnceLock};
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();
@@ -26,9 +27,37 @@ mod spot_account_api_integration_tests {
             .clone()
     }
 
+    static CLIENT2: OnceLock<Arc<AccountApi<'static, Ed25519Dalek>>> = OnceLock::new();
+
+    fn shared_test_account2<'a, S>() -> Arc<AccountApi<'static, Ed25519Dalek>> {
+        CLIENT2
+            .get_or_init(|| {
+                Arc::new(AccountApi::new(Client::new(
+                    &Host::Api,
+                    Ed25519Dalek::new(ED25519_API_KEY.to_string(), ED25519_PRIVATE_KEY).unwrap(),
+                )))
+            })
+            .clone()
+    }
+
     #[test]
     fn test_get_info() {
         let account_api = shared_test_account();
+
+        let params = InfoParams::new().omit_zero_balances(true).recv_window(5000);
+
+        let info: InfoResponse = account_api.get_info(&params).unwrap();
+
+        assert!(info.can_trade);
+        assert!(info.can_withdraw);
+        assert!(info.can_deposit);
+        assert!(info.update_time > 0);
+        assert!(info.uid > 0);
+    }
+
+    #[test]
+    fn test_get_info2() {
+        let account_api = shared_test_account2::<Arc<AccountApi<'static, Ed25519Dalek>>>();
 
         let params = InfoParams::new().omit_zero_balances(true).recv_window(5000);
 

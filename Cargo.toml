@@ -1,2 +1,3 @@
 [workspace]
 members = ["binance-common", "binance-core", "binance-futures", "binance-rs", "binance-spot"]
+resolver = "1"

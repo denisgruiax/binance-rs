@@ -8,7 +8,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/denisgruiax/binance-rs.git"
 
 [dependencies]
-binance-common = { path = "../binance-common" }
-binance-core = { path = "../binance-core" }
-binance-futures = { path = "../binance-futures" }
-binance-spot = { path = "../binance-spot" }
+binance-common = { path = "../binance-common", version = "0.1.0"}
+binance-core = { path = "../binance-core", version = "0.1.0"}
+binance-futures = { path = "../binance-futures", version = "0.1.0"}
+binance-spot = { path = "../binance-spot", version = "0.1.0"}

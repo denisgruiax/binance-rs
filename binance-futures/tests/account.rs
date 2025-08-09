@@ -14,10 +14,13 @@ mod futures_account_api_integration_tests {
             },
         },
     };
-    use binance_core::{client::synchronous::Client, signer::{ed25519::Ed25519Dalek, hmacsha256::HmacSha256}};
+    use binance_core::{
+        client::synchronous::Client,
+        signer::{ed25519::Ed25519Dalek, hmacsha256::HmacSha256},
+    };
     use binance_futures::{
         account::AccountApi,
-        secret::{API_KEY, SECRET_KEY, ED25519_API_KEY, ED25519_PRIVATE_KEY},
+        secret::{API_KEY, ED25519_API_KEY, ED25519_PRIVATE_KEY, SECRET_KEY},
     };
 
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();

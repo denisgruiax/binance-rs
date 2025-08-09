@@ -1,0 +1,10 @@
+[package]
+name = "binance-rs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+binance-common = { path = "../binance-common" }
+binance-core = { path = "../binance-core" }
+binance-futures = { path = "../binance-futures" }
+binance-spot = { path = "../binance-spot" }

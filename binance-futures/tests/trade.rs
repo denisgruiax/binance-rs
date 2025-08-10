@@ -20,7 +20,7 @@ mod futures_trade_api_integration_test {
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
-    use binance_futures::trade::TradeApi;
+    use binance_futures::synchronous::trade::TradeApi;
 
     use dotenv::dotenv;
     use once_cell::sync::Lazy;

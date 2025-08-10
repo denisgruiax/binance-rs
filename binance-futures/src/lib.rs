@@ -1,4 +1,2 @@
-pub mod account;
-pub mod market;
-pub mod trade;
-pub mod websocket;
+pub mod asynchronous;
+pub mod synchronous;

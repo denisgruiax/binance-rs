@@ -18,7 +18,7 @@ mod futures_account_api_integration_tests {
         client::synchronous::Client,
         signer::{ed25519::Ed25519Dalek, hmacsha256::HmacSha256},
     };
-    use binance_futures::account::AccountApi;
+    use binance_futures::synchronous::account::AccountApi;
 
     use dotenv::dotenv;
     use once_cell::sync::Lazy;

@@ -22,7 +22,7 @@ mod futures_market_api_integration_tests {
         client::synchronous::Client,
         signer::{hmacsha256::HmacSha256, signature::Signature},
     };
-    use binance_futures::market::MarketApi;
+    use binance_futures::synchronous::market::MarketApi;
     use std::sync::{Arc, OnceLock};
 
     use dotenv::dotenv;

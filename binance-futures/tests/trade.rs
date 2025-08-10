@@ -20,10 +20,21 @@ mod futures_trade_api_integration_test {
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
-    use binance_futures::{
-        secret::{API_KEY_TESTNET, SECRET_KEY_TESTNET},
-        trade::TradeApi,
-    };
+    use binance_futures::trade::TradeApi;
+
+    use dotenv::dotenv;
+    use once_cell::sync::Lazy;
+    use std::env;
+
+    pub static API_KEY_TESTNET: Lazy<String> = Lazy::new(|| {
+        dotenv().ok(); // load .env if present (only first call counts)
+        env::var("API_KEY_TESTNET").expect("API_KEY_TESTNET must be set")
+    });
+
+    pub static SECRET_KEY_TESTNET: Lazy<String> = Lazy::new(|| {
+        dotenv().ok();
+        env::var("SECRET_KEY_TESTNET").expect("SECRET_KEY_TESTNET must be set")
+    });
 
     static TRADE_CLIENT: OnceLock<Arc<TradeApi<'static, HmacSha256<'static>>>> = OnceLock::new();
     static SYMBOL: &'static str = "SOLUSDT";
@@ -33,7 +44,7 @@ mod futures_trade_api_integration_test {
             .get_or_init(|| {
                 Arc::new(TradeApi::new(Client::new(
                     &Host::Test,
-                    HmacSha256::new(API_KEY_TESTNET, SECRET_KEY_TESTNET),
+                    HmacSha256::new(API_KEY_TESTNET.as_str(), SECRET_KEY_TESTNET.as_str()),
                 )))
             })
             .clone()

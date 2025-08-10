@@ -25,22 +25,30 @@ where
         }
     }
 
-    pub async fn get(
+    pub async fn get<T>(
         &self,
         path: impl AsRef<str>,
         params: impl UrlEncoded,
-    ) -> Result<Response, BinanceError> {
+    ) -> Result<T, BinanceError>
+    where
+        T: DeserializeOwned,
+    {
         let endpoint = format!("{}{}{}", self.host, path.as_ref(), params.to_url_encoded());
 
-        Ok(self.inner_client.get(endpoint).send().await?)
+        let response = self.inner_client.get(endpoint).send().await?;
+
+        self.handle::<T>(response).await
     }
 
-    pub async fn send(
+    pub async fn send<T>(
         &self,
         path: impl AsRef<str>,
         params: impl UrlEncoded,
         method: Method,
-    ) -> Result<Response, BinanceError> {
+    ) -> Result<T, BinanceError>
+    where
+        T: DeserializeOwned,
+    {
         let request = self.signature.build_request(
             &self.inner_client,
             self.host,
@@ -49,7 +57,8 @@ where
             method,
         )?;
 
-        Ok(RequestBuilder::send(request).await?)
+        let response = RequestBuilder::send(request).await?;
+        self.handle::<T>(response).await
     }
 
     pub async fn handle<T: DeserializeOwned>(&self, response: Response) -> Result<T, BinanceError> {

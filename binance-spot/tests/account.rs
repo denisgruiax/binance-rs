@@ -9,7 +9,7 @@ mod spot_account_api_integration_tests {
     };
     use binance_core::signer::ed25519::Ed25519Dalek;
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
-    use binance_spot::account::AccountApi;
+    use binance_spot::synchronous::account::AccountApi;
     use std::sync::{Arc, OnceLock};
 
     use dotenv::dotenv;

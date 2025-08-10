@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod spot_trade_api_integration_tests {
-    use binance_spot::market::MarketApi;
-    use binance_spot::trade::TradeApi;
+    use binance_spot::synchronous::market::MarketApi;
+    use binance_spot::synchronous::trade::TradeApi;
 
     use binance_common::enums::{OrderResponseType, OrderSide};
     use binance_common::spot::endpoint::host::Host;

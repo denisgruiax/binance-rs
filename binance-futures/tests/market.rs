@@ -23,8 +23,21 @@ mod futures_market_api_integration_tests {
         signer::{hmacsha256::HmacSha256, signature::Signature},
     };
     use binance_futures::market::MarketApi;
-    use binance_futures::secret::{API_KEY, SECRET_KEY};
     use std::sync::{Arc, OnceLock};
+
+    use dotenv::dotenv;
+    use once_cell::sync::Lazy;
+    use std::env;
+
+    pub static API_KEY: Lazy<String> = Lazy::new(|| {
+        dotenv().ok(); // load .env if present (only first call counts)
+        env::var("API_KEY").expect("API_KEY must be set")
+    });
+
+    pub static SECRET_KEY: Lazy<String> = Lazy::new(|| {
+        dotenv().ok();
+        env::var("SECRET_KEY").expect("SECRET_KEY must be set")
+    });
 
     static CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
 
@@ -36,7 +49,7 @@ mod futures_market_api_integration_tests {
             .get_or_init(|| {
                 Arc::new(MarketApi::new(Client::new(
                     &Host::Api,
-                    HmacSha256::new(API_KEY, SECRET_KEY),
+                    HmacSha256::new(API_KEY.as_str(), SECRET_KEY.as_str()),
                 )))
             })
             .clone()

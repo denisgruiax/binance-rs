@@ -9,11 +9,34 @@ mod spot_account_api_integration_tests {
     };
     use binance_core::signer::ed25519::Ed25519Dalek;
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
-    use binance_spot::{
-        account::AccountApi,
-        secret::{API_KEY, ED25519_API_KEY, ED25519_PRIVATE_KEY, SECRET_KEY},
-    };
+    use binance_spot::account::AccountApi;
     use std::sync::{Arc, OnceLock};
+
+    use dotenv::dotenv;
+    use once_cell::sync::Lazy;
+    use std::env;
+
+    pub static API_KEY: Lazy<String> = Lazy::new(|| {
+        dotenv().ok(); // load .env if present (only first call counts)
+        env::var("API_KEY").expect("API_KEY must be set")
+    });
+
+    pub static SECRET_KEY: Lazy<String> = Lazy::new(|| {
+        dotenv().ok();
+        env::var("SECRET_KEY").expect("SECRET_KEY must be set")
+    });
+
+    pub static ED25519_API_KEY: Lazy<String> = Lazy::new(|| {
+        dotenv().ok(); // load .env if present (only first call counts)
+        env::var("ED25519_API_KEY").expect("ED25519_API_KEY must be set")
+    });
+
+    pub static ED25519_PRIVATE_KEY: Lazy<String> = Lazy::new(|| {
+        dotenv().ok();
+        let private_key = env::var("ED25519_PRIVATE_KEY").expect("ED25519_PRIVATE_KEY must be set");
+        private_key.replace("\\n", "\n")
+    });
+
     static CLIENT: OnceLock<Arc<AccountApi<'static, HmacSha256<'static>>>> = OnceLock::new();
 
     fn shared_test_account() -> Arc<AccountApi<'static, HmacSha256<'static>>> {
@@ -21,7 +44,7 @@ mod spot_account_api_integration_tests {
             .get_or_init(|| {
                 Arc::new(AccountApi::new(Client::new(
                     &Host::Api,
-                    HmacSha256::new(API_KEY, SECRET_KEY),
+                    HmacSha256::new(API_KEY.as_str(), SECRET_KEY.as_str()),
                 )))
             })
             .clone()
@@ -34,7 +57,8 @@ mod spot_account_api_integration_tests {
             .get_or_init(|| {
                 Arc::new(AccountApi::new(Client::new(
                     &Host::Api,
-                    Ed25519Dalek::new(ED25519_API_KEY.to_string(), ED25519_PRIVATE_KEY).unwrap(),
+                    Ed25519Dalek::new(ED25519_API_KEY.to_string(), ED25519_PRIVATE_KEY.as_str())
+                        .unwrap(),
                 )))
             })
             .clone()

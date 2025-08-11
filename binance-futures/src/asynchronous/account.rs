@@ -28,7 +28,7 @@ impl<'a, S> AccountApi<'a, S>
 where
     S: Signature<'a>,
 {
-    pub async fn new(client: Client<'a, S>) -> Self {
+    pub fn new(client: Client<'a, S>) -> Self {
         AccountApi { client }
     }
 

@@ -48,7 +48,7 @@ mod futures_market_api_integration_tests {
 
         assert_eq!(market_api.ping().await.unwrap(), EmptyResponse {});
     }
-    
+
     #[tokio::test]
     async fn test_get_server_time() {
         let market_api: MarketApi<HmacSha256> = new_test_client();

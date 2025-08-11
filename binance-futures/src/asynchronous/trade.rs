@@ -39,25 +39,36 @@ where
         &self,
         params: &NewOrderParams<'a>,
     ) -> Result<TestOrderResponse, BinanceError> {
-        self.client.send(Trade::TestNewOrder, params, Method::POST).await
+        self.client
+            .send(Trade::TestNewOrder, params, Method::POST)
+            .await
     }
 
-    pub async fn send_new_order(&self, params: &NewOrderParams<'a>) -> Result<OrderResponse, BinanceError> {
-        self.client.send(Trade::NewOrder, params, Method::POST).await
+    pub async fn send_new_order(
+        &self,
+        params: &NewOrderParams<'a>,
+    ) -> Result<OrderResponse, BinanceError> {
+        self.client
+            .send(Trade::NewOrder, params, Method::POST)
+            .await
     }
 
     pub async fn send_set_leverage(
         &self,
         params: &SetLeverageParams<'a>,
     ) -> Result<SetLeverageResponse, BinanceError> {
-        self.client.send(Trade::SetLeverage, params, Method::POST).await
+        self.client
+            .send(Trade::SetLeverage, params, Method::POST)
+            .await
     }
 
     pub async fn send_cancel_order(
         &self,
         params: &CancelOrderParams<'a>,
     ) -> Result<OrderResponse, BinanceError> {
-        self.client.send(Trade::CancelOrder, params, Method::DELETE).await
+        self.client
+            .send(Trade::CancelOrder, params, Method::DELETE)
+            .await
     }
 
     pub async fn send_cancel_all_orders(
@@ -65,10 +76,14 @@ where
         params: &CancelAllOrdersParams<'a>,
     ) -> Result<CancelAllOrdersResponse, BinanceError> {
         self.client
-            .send(Trade::CancelAllOrders, params, Method::GET).await
+            .send(Trade::CancelAllOrders, params, Method::GET)
+            .await
     }
 
-    pub async fn get_order(&self, params: &GetOrderParams<'a>) -> Result<GetOrderResponse, BinanceError> {
+    pub async fn get_order(
+        &self,
+        params: &GetOrderParams<'a>,
+    ) -> Result<GetOrderResponse, BinanceError> {
         self.client.send(Trade::GetOrder, params, Method::GET).await
     }
 
@@ -76,19 +91,25 @@ where
         &self,
         params: &GetOpenOrderParams<'a>,
     ) -> Result<GetOrderResponse, BinanceError> {
-        self.client.send(Trade::GetOpenOrder, params, Method::GET).await
+        self.client
+            .send(Trade::GetOpenOrder, params, Method::GET)
+            .await
     }
 
     pub async fn get_all_open_orders(
         &self,
         params: &Symbol<'a>,
     ) -> Result<Vec<GetOrderResponse>, BinanceError> {
-        self.client.send(Trade::OpenOrders, params, Method::GET).await
+        self.client
+            .send(Trade::OpenOrders, params, Method::GET)
+            .await
     }
     pub async fn get_position_risk_v3(
         &self,
         params: &PositionRiskV3Params<'a>,
     ) -> Result<Vec<PositionRiskV3Response>, BinanceError> {
-        self.client.send(Trade::PositionRiskV3, params, Method::GET).await
+        self.client
+            .send(Trade::PositionRiskV3, params, Method::GET)
+            .await
     }
 }

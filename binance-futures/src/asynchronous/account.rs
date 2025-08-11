@@ -37,7 +37,8 @@ where
         params: &FuturesBalanceParams,
     ) -> Result<Vec<FuturesBalanceResponse>, BinanceError> {
         self.client
-            .send(Account::FuturesBalance, params, Method::GET).await
+            .send(Account::FuturesBalance, params, Method::GET)
+            .await
     }
 
     pub async fn get_futures_balance_v3(
@@ -45,14 +46,17 @@ where
         params: &FuturesBalanceParams,
     ) -> Result<Vec<FuturesBalanceResponse>, BinanceError> {
         self.client
-            .send(Account::FuturesBalanceV3, params, Method::GET).await
+            .send(Account::FuturesBalanceV3, params, Method::GET)
+            .await
     }
 
     pub async fn get_position_side(
         &self,
         params: &PositionSideParams,
     ) -> Result<PositionSideResponse, BinanceError> {
-        self.client.send(Account::PositionSide, params, Method::GET).await
+        self.client
+            .send(Account::PositionSide, params, Method::GET)
+            .await
     }
 
     pub async fn get_futures_account(
@@ -60,7 +64,8 @@ where
         params: &FuturesAccountParams,
     ) -> Result<FuturesAccountResponse, BinanceError> {
         self.client
-            .send(Account::FuturesAccount, params, Method::GET).await
+            .send(Account::FuturesAccount, params, Method::GET)
+            .await
     }
 
     pub async fn get_comission_rate(
@@ -68,7 +73,8 @@ where
         params: &CommissionRateParams<'a>,
     ) -> Result<CommissionRateResponse, BinanceError> {
         self.client
-            .send(Account::CommissionRate, params, Method::GET).await
+            .send(Account::CommissionRate, params, Method::GET)
+            .await
     }
 
     pub async fn get_income_history(
@@ -76,6 +82,7 @@ where
         params: &IncomeHistoryParams<'a>,
     ) -> Result<Vec<IncomeHistoryResponse>, BinanceError> {
         self.client
-            .send(Account::IncomeHistory, params, Method::GET).await
+            .send(Account::IncomeHistory, params, Method::GET)
+            .await
     }
 }

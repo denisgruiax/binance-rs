@@ -1,6 +1,6 @@
 [package]
 name = "binance-common"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 authors = ["Denis Gruia <denis.gruiax@icloud.com>"]
 description = "Common data structures, error types, and utilities shared across Binance API crates."

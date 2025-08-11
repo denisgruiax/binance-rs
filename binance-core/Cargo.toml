@@ -1,6 +1,6 @@
 [package]
 name = "binance-core"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 authors = ["Denis Gruia <denis.gruiax@icloud.com>"]
 description = "Core functionality including API request signing, HTTP client setup, and shared logic for Binance Spot and Futures."
@@ -19,7 +19,7 @@ serde_urlencoded = "0.7.1"
 sha2 = "0.10.8"
 tokio = { version = "1.44.2", features = ["macros", "rt-multi-thread"] }
 tokio-tungstenite = {version = "0.26.2", features = ["native-tls"] }
-binance-common = {path = "../binance-common", version = "0.1.0"}
+binance-common = {path = "../binance-common", version = "0.2.0"}
 chrono = "0.4.40"
 rand = "0.8"
 base64 = "0.22.1"

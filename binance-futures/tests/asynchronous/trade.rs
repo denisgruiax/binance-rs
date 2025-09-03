@@ -3,7 +3,7 @@ mod futures_trade_api_integration_test {
     use std::sync::{Arc, OnceLock};
 
     use binance_common::{
-        enums::OrderSide,
+        enums::futures::OrderSide,
         error::BinanceError,
         futures::{
             endpoint::host::Host,

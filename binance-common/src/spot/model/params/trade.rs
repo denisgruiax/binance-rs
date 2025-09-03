@@ -1,4 +1,4 @@
-use crate::enums::*;
+use crate::enums::{CancelRestrictions, spot::*};
 use serde::Serialize;
 
 #[derive(Clone, Debug, Default, Serialize)]

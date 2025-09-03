@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod futures_market_api_integration_tests {
-    use binance_common::enums::{ContractType, Interval};
+    use binance_common::enums::{Interval, futures::ContractType};
     use binance_common::futures::model::params::market::{
         BasisParams, DepthParams, FundingRateHistoryParams, GlobalLongShortAccountRatioParams,
         KlinesParams, OpenInterestHistoryParams, Pair, Symbol, TakerBuySellVolumeParams,

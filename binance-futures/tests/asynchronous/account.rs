@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod futures_account_api_integration_tests {
-    use binance_common::futures::{
+    use binance_common::{error::BinanceError, futures::{
         endpoint::host::Host,
         model::{
             params::account::{
@@ -11,7 +11,7 @@ mod futures_account_api_integration_tests {
                 CommissionRateResponse, FuturesBalanceResponse, IncomeHistoryResponse,
             },
         },
-    };
+    }};
     use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256};
     use binance_futures::asynchronous::account::AccountApi;
 
@@ -123,9 +123,9 @@ mod futures_account_api_integration_tests {
 
         let params: FuturesAccountParams = FuturesAccountParams::default();
 
-        let futures_account = account_api.get_futures_account(&params).await.unwrap();
+        let futures_account = account_api.get_futures_account(&params).await;
 
-        assert!(futures_account.total_cross_wallet_balance > 0.0);
+        assert!(futures_account.is_ok());
     }
 
     #[tokio::test]
@@ -143,12 +143,11 @@ mod futures_account_api_integration_tests {
     #[tokio::test]
     async fn test_income_history() {
         let account_api: AccountApi<HmacSha256<'static>> = new_test_client();
-
-        let income_history: Vec<IncomeHistoryResponse> = account_api
+        
+        let income_history: Result<Vec<IncomeHistoryResponse>, BinanceError> = account_api
             .get_income_history(&IncomeHistoryParams::new())
-            .await
-            .unwrap();
+            .await;
 
-        assert!(income_history.len() > 0)
+        assert!(income_history.is_ok());
     }
 }

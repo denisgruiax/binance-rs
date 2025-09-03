@@ -1,7 +1,7 @@
 pub use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-use crate::enums::{AdlLevel, PositionSide};
+use crate::enums::futures::{AdlLevel, PositionSide};
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]

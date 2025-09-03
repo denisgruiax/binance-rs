@@ -1,4 +1,7 @@
-use serde::{Deserialize, Deserializer, Serialize};
+pub mod futures;
+pub mod spot;
+
+use serde::{Deserialize, Serialize};
 pub enum Interval {
     Seconds1,
     Minutes1,
@@ -42,171 +45,11 @@ impl AsRef<str> for Interval {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ContingencyType {
-    Oco,
-    Oto,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum AllocationType {
-    Sor,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum OrderType {
-    Limit,
-    LimitMaker,
-    Market,
-    Stop,
-    StopLoss,
-    StopLossLimit,
-    StopMarket,
-    TakeProfit,
-    TakeProfitLimit,
-    TakeProfitMarket,
-    TrailingStopMarket,
-}
-
-impl Default for OrderType {
-    fn default() -> Self {
-        OrderType::Market
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
-pub enum OrderResponseType {
-    Ack,
-    Result,
-    Full,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "UPPERCASE")]
-pub enum WorkingFloor {
-    Exchange,
-    Sor,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "UPPERCASE")]
-pub enum OrderSide {
-    Buy,
-    Sell,
-}
-
-impl Default for OrderSide {
-    fn default() -> Self {
-        OrderSide::Buy
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "UPPERCASE")]
-pub enum TimeInForce {
-    Gtc,
-    Ioc,
-    Fok,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum StpModes {
-    None,
-    ExpireMaker,
-    ExpireTaker,
-    ExpireBoth,
-    Decrement,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum CancelRestrictions {
-    OnlyNew,
-    OnlyPartiallyFilled,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ContractType {
-    CurrentQuarter,
-    NextQuarter,
-    Perpetual,
-}
-
-impl Default for ContractType {
-    fn default() -> Self {
-        ContractType::Perpetual
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum PositionSide {
-    Both,
-    Long,
-    Short,
-}
-
-impl Default for PositionSide {
-    fn default() -> Self {
-        PositionSide::Both
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum WorkingType {
-    ContractPrice,
-    MarkPrice,
-}
-
-impl Default for WorkingType {
-    fn default() -> Self {
-        WorkingType::ContractPrice
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum PriceMatch {
-    Opponent,
-    Opponent5,
-    Opponent10,
-    Opponent20,
-    Queue,
-    Queue5,
-    Queue10,
-    Queue20,
-}
-
-#[derive(Debug, Clone, Serialize)]
-pub enum AdlLevel {
-    LowestRisk,
-    LowRisk,
-    Medium,
-    HighRisk,
-    HighestRisk,
-}
-
-impl<'de> Deserialize<'de> for AdlLevel {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        let val: u8 = Deserialize::deserialize(deserializer)?;
-        Ok(match val {
-            0 => AdlLevel::LowestRisk,
-            1 => AdlLevel::LowRisk,
-            2 => AdlLevel::Medium,
-            3 => AdlLevel::HighRisk,
-            4 => AdlLevel::HighestRisk,
-            _ => return Err(serde::de::Error::custom("Invalid ADL level")),
-        })
-    }
+pub enum RateLimits {
+    Second,
+    Minute,
+    Day,
 }
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
@@ -234,6 +77,13 @@ pub enum IncomeType {
     StrategyUmfuturesTransfer,
     FeeReturn,
     BfusdReward,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum CancelRestrictions {
+    OnlyNew,
+    OnlyPartiallyFilled,
 }
 
 #[derive(Debug)]

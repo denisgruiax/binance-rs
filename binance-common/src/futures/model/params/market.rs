@@ -1,4 +1,4 @@
-use crate::enums::ContractType;
+use crate::enums::futures::ContractType;
 pub use crate::spot::model::params::market::{
     DepthParams, HistoricalTradesParams, KlinesParams, TradesParams,
 };

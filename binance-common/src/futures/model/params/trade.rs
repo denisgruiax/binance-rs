@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::enums::{
+use crate::enums::futures::{
     OrderResponseType, OrderSide, OrderType, PositionSide, PriceMatch, StpModes, TimeInForce,
     WorkingType,
 };

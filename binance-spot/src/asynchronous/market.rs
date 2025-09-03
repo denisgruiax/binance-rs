@@ -27,7 +27,10 @@ where
         self.client.get(Market::Depth, params).await
     }
 
-    pub async fn get_trades(&self, params: &TradesParams<'a>) -> Result<Vec<TradesResponse>, BinanceError> {
+    pub async fn get_trades(
+        &self,
+        params: &TradesParams<'a>,
+    ) -> Result<Vec<TradesResponse>, BinanceError> {
         self.client.get(Market::Trades, params).await
     }
 
@@ -38,11 +41,17 @@ where
         self.client.get(Market::HistoricalTrades, params).await
     }
 
-    pub async fn get_klines(&self, params: &KlinesParams<'a>) -> Result<Vec<KlinesResponse>, BinanceError> {
+    pub async fn get_klines(
+        &self,
+        params: &KlinesParams<'a>,
+    ) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::Klines, params).await
     }
 
-    pub async fn get_uiklines(&self, params: &KlinesParams<'a>) -> Result<Vec<KlinesResponse>, BinanceError> {
+    pub async fn get_uiklines(
+        &self,
+        params: &KlinesParams<'a>,
+    ) -> Result<Vec<KlinesResponse>, BinanceError> {
         self.client.get(Market::UIKlines, params).await
     }
 
@@ -109,7 +118,10 @@ where
         self.client.get(Market::TickerDay, params).await
     }
 
-    pub async fn get_price_ticker(&self, symbol: &str) -> Result<PriceTickerResponse, BinanceError> {
+    pub async fn get_price_ticker(
+        &self,
+        symbol: &str,
+    ) -> Result<PriceTickerResponse, BinanceError> {
         let params = PriceTickerParams::new().symbol(symbol);
 
         self.client.get(Market::TickerPrice, params).await

@@ -1,4 +1,4 @@
-use binance_common::enums::OrderResponseType;
+use binance_common::enums::spot::OrderResponseType;
 use binance_common::error::BinanceError;
 use binance_common::spot::{
     endpoint::route::Trade,

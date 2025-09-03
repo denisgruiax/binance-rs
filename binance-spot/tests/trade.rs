@@ -3,7 +3,7 @@ mod spot_trade_api_integration_tests {
     use binance_spot::synchronous::market::MarketApi;
     use binance_spot::synchronous::trade::TradeApi;
 
-    use binance_common::enums::{OrderResponseType, OrderSide};
+    use binance_common::enums::spot::{OrderResponseType, OrderSide};
     use binance_common::spot::endpoint::host::Host;
     use binance_common::spot::model::params::trade::NewOrderParams;
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};

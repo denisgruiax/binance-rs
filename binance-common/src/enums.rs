@@ -44,6 +44,21 @@ impl AsRef<str> for Interval {
     }
 }
 
+//PARTIAL IMPLEMENTATION
+impl<'de> Deserialize<'de> for Interval {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let value: String = Deserialize::deserialize(deserializer)?;
+
+        Ok(match value.as_str() {
+            "1s" => Interval::Seconds1,
+            _ => return Err(serde::de::Error::custom("Invalid interval")),
+        })
+    }
+}
+
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum RateLimits {

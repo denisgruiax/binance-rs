@@ -152,8 +152,8 @@ impl<'de> Deserialize<'de> for AdlLevel {
     where
         D: Deserializer<'de>,
     {
-        let val: u8 = Deserialize::deserialize(deserializer)?;
-        Ok(match val {
+        let value: u8 = Deserialize::deserialize(deserializer)?;
+        Ok(match value {
             0 => AdlLevel::LowestRisk,
             1 => AdlLevel::LowRisk,
             2 => AdlLevel::Medium,

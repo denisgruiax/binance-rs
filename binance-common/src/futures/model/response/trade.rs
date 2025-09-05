@@ -1,7 +1,7 @@
 pub use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-use crate::enums::futures::{AdlLevel, OrderSide, OrderType, PositionSide, WorkingType};
+use crate::enums::futures::{AdlLevel, OrderSide, OrderStatus, OrderType, PositionSide, WorkingType};
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]
@@ -32,7 +32,7 @@ pub struct OrderResponse {
     pub reduce_only: bool,
     pub side: OrderSide,
     pub position_side: PositionSide,
-    pub status: String,
+    pub status: OrderStatus,
     pub stop_price: Option<String>,
 
     pub close_position: bool,
@@ -54,7 +54,7 @@ pub struct OrderResponse {
 pub struct TestOrderResponse {
     pub order_id: u64,
     pub symbol: String,
-    pub status: String,
+    pub status: OrderStatus,
     pub client_order_id: String,
     pub price: String,
     pub orig_qty: String,
@@ -177,7 +177,7 @@ pub struct GetOrderResponse {
     pub reduce_only: bool,
     pub side: OrderSide,
     pub position_side: String,
-    pub status: String,
+    pub status: OrderStatus,
 
     #[serde_as(as = "DisplayFromStr")]
     pub stop_price: f64,

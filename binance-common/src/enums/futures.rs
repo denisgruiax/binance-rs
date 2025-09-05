@@ -81,7 +81,7 @@ impl Default for OrderSide {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[serde(rename_all = "UPPERCASE")]
 pub enum PositionSide {
     Both,
     Long,

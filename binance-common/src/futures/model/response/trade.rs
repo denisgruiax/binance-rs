@@ -1,7 +1,7 @@
 pub use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-use crate::enums::futures::{AdlLevel, OrderSide, OrderStatus, OrderType, PositionSide, WorkingType};
+use crate::enums::futures::{AdlLevel, OrderSide, OrderStatus, OrderType, PositionSide, StpModes, TimeInForce, WorkingType};
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]
@@ -37,7 +37,7 @@ pub struct OrderResponse {
 
     pub close_position: bool,
     pub symbol: String,
-    pub time_in_force: String,
+    pub time_in_force: TimeInForce,
     pub r#type: OrderType,
     pub orig_type: String,
     pub activate_price: Option<String>,
@@ -46,7 +46,7 @@ pub struct OrderResponse {
     pub working_type: WorkingType,
     pub price_protect: bool,
     pub price_match: String,
-    pub self_trade_prevention_mode: String,
+    pub self_trade_prevention_mode: StpModes,
     pub good_till_date: Option<u64>,
 }
 #[derive(Clone, Debug, Deserialize)]
@@ -60,7 +60,7 @@ pub struct TestOrderResponse {
     pub orig_qty: String,
     pub executed_qty: String,
     pub cum_quote: String,
-    pub time_in_force: String,
+    pub time_in_force: TimeInForce,
     pub r#type: OrderType,
     pub reduce_only: bool,
     pub close_position: bool,
@@ -185,7 +185,7 @@ pub struct GetOrderResponse {
     pub close_position: bool,
     pub symbol: String,
     pub time: u64,
-    pub time_in_force: String,
+    pub time_in_force: TimeInForce,
 
     #[serde(rename = "type")]
     pub order_type: String,
@@ -197,6 +197,6 @@ pub struct GetOrderResponse {
     pub working_type: WorkingType,
     pub price_protect: bool,
     pub price_match: String,
-    pub self_trade_prevention_mode: String,
+    pub self_trade_prevention_mode: StpModes,
     pub good_till_date: u64,
 }

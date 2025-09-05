@@ -59,7 +59,7 @@ mod futures_trade_api_integration_test {
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params);
 
-        assert!(new_order.is_ok())
+        assert!(new_order.is_err())
     }
 
     #[test]

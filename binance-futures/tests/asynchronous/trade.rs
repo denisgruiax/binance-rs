@@ -161,7 +161,7 @@ mod futures_trade_api_integration_test {
     async fn test_send_new_order() {
         let trade_api = shared_test_trade();
 
-        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 13.5, 5.0);
+        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 5.0, 5.0);
         let new_order = trade_api.send_new_order(&params).await.unwrap();
 
         let params2: GetOrderParams =
@@ -181,7 +181,7 @@ mod futures_trade_api_integration_test {
     async fn test_send_new_order2() {
         let trade_api = shared_test_trade();
 
-        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 13.5, 5.0);
+        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 6.0, 5.0);
         let new_order = trade_api.send_new_order(&params).await.unwrap();
 
         let params2: GetOpenOrderParams =

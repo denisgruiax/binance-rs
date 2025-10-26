@@ -1,7 +1,9 @@
 pub use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-use crate::enums::futures::{AdlLevel, OrderSide, OrderStatus, OrderType, PositionSide, StpModes, TimeInForce, WorkingType};
+use crate::enums::futures::{
+    AdlLevel, OrderSide, OrderStatus, OrderType, PositionSide, StpModes, TimeInForce, WorkingType,
+};
 
 #[serde_as]
 #[derive(Clone, Debug, Deserialize)]

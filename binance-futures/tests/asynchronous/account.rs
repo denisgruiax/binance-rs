@@ -1,17 +1,20 @@
 #[cfg(test)]
 mod futures_account_api_integration_tests {
-    use binance_common::{error::BinanceError, futures::{
-        endpoint::host::Host,
-        model::{
-            params::account::{
-                CommissionRateParams, FuturesAccountParams, FuturesBalanceParams,
-                IncomeHistoryParams, PositionSideParams,
-            },
-            response::account::{
-                CommissionRateResponse, FuturesBalanceResponse, IncomeHistoryResponse,
+    use binance_common::{
+        error::BinanceError,
+        futures::{
+            endpoint::host::Host,
+            model::{
+                params::account::{
+                    CommissionRateParams, FuturesAccountParams, FuturesBalanceParams,
+                    IncomeHistoryParams, PositionSideParams,
+                },
+                response::account::{
+                    CommissionRateResponse, FuturesBalanceResponse, IncomeHistoryResponse,
+                },
             },
         },
-    }};
+    };
     use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256};
     use binance_futures::asynchronous::account::AccountApi;
 
@@ -143,7 +146,7 @@ mod futures_account_api_integration_tests {
     #[tokio::test]
     async fn test_income_history() {
         let account_api: AccountApi<HmacSha256<'static>> = new_test_client();
-        
+
         let income_history: Result<Vec<IncomeHistoryResponse>, BinanceError> = account_api
             .get_income_history(&IncomeHistoryParams::new())
             .await;

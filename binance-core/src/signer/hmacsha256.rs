@@ -34,9 +34,9 @@ impl<'a> Signature<'a> for HmacSha256<'a> {
             Method::DELETE => Ok(client.delete(url).header("X-MBX-APIKEY", self.api_key)),
             Method::GET => Ok(client.get(url).header("X-MBX-APIKEY", self.api_key)),
             Method::POST => Ok(client.post(url).header("X-MBX-APIKEY", self.api_key)),
-            _ => Err(BinanceError::Unknown(String::from(
-                "Invalid method to send the reuqest!",
-            ))),
+            _ => Err(BinanceError::Unknown(
+                "Invalid method to send the reuqest!".to_string(),
+            )),
         }
     }
 
@@ -54,9 +54,9 @@ impl<'a> Signature<'a> for HmacSha256<'a> {
             Method::DELETE => Ok(client.delete(url).header("X-MBX-APIKEY", self.api_key)),
             Method::GET => Ok(client.get(url).header("X-MBX-APIKEY", self.api_key)),
             Method::POST => Ok(client.post(url).header("X-MBX-APIKEY", self.api_key)),
-            _ => Err(BinanceError::Unknown(String::from(
-                "Invalid method to send the reuqest!",
-            ))),
+            _ => Err(BinanceError::Unknown(
+                "Invalid method to send the reuqest!".to_string(),
+            )),
         }
     }
 

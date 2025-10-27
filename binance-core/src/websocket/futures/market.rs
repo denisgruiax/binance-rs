@@ -193,9 +193,7 @@ impl WebSocketMarketController {
         self.tx_controller
             .send(command)
             .await
-            .map_err(|_| BinanceError::Channel("Failed to send WebSocket command.".to_string()))?;
-
-        Ok(())
+            .map_err(|_| BinanceError::Channel("Failed to send WebSocket command.".to_string()))
     }
 
     pub async fn watch(
@@ -204,3 +202,4 @@ impl WebSocketMarketController {
         self.rx_watch.clone()
     }
 }
+kz

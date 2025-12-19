@@ -101,7 +101,9 @@ impl WebSocketMarket {
     }
 
     async fn select_action(&mut self) -> Result<(), BinanceError> {
-        let socket_ref = self.socket.as_mut().ok_or(BinanceError::WebSocketInternal("Unable to get a mutable reference to socket".to_string()))?;
+        let socket_ref = self.socket.as_mut().ok_or(BinanceError::WebSocketInternal(
+            "Unable to get a mutable reference to socket".to_string(),
+        ))?;
 
         tokio::select! {
         Some(result) = socket_ref.next() => {

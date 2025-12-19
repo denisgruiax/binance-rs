@@ -67,7 +67,6 @@ pub enum OrderType {
     LimitMaker,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum OrderResponseType {
@@ -91,7 +90,6 @@ pub enum OrderSide {
     Buy,
     Sell,
 }
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]

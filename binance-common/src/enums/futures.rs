@@ -13,7 +13,6 @@ pub enum ContractType {
     PerpetualDelivering,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ContractStatus {
@@ -53,7 +52,6 @@ pub enum OrderType {
     TrailingStopMarket,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum OrderResponseType {
@@ -70,7 +68,6 @@ pub enum OrderSide {
     Sell,
 }
 
-
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
 #[derive(Default)]
@@ -80,7 +77,6 @@ pub enum PositionSide {
     Long,
     Short,
 }
-
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]

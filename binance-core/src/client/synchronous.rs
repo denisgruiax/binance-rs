@@ -72,8 +72,8 @@ where
 
         match status {
             StatusCode::BAD_REQUEST => {
-                let api_error: binance_common::error::ApiError = serde_json::from_slice(&body)
-                    .map_err(BinanceError::Deserialize)?;
+                let api_error: binance_common::error::ApiError =
+                    serde_json::from_slice(&body).map_err(BinanceError::Deserialize)?;
                 Err(BinanceError::Api(api_error))
             }
 
@@ -81,13 +81,14 @@ where
 
             StatusCode::INTERNAL_SERVER_ERROR => Err(BinanceError::InternalServer),
 
-            StatusCode::OK => Ok(serde_json::from_slice::<T>(&body)
-                .map_err(BinanceError::Deserialize)?),
+            StatusCode::OK => {
+                Ok(serde_json::from_slice::<T>(&body).map_err(BinanceError::Deserialize)?)
+            }
 
             StatusCode::REQUEST_TIMEOUT => Err(BinanceError::RequestTimeout),
             StatusCode::UNAUTHORIZED => {
-                let api_error: binance_common::error::ApiError = serde_json::from_slice(&body)
-                    .map_err(BinanceError::Deserialize)?;
+                let api_error: binance_common::error::ApiError =
+                    serde_json::from_slice(&body).map_err(BinanceError::Deserialize)?;
 
                 Err(BinanceError::Api(api_error))
             }

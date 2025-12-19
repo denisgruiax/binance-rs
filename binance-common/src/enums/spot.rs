@@ -55,8 +55,10 @@ pub enum AllocationType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[derive(Default)]
 pub enum OrderType {
     Limit,
+    #[default]
     Market,
     StopLoss,
     StopLossLimit,
@@ -65,11 +67,6 @@ pub enum OrderType {
     LimitMaker,
 }
 
-impl Default for OrderType {
-    fn default() -> Self {
-        OrderType::Market
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
@@ -88,16 +85,13 @@ pub enum WorkingFloor {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
+#[derive(Default)]
 pub enum OrderSide {
+    #[default]
     Buy,
     Sell,
 }
 
-impl Default for OrderSide {
-    fn default() -> Self {
-        OrderSide::Buy
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]

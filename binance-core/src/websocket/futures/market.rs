@@ -90,11 +90,11 @@ impl WebSocketMarket {
         match self.websocket_type {
             WebSocketType::SingleStream => {
                 serde_json::from_slice::<WebSocketResponse>(message.as_bytes())
-                    .map_err(|error| BinanceError::Deserialize(error))
+                    .map_err(BinanceError::Deserialize)
             }
             WebSocketType::MultiStream => {
                 let response = serde_json::from_slice::<CombinedStreamResponse>(message.as_bytes())
-                    .map_err(|error| BinanceError::Deserialize(error))?;
+                    .map_err(BinanceError::Deserialize)?;
                 Ok(response.data)
             }
         }

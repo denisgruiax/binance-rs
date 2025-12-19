@@ -148,7 +148,7 @@ impl WebSocketParams {
     }
 
     pub fn all_market_liquidation_order(mut self) -> Self {
-        self.route.push_str(format!("!forceOrder@arr").as_str());
+        self.route.push_str("!forceOrder@arr");
         self
     }
 

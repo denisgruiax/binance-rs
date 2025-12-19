@@ -2,7 +2,9 @@ use serde::{Deserialize, Deserializer, Serialize};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[derive(Default)]
 pub enum ContractType {
+    #[default]
     Perpetual,
     CurrentMonth,
     NextMonth,
@@ -11,11 +13,6 @@ pub enum ContractType {
     PerpetualDelivering,
 }
 
-impl Default for ContractType {
-    fn default() -> Self {
-        ContractType::Perpetual
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -44,7 +41,9 @@ pub enum OrderStatus {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+#[derive(Default)]
 pub enum OrderType {
+    #[default]
     Limit,
     Market,
     Stop,
@@ -54,11 +53,6 @@ pub enum OrderType {
     TrailingStopMarket,
 }
 
-impl Default for OrderType {
-    fn default() -> Self {
-        OrderType::Limit
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
@@ -69,30 +63,24 @@ pub enum OrderResponseType {
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
+#[derive(Default)]
 pub enum OrderSide {
+    #[default]
     Buy,
     Sell,
 }
 
-impl Default for OrderSide {
-    fn default() -> Self {
-        OrderSide::Buy
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]
+#[derive(Default)]
 pub enum PositionSide {
     Both,
+    #[default]
     Long,
     Short,
 }
 
-impl Default for PositionSide {
-    fn default() -> Self {
-        PositionSide::Long
-    }
-}
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "UPPERCASE")]

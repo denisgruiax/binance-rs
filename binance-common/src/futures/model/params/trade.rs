@@ -238,7 +238,7 @@ impl<'a> NewOrderParams<'a> {
             side,
             r#type: OrderType::TrailingStopMarket,
             callback_rate: Some(callback_rate),
-            activation_price: activation_price,
+            activation_price,
             ..Default::default()
         }
     }

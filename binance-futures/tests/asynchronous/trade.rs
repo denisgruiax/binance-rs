@@ -19,7 +19,7 @@ mod futures_trade_api_integration_test {
             },
         },
     };
-    use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256};
+    use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256, utility::truncate_to_ticks};
     use binance_futures::asynchronous::{market::MarketApi, trade::TradeApi};
 
     use dotenv::dotenv;
@@ -67,7 +67,7 @@ mod futures_trade_api_integration_test {
     async fn test_new_limit_test_order() {
         let trade_api = shared_test_trade();
 
-        let params: NewOrderParams = NewOrderParams::limit(SYMBOL, OrderSide::Sell, 300.0, 1.0);
+        let params: NewOrderParams = NewOrderParams::limit("BTCUSDT", OrderSide::Sell, 300.0, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;

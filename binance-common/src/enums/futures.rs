@@ -42,8 +42,8 @@ pub enum OrderStatus {
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 #[derive(Default)]
 pub enum OrderType {
-    #[default]
     Limit,
+    #[default]
     Market,
     Stop,
     StopMarket,

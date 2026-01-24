@@ -127,10 +127,18 @@ mod futures_trade_api_integration_test {
 
     #[tokio::test]
     async fn test_new_take_profit_test_order() {
+        let pair = Symbol::new("EGLDUSDT");
+
         let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
+
+        let stop_price = truncate_to_ticks(price+price*0.05, 2);
+        let price = truncate_to_ticks(price + price * 0.1, 2);
 
         let params: NewOrderParams =
-            NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, 250.0, 255.0, 1.0);
+            NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, stop_price, price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;

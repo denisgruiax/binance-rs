@@ -91,10 +91,6 @@ mod futures_trade_api_integration_test {
         let pair = Symbol::new("ETHUSDT");
 
         let trade_api = shared_test_trade();
-        let market_api = shared_test_market();
-
-        let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
-        let price = truncate_to_ticks(price - price * 0.1, 2);
 
         let params: NewOrderParams = NewOrderParams::market(pair.symbol, OrderSide::Buy, 1.0);
 

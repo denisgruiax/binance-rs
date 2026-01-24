@@ -8,9 +8,12 @@ mod futures_trade_api_integration_test {
         futures::{
             endpoint::host::Host,
             model::{
-                params::trade::{
-                    CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams,
-                    PositionRiskV3Params, SetLeverageParams,
+                params::{
+                    market::Symbol,
+                    trade::{
+                        CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams,
+                        PositionRiskV3Params, SetLeverageParams,
+                    },
                 },
                 response::trade::{
                     GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse,
@@ -19,7 +22,9 @@ mod futures_trade_api_integration_test {
             },
         },
     };
-    use binance_core::{client::asynchronous::Client, signer::hmacsha256::HmacSha256, utility::truncate_to_ticks};
+    use binance_core::{
+        client::asynchronous::Client, signer::hmacsha256::HmacSha256, utility::truncate_to_ticks,
+    };
     use binance_futures::asynchronous::{market::MarketApi, trade::TradeApi};
 
     use dotenv::dotenv;
@@ -65,9 +70,15 @@ mod futures_trade_api_integration_test {
 
     #[tokio::test]
     async fn test_new_limit_test_order() {
-        let trade_api = shared_test_trade();
+        let pair = Symbol::new("BTCUSDT");
 
-        let params: NewOrderParams = NewOrderParams::limit("BTCUSDT", OrderSide::Sell, 300.0, 1.0);
+        let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
+        let price = truncate_to_ticks(price + price * 0.1, 1);
+
+        let params: NewOrderParams = NewOrderParams::limit(pair.symbol, OrderSide::Sell, price, 0.02);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;

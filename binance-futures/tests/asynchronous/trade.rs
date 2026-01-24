@@ -78,7 +78,8 @@ mod futures_trade_api_integration_test {
         let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
         let price = truncate_to_ticks(price + price * 0.1, 1);
 
-        let params: NewOrderParams = NewOrderParams::limit(pair.symbol, OrderSide::Sell, price, 0.02);
+        let params: NewOrderParams =
+            NewOrderParams::limit(pair.symbol, OrderSide::Sell, price, 0.02);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;
@@ -109,7 +110,7 @@ mod futures_trade_api_integration_test {
 
         let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
 
-        let stop_price = truncate_to_ticks(price-price*0.05, 2);
+        let stop_price = truncate_to_ticks(price - price * 0.05, 2);
         let price = truncate_to_ticks(price - price * 0.1, 2);
 
         let params: NewOrderParams =
@@ -130,7 +131,7 @@ mod futures_trade_api_integration_test {
 
         let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
 
-        let stop_price = truncate_to_ticks(price+price*0.05, 2);
+        let stop_price = truncate_to_ticks(price + price * 0.05, 2);
         let price = truncate_to_ticks(price + price * 0.1, 2);
 
         let params: NewOrderParams =
@@ -144,10 +145,17 @@ mod futures_trade_api_integration_test {
 
     #[tokio::test]
     async fn test_new_stop_market_test_order() {
+        let pair = Symbol::new("ICPUSDT");
+
         let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
+
+        let stop_price = truncate_to_ticks(price + price * 0.05, 3);
 
         let params: NewOrderParams =
-            NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, 100.0, 1.0);
+            NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, stop_price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;
@@ -157,10 +165,16 @@ mod futures_trade_api_integration_test {
 
     #[tokio::test]
     async fn test_take_profit_market_test_order() {
+        let pair = Symbol::new("HBARUSDT");
+
         let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
+        let stop_price = truncate_to_ticks(price + price * 0.1, 5);
 
         let params: NewOrderParams =
-            NewOrderParams::take_profit_market(SYMBOL, OrderSide::Sell, 300.0, 1.0);
+            NewOrderParams::take_profit_market(pair.symbol, OrderSide::Sell, stop_price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;

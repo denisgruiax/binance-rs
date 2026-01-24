@@ -106,10 +106,18 @@ mod futures_trade_api_integration_test {
 
     #[tokio::test]
     async fn test_new_stop_loss_test_order() {
+        let pair = Symbol::new("SOLUSDT");
+
         let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).await.unwrap().mark_price;
+
+        let stop_price = truncate_to_ticks(price-price*0.05, 2);
+        let price = truncate_to_ticks(price - price * 0.1, 2);
 
         let params: NewOrderParams =
-            NewOrderParams::stop(SYMBOL, OrderSide::Buy, 120.0, 100.0, 1.0);
+            NewOrderParams::stop(pair.symbol, OrderSide::Buy, stop_price, price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;

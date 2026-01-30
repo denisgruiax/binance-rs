@@ -4,7 +4,7 @@ mod futures_trade_api_integration_test {
 
     use binance_common::{
         enums::futures::OrderSide,
-        error::BinanceError,
+        error::{ApiError, BinanceError},
         futures::{
             endpoint::host::Host,
             model::{
@@ -82,7 +82,6 @@ mod futures_trade_api_integration_test {
         let new_order: TestOrderResponse = trade_api.send_new_test_order(&params).unwrap();
 
         assert_eq!(new_order.order_id, 0);
-        assert_eq!(new_order.symbol, None);
         assert!(!new_order.reduce_only);
         assert_eq!(new_order.update_time, 0);
     }
@@ -98,14 +97,13 @@ mod futures_trade_api_integration_test {
         let new_order: TestOrderResponse = trade_api.send_new_test_order(&params).unwrap();
 
         assert_eq!(new_order.order_id, 0);
-        assert_eq!(new_order.symbol, None);
         assert!(!new_order.reduce_only);
         assert_eq!(new_order.update_time, 0);
     }
 
     #[test]
     fn test_new_stop_loss_test_order() {
-        let pair = Symbol::new("SOLUSDT");
+        let pair = Symbol::new("BTCUSDT");
 
         let trade_api = shared_test_trade();
         let market_api = shared_test_market();
@@ -118,12 +116,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop(pair.symbol, OrderSide::Buy, stop_price, price, 1.0);
 
-        let new_order: TestOrderResponse = trade_api.send_new_test_order(&params).unwrap();
-
-        assert_eq!(new_order.order_id, 0);
-        assert_eq!(new_order.symbol, None);
-        assert!(!new_order.reduce_only);
-        assert_eq!(new_order.update_time, 0);
+        let _new_order: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
     }
 
     #[test]
@@ -141,12 +134,18 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::take_profit(pair.symbol, OrderSide::Sell, stop_price, price, 1.0);
 
-        let new_order: TestOrderResponse = trade_api.send_new_test_order(&params).unwrap();
+        let new_order_error: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
 
-        assert_eq!(new_order.order_id, 0);
-        assert_eq!(new_order.symbol, None);
-        assert!(!new_order.reduce_only);
-        assert_eq!(new_order.update_time, 0);
+        let api_error: ApiError = match new_order_error {
+            BinanceError::Api(api_error) => api_error,
+            _ => panic!("Another error has arrived."),
+        };
+
+        assert_eq!(api_error.code, -4120);
+        assert_eq!(
+            api_error.msg,
+            "Order type not supported for this endpoint. Please use the Algo Order API endpoints instead."
+        );
     }
 
     #[test]
@@ -163,12 +162,15 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop_market(pair.symbol, OrderSide::Buy, stop_price, 1.0);
 
-        let new_order: TestOrderResponse = trade_api.send_new_test_order(&params).unwrap();
+        let new_order_error: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
 
-        assert_eq!(new_order.order_id, 0);
-        assert_eq!(new_order.symbol, None);
-        assert!(!new_order.reduce_only);
-        assert_eq!(new_order.update_time, 0);
+        let api_error: ApiError = match new_order_error {
+            BinanceError::Api(api_error) => api_error,
+            _ => panic!("Another error has arrived."),
+        };
+
+        assert_eq!(api_error.code, -1121);
+        assert_eq!(api_error.msg, "Invalid symbol.");
     }
 
     #[test]
@@ -184,12 +186,18 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::take_profit_market(pair.symbol, OrderSide::Sell, stop_price, 1.0);
 
-        let new_order: TestOrderResponse = trade_api.send_new_test_order(&params).unwrap();
+        let new_order_error: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
 
-        assert_eq!(new_order.order_id, 0);
-        assert_eq!(new_order.symbol, None);
-        assert!(!new_order.reduce_only);
-        assert_eq!(new_order.update_time, 0);
+        let api_error: ApiError = match new_order_error {
+            BinanceError::Api(api_error) => api_error,
+            _ => panic!("Another error has arrived."),
+        };
+
+        assert_eq!(api_error.code, -4120);
+        assert_eq!(
+            api_error.msg,
+            "Order type not supported for this endpoint. Please use the Algo Order API endpoints instead."
+        );
     }
 
     #[test]

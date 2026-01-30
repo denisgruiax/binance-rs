@@ -8,10 +8,10 @@ mod futures_trade_api_integration_test {
         futures::{
             endpoint::host::Host,
             model::{
-                params::trade::{
+                params::{market::Symbol, trade::{
                     CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams,
                     PositionRiskV3Params, SetLeverageParams,
-                },
+                }},
                 response::trade::{
                     GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse,
                     TestOrderResponse,
@@ -19,7 +19,7 @@ mod futures_trade_api_integration_test {
             },
         },
     };
-    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
+    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256, utility::truncate_to_ticks};
     use binance_futures::synchronous::{market::MarketApi, trade::TradeApi};
 
     use dotenv::dotenv;
@@ -192,13 +192,21 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_send_new_order2() {
-        let trade_api = shared_test_trade();
+        let pair = Symbol::new("AVAXUSDT");
 
-        let params: NewOrderParams = NewOrderParams::limit("SOLUSDT", OrderSide::Buy, 110.0, 5.0);
+        let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).unwrap().mark_price;
+        let price = truncate_to_ticks(price + price * 0.07, 3);
+
+        let params: NewOrderParams =
+            NewOrderParams::limit(pair.symbol, OrderSide::Sell, price, 20.0);
         let new_order = trade_api.send_new_order(&params).unwrap();
 
         let params2: GetOpenOrderParams =
             GetOpenOrderParams::new(&new_order.symbol).order_id(new_order.order_id);
+
         let current_order: GetOrderResponse = trade_api.get_open_order(&params2).unwrap();
 
         let params3: CancelOrderParams =

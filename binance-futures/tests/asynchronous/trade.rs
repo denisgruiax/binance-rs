@@ -251,7 +251,7 @@ mod futures_trade_api_integration_test {
             CancelOrderParams::new(&current_order.symbol).order_id(current_order.order_id);
 
         let canceled_order: Result<OrderResponse, BinanceError> =
-            trade_api.send_cancel_order(&params3).await.unwrap();
+            trade_api.send_cancel_order(&params3).await;
 
         assert!(canceled_order.is_ok());
     }
@@ -279,7 +279,7 @@ mod futures_trade_api_integration_test {
             CancelOrderParams::new(&current_order.symbol).order_id(current_order.order_id);
 
         let canceled_order: Result<OrderResponse, BinanceError> =
-            trade_api.send_cancel_order(&params3).await.unwrap();
+            trade_api.send_cancel_order(&params3).await;
 
         assert!(canceled_order.is_ok());
     }

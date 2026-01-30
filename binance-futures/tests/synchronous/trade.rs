@@ -77,9 +77,11 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_new_market_test_order() {
+        let pair = Symbol::new("ETHUSDT");
+
         let trade_api = shared_test_trade();
 
-        let params: NewOrderParams = NewOrderParams::market(SYMBOL, OrderSide::Buy, 1.0);
+        let params: NewOrderParams = NewOrderParams::market(pair.symbol, OrderSide::Buy, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params);

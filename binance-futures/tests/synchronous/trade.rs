@@ -115,10 +115,17 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_new_stop_market_test_order() {
+        let pair = Symbol::new("ICPUSDT");
+
         let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).unwrap().mark_price;
+
+        let stop_price = truncate_to_ticks(price + price * 0.05, 3);
 
         let params: NewOrderParams =
-            NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, 100.0, 1.0);
+            NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, stop_price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params);

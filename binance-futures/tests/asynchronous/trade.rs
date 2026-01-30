@@ -41,8 +41,6 @@ mod futures_trade_api_integration_test {
         env::var("SECRET_KEY_TESTNET").expect("SECRET_KEY_TESTNET must be set")
     });
 
-    static SYMBOL: &'static str = "SOLUSDT";
-
     static MARKET_CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
     static TRADE_CLIENT: OnceLock<Arc<TradeApi<'static, HmacSha256<'static>>>> = OnceLock::new();
 
@@ -135,7 +133,7 @@ mod futures_trade_api_integration_test {
         let price = truncate_to_ticks(price + price * 0.1, 2);
 
         let params: NewOrderParams =
-            NewOrderParams::take_profit(SYMBOL, OrderSide::Sell, stop_price, price, 1.0);
+            NewOrderParams::take_profit(pair.symbol, OrderSide::Sell, stop_price, price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;
@@ -155,7 +153,7 @@ mod futures_trade_api_integration_test {
         let stop_price = truncate_to_ticks(price + price * 0.05, 3);
 
         let params: NewOrderParams =
-            NewOrderParams::stop_market(SYMBOL, OrderSide::Buy, stop_price, 1.0);
+            NewOrderParams::stop_market(pair.symbol, OrderSide::Buy, stop_price, 1.0);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params).await;

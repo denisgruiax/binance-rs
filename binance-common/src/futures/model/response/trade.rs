@@ -1,5 +1,5 @@
 pub use serde::Deserialize;
-use serde_with::{DisplayFromStr, serde_as};
+use serde_with::{DisplayFromStr, rust::deserialize_ignore_any, serde_as};
 
 use crate::enums::futures::{
     AdlLevel, OrderSide, OrderStatus, OrderType, PositionSide, StpModes, TimeInForce, WorkingType,
@@ -51,25 +51,54 @@ pub struct OrderResponse {
     pub self_trade_prevention_mode: StpModes,
     pub good_till_date: Option<u64>,
 }
+
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[serde_as]
 pub struct TestOrderResponse {
     pub order_id: u64,
-    pub symbol: String,
-    pub status: OrderStatus,
-    pub client_order_id: String,
-    pub price: String,
-    pub orig_qty: String,
-    pub executed_qty: String,
-    pub cum_quote: String,
-    pub time_in_force: TimeInForce,
-    pub r#type: OrderType,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub symbol: Option<String>,
+
+    #[serde(default, deserialize_with = "deserialize_ignore_any")]
+    pub status: Option<OrderStatus>,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub client_order_id: Option<String>,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub price: Option<String>,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub orig_qty: Option<String>,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub executed_qty: Option<String>,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub cum_quote: Option<String>,
+
+    #[serde(default, deserialize_with = "deserialize_ignore_any")]
+    pub time_in_force: Option<TimeInForce>,
+
+    #[serde(default, deserialize_with = "deserialize_ignore_any")]
+    pub r#type: Option<OrderType>,
+
     pub reduce_only: bool,
     pub close_position: bool,
-    pub side: OrderSide,
-    pub stop_price: String,
+
+    #[serde(default, deserialize_with = "deserialize_ignore_any")]
+    pub side: Option<OrderSide>,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub stop_price: Option<String>,
+
     pub price_protect: bool,
-    pub orig_type: String,
+
+    #[serde_as(as = "NoneAsEmptyString")]
+    pub orig_type: Option<String>,
+
     pub update_time: u64,
 }
 

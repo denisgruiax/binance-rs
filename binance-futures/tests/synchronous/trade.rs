@@ -172,9 +172,16 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_send_new_order() {
-        let trade_api = shared_test_trade();
+        let pair = Symbol::new("SUIUSDT");
 
-        let params: NewOrderParams = NewOrderParams::limit("EGLDUSDT", OrderSide::Buy, 5.7, 5.0);
+        let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).unwrap().mark_price;
+        let price = truncate_to_ticks(price - price * 0.06, 4);
+
+        let params: NewOrderParams =
+            NewOrderParams::limit(pair.symbol, OrderSide::Buy, price, 10.0);
         let new_order = trade_api.send_new_order(&params).unwrap();
 
         let params2: GetOrderParams =

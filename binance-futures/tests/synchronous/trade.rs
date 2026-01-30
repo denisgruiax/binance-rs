@@ -20,7 +20,7 @@ mod futures_trade_api_integration_test {
         },
     };
     use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256};
-    use binance_futures::synchronous::trade::TradeApi;
+    use binance_futures::synchronous::{market::MarketApi, trade::TradeApi};
 
     use dotenv::dotenv;
     use once_cell::sync::Lazy;
@@ -36,8 +36,21 @@ mod futures_trade_api_integration_test {
         env::var("SECRET_KEY_TESTNET").expect("SECRET_KEY_TESTNET must be set")
     });
 
+    static MARKET_CLIENT: OnceLock<Arc<MarketApi<'static, HmacSha256<'static>>>> = OnceLock::new();
     static TRADE_CLIENT: OnceLock<Arc<TradeApi<'static, HmacSha256<'static>>>> = OnceLock::new();
+
     static SYMBOL: &'static str = "SOLUSDT";
+
+    fn shared_test_market() -> Arc<MarketApi<'static, HmacSha256<'static>>> {
+        MARKET_CLIENT
+            .get_or_init(|| {
+                Arc::new(MarketApi::new(Client::new(
+                    &Host::Test,
+                    HmacSha256::new(&API_KEY_TESTNET, &SECRET_KEY_TESTNET),
+                )))
+            })
+            .clone()
+    }
 
     fn shared_test_trade() -> Arc<TradeApi<'static, HmacSha256<'static>>> {
         TRADE_CLIENT

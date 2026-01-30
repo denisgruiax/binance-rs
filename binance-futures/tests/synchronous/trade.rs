@@ -65,9 +65,16 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_new_limit_test_order() {
-        let trade_api = shared_test_trade();
+        let pair = Symbol::new("BTCUSDT");
 
-        let params: NewOrderParams = NewOrderParams::limit(SYMBOL, OrderSide::Sell, 300.0, 1.0);
+        let trade_api = shared_test_trade();
+        let market_api = shared_test_market();
+
+        let price = market_api.get_mark_price(&pair).unwrap().mark_price;
+        let price = truncate_to_ticks(price + price * 0.1, 1);
+
+        let params: NewOrderParams =
+            NewOrderParams::limit(pair.symbol, OrderSide::Sell, price, 0.02);
 
         let new_order: Result<TestOrderResponse, BinanceError> =
             trade_api.send_new_test_order(&params);

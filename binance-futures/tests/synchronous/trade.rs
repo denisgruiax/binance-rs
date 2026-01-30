@@ -8,10 +8,13 @@ mod futures_trade_api_integration_test {
         futures::{
             endpoint::host::Host,
             model::{
-                params::{market::Symbol, trade::{
-                    CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams,
-                    PositionRiskV3Params, SetLeverageParams,
-                }},
+                params::{
+                    market::Symbol,
+                    trade::{
+                        CancelOrderParams, GetOpenOrderParams, GetOrderParams, NewOrderParams,
+                        PositionRiskV3Params, SetLeverageParams,
+                    },
+                },
                 response::trade::{
                     GetOrderResponse, OrderResponse, PositionRiskV3Response, SetLeverageResponse,
                     TestOrderResponse,
@@ -19,7 +22,9 @@ mod futures_trade_api_integration_test {
             },
         },
     };
-    use binance_core::{client::synchronous::Client, signer::hmacsha256::HmacSha256, utility::truncate_to_ticks};
+    use binance_core::{
+        client::synchronous::Client, signer::hmacsha256::HmacSha256, utility::truncate_to_ticks,
+    };
     use binance_futures::synchronous::{market::MarketApi, trade::TradeApi};
 
     use dotenv::dotenv;

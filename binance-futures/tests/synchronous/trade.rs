@@ -103,7 +103,7 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_new_stop_loss_test_order() {
-        let pair = Symbol::new("BTCUSDT");
+        let pair = Symbol::new("SOLUSDT");
 
         let trade_api = shared_test_trade();
         let market_api = shared_test_market();
@@ -116,7 +116,18 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop(pair.symbol, OrderSide::Buy, stop_price, price, 1.0);
 
-        let _new_order: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
+        let new_order_error: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
+
+        let api_error: ApiError = match new_order_error {
+            BinanceError::Api(api_error) => api_error,
+            _ => panic!("Another error has arrived."),
+        };
+
+        assert_eq!(api_error.code, -4120);
+        assert_eq!(
+            api_error.msg,
+            "Order type not supported for this endpoint. Please use the Algo Order API endpoints instead."
+        );
     }
 
     #[test]
@@ -150,7 +161,7 @@ mod futures_trade_api_integration_test {
 
     #[test]
     fn test_new_stop_market_test_order() {
-        let pair = Symbol::new("ICPUSDT");
+        let pair = Symbol::new("BTCUSDT");
 
         let trade_api = shared_test_trade();
         let market_api = shared_test_market();
@@ -162,15 +173,19 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop_market(pair.symbol, OrderSide::Buy, stop_price, 1.0);
 
-        let new_order_error: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
+        let new_order_error: BinanceError =
+            trade_api.send_new_test_order(&params).unwrap_err();
 
         let api_error: ApiError = match new_order_error {
             BinanceError::Api(api_error) => api_error,
             _ => panic!("Another error has arrived."),
         };
 
-        assert_eq!(api_error.code, -1121);
-        assert_eq!(api_error.msg, "Invalid symbol.");
+        assert_eq!(api_error.code, -4120);
+        assert_eq!(
+            api_error.msg,
+            "Order type not supported for this endpoint. Please use the Algo Order API endpoints instead."
+        );
     }
 
     #[test]

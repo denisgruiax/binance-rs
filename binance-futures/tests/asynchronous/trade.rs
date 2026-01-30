@@ -163,7 +163,7 @@ mod futures_trade_api_integration_test {
 
     #[tokio::test]
     async fn test_new_stop_market_test_order() {
-        let pair = Symbol::new("ICPUSDT");
+        let pair = Symbol::new("BTCUSDT");
 
         let trade_api = shared_test_trade();
         let market_api = shared_test_market();
@@ -183,8 +183,11 @@ mod futures_trade_api_integration_test {
             _ => panic!("Another error has arrived."),
         };
 
-        assert_eq!(api_error.code, -1121);
-        assert_eq!(api_error.msg, "Invalid symbol.");
+        assert_eq!(api_error.code, -4120);
+        assert_eq!(
+            api_error.msg,
+            "Order type not supported for this endpoint. Please use the Algo Order API endpoints instead."
+        );
     }
 
     #[tokio::test]

@@ -79,10 +79,13 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::limit(pair.symbol, OrderSide::Sell, price, 0.02);
 
-        let new_order: Result<TestOrderResponse, BinanceError> =
-            trade_api.send_new_test_order(&params);
+        let new_order: TestOrderResponse =
+            trade_api.send_new_test_order(&params).unwrap();
 
-        assert!(new_order.is_err())
+        assert_eq!(new_order.order_id, 0);
+        assert_eq!(new_order.symbol, None);
+        assert!(!new_order.reduce_only);
+        assert_eq!(new_order.update_time, 0);
     }
 
     #[test]
@@ -93,10 +96,13 @@ mod futures_trade_api_integration_test {
 
         let params: NewOrderParams = NewOrderParams::market(pair.symbol, OrderSide::Buy, 1.0);
 
-        let new_order: Result<TestOrderResponse, BinanceError> =
-            trade_api.send_new_test_order(&params);
+        let new_order: TestOrderResponse =
+            trade_api.send_new_test_order(&params).unwrap();
 
-        assert!(new_order.is_err())
+        assert_eq!(new_order.order_id, 0);
+        assert_eq!(new_order.symbol, None);
+        assert!(!new_order.reduce_only);
+        assert_eq!(new_order.update_time, 0);
     }
 
     #[test]
@@ -114,10 +120,13 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop(pair.symbol, OrderSide::Buy, stop_price, price, 1.0);
 
-        let new_order: Result<TestOrderResponse, BinanceError> =
-            trade_api.send_new_test_order(&params);
+        let new_order: TestOrderResponse =
+            trade_api.send_new_test_order(&params).unwrap();
 
-        assert!(new_order.is_err())
+        assert_eq!(new_order.order_id, 0);
+        assert_eq!(new_order.symbol, None);
+        assert!(!new_order.reduce_only);
+        assert_eq!(new_order.update_time, 0);
     }
 
     #[test]
@@ -135,10 +144,13 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::take_profit(pair.symbol, OrderSide::Sell, stop_price, price, 1.0);
 
-        let new_order: Result<TestOrderResponse, BinanceError> =
-            trade_api.send_new_test_order(&params);
+        let new_order: TestOrderResponse =
+            trade_api.send_new_test_order(&params).unwrap();
 
-        assert!(new_order.is_err())
+        assert_eq!(new_order.order_id, 0);
+        assert_eq!(new_order.symbol, None);
+        assert!(!new_order.reduce_only);
+        assert_eq!(new_order.update_time, 0);
     }
 
     #[test]
@@ -155,10 +167,13 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop_market(pair.symbol, OrderSide::Buy, stop_price, 1.0);
 
-        let new_order: Result<TestOrderResponse, BinanceError> =
-            trade_api.send_new_test_order(&params);
+        let new_order: TestOrderResponse =
+            trade_api.send_new_test_order(&params).unwrap();
 
-        assert!(new_order.is_err())
+        assert_eq!(new_order.order_id, 0);
+        assert_eq!(new_order.symbol, None);
+        assert!(!new_order.reduce_only);
+        assert_eq!(new_order.update_time, 0);
     }
 
     #[test]
@@ -174,10 +189,13 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::take_profit_market(pair.symbol, OrderSide::Sell, stop_price, 1.0);
 
-        let new_order: Result<TestOrderResponse, BinanceError> =
-            trade_api.send_new_test_order(&params);
+        let new_order: TestOrderResponse =
+            trade_api.send_new_test_order(&params).unwrap();
 
-        assert!(new_order.is_err())
+        assert_eq!(new_order.order_id, 0);
+        assert_eq!(new_order.symbol, None);
+        assert!(!new_order.reduce_only);
+        assert_eq!(new_order.update_time, 0);
     }
 
     #[test]

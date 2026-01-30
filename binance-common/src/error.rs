@@ -21,8 +21,8 @@ pub enum BinanceError {
 
 #[derive(Debug, Deserialize)]
 pub struct ApiError {
-    code: i16,
-    msg: String,
+    pub code: i16,
+    pub msg: String,
 }
 
 impl Display for BinanceError {

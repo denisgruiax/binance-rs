@@ -93,62 +93,62 @@ impl WebSocketParams {
     }
 
     pub fn agg_trade(mut self, symbol: WebSocketSymbol) -> Self {
-        self.route.push_str(format!("{}@aggTrade", symbol).as_str());
+        self.route.push_str(format!("{}@aggTrade\\", symbol).as_str());
         self
     }
 
     pub fn mark_price(mut self, symbol: WebSocketSymbol, rate: WebSocketStreamRate) -> Self {
         self.route
-            .push_str(format!("{}@markPrice@{}", symbol, rate).as_str());
+            .push_str(format!("{}@markPrice@{}\\", symbol, rate).as_str());
         self
     }
 
     pub fn mark_price_all(mut self, rate: WebSocketStreamRate) -> Self {
         self.route
-            .push_str(format!("!@markPrice@{}", rate).as_str());
+            .push_str(format!("!@markPrice@{}\\", rate).as_str());
         self
     }
 
     pub fn kline_candlesticks(mut self, symbol: WebSocketSymbol, interval: Interval) -> Self {
         self.route
-            .push_str(format!("{}@kline_{}", symbol, interval.as_ref()).as_str());
+            .push_str(format!("{}@kline_{}\\", symbol, interval.as_ref()).as_str());
         self
     }
 
     pub fn symbol_ticker_mini(mut self, symbol: WebSocketSymbol) -> Self {
         self.route
-            .push_str(format!("{}@miniTicker", symbol).as_str());
+            .push_str(format!("{}@miniTicker\\", symbol).as_str());
         self
     }
 
     pub fn symbol_ticker_all(mut self) -> Self {
-        self.route.push_str("!ticker@arr");
+        self.route.push_str("!ticker@arr\\");
         self
     }
 
     pub fn symbol_ticker(mut self, symbol: WebSocketSymbol) -> Self {
-        self.route.push_str(format!("{}@ticker", symbol).as_str());
+        self.route.push_str(format!("{}@ticker\\", symbol).as_str());
         self
     }
 
     pub fn symbol_ticker_all_mini(mut self) -> Self {
-        self.route.push_str("!miniTicker@arr");
+        self.route.push_str("!miniTicker@arr\\");
         self
     }
 
     pub fn all_book_tickers(mut self) -> Self {
-        self.route.push_str("!bookTicker");
+        self.route.push_str("!bookTicker\\");
         self
     }
 
     pub fn liquidation_order(mut self, symbol: WebSocketSymbol) -> Self {
         self.route
-            .push_str(format!("{}@forceOrder", symbol).as_str());
+            .push_str(format!("{}@forceOrder\\", symbol).as_str());
         self
     }
 
     pub fn all_market_liquidation_order(mut self) -> Self {
-        self.route.push_str("!forceOrder@arr");
+        self.route.push_str("!forceOrder@arr\\");
         self
     }
 
@@ -159,7 +159,7 @@ impl WebSocketParams {
         milliseconds: WebSocketStreamRate,
     ) -> Self {
         self.route
-            .push_str(format!("{}@depth{}@{}", symbol, levels, milliseconds).as_str());
+            .push_str(format!("{}@depth{}@{}\\", symbol, levels, milliseconds).as_str());
         self
     }
 }

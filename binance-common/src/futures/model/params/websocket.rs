@@ -93,7 +93,8 @@ impl WebSocketParams {
     }
 
     pub fn agg_trade(mut self, symbol: WebSocketSymbol) -> Self {
-        self.route.push_str(format!("{}@aggTrade/", symbol).as_str());
+        self.route
+            .push_str(format!("{}@aggTrade/", symbol).as_str());
         self
     }
 

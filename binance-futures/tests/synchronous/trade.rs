@@ -173,8 +173,7 @@ mod futures_trade_api_integration_test {
         let params: NewOrderParams =
             NewOrderParams::stop_market(pair.symbol, OrderSide::Buy, stop_price, 1.0);
 
-        let new_order_error: BinanceError =
-            trade_api.send_new_test_order(&params).unwrap_err();
+        let new_order_error: BinanceError = trade_api.send_new_test_order(&params).unwrap_err();
 
         let api_error: ApiError = match new_order_error {
             BinanceError::Api(api_error) => api_error,

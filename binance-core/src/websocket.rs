@@ -10,4 +10,6 @@ pub trait WebSocket {
         &mut self,
         stream: String,
     ) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
+
+    fn close(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
 }

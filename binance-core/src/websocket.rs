@@ -13,4 +13,8 @@ pub trait WebSocket {
 
     fn close(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
     fn disconnect(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
+    fn handle(
+        &mut self,
+        message: tokio_tungstenite::tungstenite::Utf8Bytes,
+    ) -> impl Future<Output = Result<Self::Response, Self::Error>> + Send + 'static;
 }

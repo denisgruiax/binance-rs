@@ -135,7 +135,7 @@ impl WebSocketMarket {
         }
     }
 
-    pub async fn run(&mut self) -> () {
+    pub async fn run(&mut self) {
         loop {
             match self.status {
                 WebSocketStatus::Connected => {

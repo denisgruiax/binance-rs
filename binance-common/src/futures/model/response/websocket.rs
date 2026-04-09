@@ -196,3 +196,9 @@ pub struct MiniTickerResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub quote_volume: f64,
 }
+
+#[derive(Clone, Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ListenKeyResponse {
+    pub listen_key: String,
+}

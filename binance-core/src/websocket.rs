@@ -6,19 +6,16 @@ pub trait WebSocket {
     type Error;
     type Response;
 
-    fn connect(
-        &mut self,
-        stream: String,
-    ) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
+    fn connect(&mut self, stream: String) -> impl Future<Output = Result<(), Self::Error>> + Send;
 
-    fn close(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
-    fn disconnect(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
+    fn close(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send;
+    fn disconnect(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send;
 
     fn handle(
         &mut self,
         message: tokio_tungstenite::tungstenite::Utf8Bytes,
-    ) -> impl Future<Output = Result<Self::Response, Self::Error>> + Send + 'static;
+    ) -> impl Future<Output = Result<Self::Response, Self::Error>> + Send;
 
-    fn select_action(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send + 'static;
+    fn select_action(&mut self) -> impl Future<Output = Result<(), Self::Error>> + Send;
     fn run(&mut self);
 }

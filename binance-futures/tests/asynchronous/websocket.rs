@@ -16,7 +16,7 @@ mod futures_websocket_api_integration_test {
 
     #[tokio::test]
     async fn test_websocket_market() {
-        let stream = WebSocketParams::new(WebSocketHost::CombinedStreams).kline_candlesticks(
+        let stream = WebSocketParams::new(WebSocketHost::CombinedStreamsMarket).kline_candlesticks(
             WebSocketSymbol::BtcUsdt,
             binance_common::enums::Interval::Minutes5,
         );

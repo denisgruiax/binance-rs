@@ -16,9 +16,9 @@ pub enum WebSocketHost {
     SingleStreamPublic,
     SingleStreamMarket,
     SingleStreamPrivate,
-    CombinedStreamPublic,
-    CombinedStreamMarket,
-    CombinedStreamPrivate,
+    CombinedStreamsPublic,
+    CombinedStreamsMarket,
+    CombinedStreamsPrivate,
 }
 
 impl AsRef<str> for WebSocketHost {
@@ -27,13 +27,13 @@ impl AsRef<str> for WebSocketHost {
             WebSocketHost::SingleStreamPublic => "wss://fstream.binance.com/public/",
             WebSocketHost::SingleStreamMarket => "wss://fstream.binance.com/market/",
             WebSocketHost::SingleStreamPrivate => "wss://fstream.binance.com/private/",
-            WebSocketHost::CombinedStreamPublic => {
+            WebSocketHost::CombinedStreamsPublic => {
                 "wss://fstream.binance.com/public/stream?streams="
             }
-            WebSocketHost::CombinedStreamMarket => {
+            WebSocketHost::CombinedStreamsMarket => {
                 "wss://fstream.binance.com/market/stream?streams="
             }
-            WebSocketHost::CombinedStreamPrivate => {
+            WebSocketHost::CombinedStreamsPrivate => {
                 "wss://fstream.binance.com/private/stream?streams="
             }
         }

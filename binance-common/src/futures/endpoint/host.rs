@@ -13,15 +13,29 @@ impl AsRef<str> for Host {
 }
 
 pub enum WebSocketHost {
-    SingleStream,
-    CombinedStreams,
+    SingleStreamPublic,
+    SingleStreamMarket,
+    SingleStreamPrivate,
+    CombinedStreamPublic,
+    CombinedStreamMarket,
+    CombinedStreamPrivate,
 }
 
 impl AsRef<str> for WebSocketHost {
     fn as_ref(&self) -> &str {
         match self {
-            WebSocketHost::SingleStream => "wss://fstream.binance.com/ws/",
-            WebSocketHost::CombinedStreams => "wss://fstream.binance.com/stream?streams=",
+            WebSocketHost::SingleStreamPublic => "wss://fstream.binance.com/public/",
+            WebSocketHost::SingleStreamMarket => "wss://fstream.binance.com/market/",
+            WebSocketHost::SingleStreamPrivate => "wss://fstream.binance.com/private/",
+            WebSocketHost::CombinedStreamPublic => {
+                "wss://fstream.binance.com/public/stream?streams="
+            }
+            WebSocketHost::CombinedStreamMarket => {
+                "wss://fstream.binance.com/market/stream?streams="
+            }
+            WebSocketHost::CombinedStreamPrivate => {
+                "wss://fstream.binance.com/private/stream?streams="
+            }
         }
     }
 }

@@ -11,7 +11,8 @@ mod futures_websocket_api_integration_test {
             },
         },
     };
-    use binance_futures::asynchronous::websocket::WebSocketConnection;
+    use binance_core::websocket::WebSocketEngine;
+use binance_futures::asynchronous::websocket::WebSocketConnection;
     use tokio::sync::watch::Receiver;
 
     #[tokio::test]

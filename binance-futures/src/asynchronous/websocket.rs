@@ -2,14 +2,14 @@ use binance_common::{
     enums::WebSocketType, error::BinanceError,
     futures::model::response::websocket::WebSocketResponse,
 };
-use binance_core::websocket::futures::market::{WebSocketMarket, WebSocketMarketController};
+use binance_core::websocket::{WebSocketEngine, futures::market::{WebSocketMarket, WebSocketMarketController}};
 
 pub struct WebSocketConnection;
 
 impl WebSocketConnection {
     pub fn new_market(
         websocket_type: WebSocketType,
-    ) -> (WebSocketMarketController, WebSocketMarket) {
+    ) -> (WebSocketMarketController, impl WebSocketEngine) {
         let (tx_controller, rx_controller) = tokio::sync::mpsc::channel(1);
         let (tx_response, rx_response) = tokio::sync::mpsc::channel(1);
         let (tx_watch, rx_watch) = tokio::sync::watch::channel::<

@@ -9,6 +9,8 @@ use tokio_tungstenite::{
     tungstenite::{Message, Utf8Bytes},
 };
 
+use crate::websocket::WebSocketEngine;
+
 pub struct WebSocketMarket {
     rx_controller: tokio::sync::mpsc::Receiver<WebSocketCommand>,
     tx_response: tokio::sync::mpsc::Sender<Result<(), BinanceError>>,
@@ -24,7 +26,7 @@ impl WebSocketMarket {
         tx_response: tokio::sync::mpsc::Sender<Result<(), BinanceError>>,
         tx_watch: tokio::sync::watch::Sender<Result<WebSocketResponse, BinanceError>>,
         websocket_type: WebSocketType,
-    ) -> WebSocketMarket {
+    ) -> impl WebSocketEngine {
         WebSocketMarket {
             rx_controller,
             tx_response,
@@ -34,6 +36,12 @@ impl WebSocketMarket {
             websocket_type,
         }
     }
+}
+
+impl WebSocketEngine for WebSocketMarket {
+    type Command = WebSocketCommand;
+    type Error = BinanceError;
+    type Response = WebSocketResponse;
 
     async fn connect(&mut self, stream: String) -> Result<(), BinanceError> {
         let (socket, _) = connect_async(stream).await.map_err(|_| {
@@ -86,7 +94,7 @@ impl WebSocketMarket {
         ))
     }
 
-    fn handle(&self, message: Utf8Bytes) -> Result<WebSocketResponse, BinanceError> {
+    async fn handle(&self, message: Utf8Bytes) -> Result<WebSocketResponse, BinanceError> {
         match self.websocket_type {
             WebSocketType::SingleStream => {
                 serde_json::from_slice::<WebSocketResponse>(message.as_bytes())
@@ -115,7 +123,7 @@ impl WebSocketMarket {
                         self.tx_response.send(response).await.map_err(|_|BinanceError::Channel("Failed to send the close error through response channel.".to_string()))
                     },
 
-                Message::Text(msg) => {self.tx_watch.send(self.handle(msg)).map_err(|_| BinanceError::Channel("Failed to send the close error through watch channel.".to_string()))},
+                Message::Text(msg) => {self.tx_watch.send(self.handle(msg).await).map_err(|_| BinanceError::Channel("Failed to send the close error through watch channel.".to_string()))},
 
                 Message::Ping(payload) => {
                     self.socket.as_mut().ok_or(BinanceError::WebSocketInternal("Unable to get a mutable reference to socket".to_string()))?.send(Message::Pong(payload)).await.map_err(|_| BinanceError::Channel("Failed to send the Pong response back to server with socket channel".to_string()))
@@ -135,7 +143,7 @@ impl WebSocketMarket {
         }
     }
 
-    pub async fn run(&mut self) {
+    async fn run(&mut self) {
         loop {
             match self.status {
                 WebSocketStatus::Connected => {

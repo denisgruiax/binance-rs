@@ -23,3 +23,4 @@ binance-common = {path = "../binance-common", version = "0.2.2" }
 chrono = "0.4.40"
 rand = "0.8"
 base64 = "0.22.1"
+futures = "0.3.32"

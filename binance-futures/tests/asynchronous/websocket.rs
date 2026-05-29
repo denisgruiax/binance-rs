@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod futures_websocket_api_integration_test {
     use binance_common::{
-        enums::{WebSocketCommand, WebSocketType},
+        enums::WebSocketType,
         error::BinanceError,
         futures::{
             endpoint::host::WebSocketHost,
@@ -11,7 +11,10 @@ mod futures_websocket_api_integration_test {
             },
         },
     };
-    use binance_futures::asynchronous::websocket::WebSocketConnection;
+    use binance_core::websocket::{
+        futures::market::handler::WebSocketMarketHandler, handler::WebSocketHandler,
+    };
+
     use tokio::sync::watch::Receiver;
 
     #[tokio::test]
@@ -21,27 +24,15 @@ mod futures_websocket_api_integration_test {
             binance_common::enums::Interval::Minutes5,
         );
 
-        let (mut controller, mut websocket) =
-            WebSocketConnection::new_market(WebSocketType::MultiStream);
+        let mut websocket_handler = WebSocketMarketHandler::new(WebSocketType::MultiStream);
 
-        let websocket_handler = tokio::spawn(async move { websocket.run().await });
+        websocket_handler.start(stream.route).await.unwrap();
 
-        controller
-            .send_command(WebSocketCommand::Connect(stream.route))
-            .await
-            .unwrap();
+        let buffer = fill_buffer(websocket_handler.watch().await.unwrap()).await;
 
-        let buffer = fill_buffer(controller.watch().await).await;
-
-        controller
-            .send_command(WebSocketCommand::Close)
-            .await
-            .unwrap();
-
-        let websocket_result = websocket_handler.await;
+        websocket_handler.stop().await.unwrap();
 
         assert_eq!(buffer.len(), 15);
-        assert!(websocket_result.is_ok());
     }
 
     async fn fill_buffer(
@@ -57,6 +48,8 @@ mod futures_websocket_api_integration_test {
                 }
 
                 let kline = (*kline_stream.borrow()).as_ref().unwrap().clone();
+
+                println!("{:?}", kline);
 
                 buffer.push(kline);
                 count -= 1;

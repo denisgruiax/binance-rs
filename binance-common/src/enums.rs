@@ -107,10 +107,11 @@ pub enum WebSocketCommand {
     Disconnect,
     Close,
     Reconnect,
+    GetState(tokio::sync::oneshot::Sender<WebSocketState>),
 }
 
-#[derive(Debug)]
-pub enum WebSocketStatus {
+#[derive(Copy, Clone, Debug)]
+pub enum WebSocketState {
     Connected,
     Disconnected,
     Closed,

@@ -10,6 +10,7 @@ repository = "https://github.com/denisgruiax/binance-rs.git"
 [dependencies]
 hmac = "0.12.1"
 reqwest = "0.12.15"
+tokio = { version = "1.44.2", features = ["rt-multi-thread"] }
 serde = {version = "1.0.219", features = ["derive"]}
 serde_json = "1.0.140"
 serde_urlencoded = "0.7.1"

@@ -71,11 +71,11 @@ impl WebSocketHandler for WebSocketMarketHandler<WebSocketMarketController, WebS
                 .send_command(WebSocketCommand::Connect(route))
                 .await?;
 
-            return Ok(());
+            Ok(())
         } else {
-            return Err(BinanceError::Unknown(
+            Err(BinanceError::Unknown(
                 "Engine or handler bad state".to_string(),
-            ));
+            ))
         }
     }
     async fn stop(&mut self) -> Result<(), Self::Error> {
@@ -88,11 +88,11 @@ impl WebSocketHandler for WebSocketMarketHandler<WebSocketMarketController, WebS
 
             self.engine = Some(tokio::join!(self.handler.take().unwrap()).0.unwrap());
 
-            return Ok(());
+            Ok(())
         } else {
-            return Err(BinanceError::Unknown(
+            Err(BinanceError::Unknown(
                 "Engine or handler bad state".to_string(),
-            ));
+            ))
         }
     }
 
@@ -109,11 +109,11 @@ impl WebSocketHandler for WebSocketMarketHandler<WebSocketMarketController, WebS
                 .send_command(WebSocketCommand::Connect(route))
                 .await?;
 
-            return Ok(());
+            Ok(())
         } else {
-            return Err(BinanceError::Unknown(
+            Err(BinanceError::Unknown(
                 "Engine or handler bad state".to_string(),
-            ));
+            ))
         }
     }
 
@@ -121,9 +121,9 @@ impl WebSocketHandler for WebSocketMarketHandler<WebSocketMarketController, WebS
         if self.engine.is_none() && self.handler.is_some() {
             return self.controller.as_mut().unwrap().get_state().await;
         } else {
-            return Err(BinanceError::Unknown(
+            Err(BinanceError::Unknown(
                 "Can not get state from engine".to_string(),
-            ));
+            ))
         }
     }
 

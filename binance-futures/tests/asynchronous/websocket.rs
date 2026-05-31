@@ -12,7 +12,7 @@ mod futures_websocket_api_integration_test {
         },
     };
     use binance_core::websocket::{
-        futures::market::handler::WebSocketMarketHandler, handler::WebSocketHandler,
+        futures::market::supervisor::WebSocketMarketSupervisor, supervisor::WebSocketSupervisor,
     };
 
     use tokio::sync::watch::Receiver;
@@ -24,7 +24,7 @@ mod futures_websocket_api_integration_test {
             binance_common::enums::Interval::Minutes5,
         );
 
-        let mut websocket_handler = WebSocketMarketHandler::new(WebSocketType::MultiStream);
+        let mut websocket_handler = WebSocketMarketSupervisor::new(WebSocketType::MultiStream);
 
         websocket_handler.start(stream.route).await.unwrap();
 

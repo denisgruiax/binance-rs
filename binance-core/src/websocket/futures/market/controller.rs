@@ -36,7 +36,7 @@ impl WebSocketController for WebSocketMarketController {
         match self.rx_response.recv().await {
             Some(response) => response,
             None => Err(BinanceError::Channel(
-                "The sender from WebSocket to Controller have been dropped.".to_string(),
+                "The sender from WebSocket to Controller has been dropped.".to_string(),
             )),
         }
     }

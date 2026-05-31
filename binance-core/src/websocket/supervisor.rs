@@ -1,6 +1,6 @@
 use binance_common::enums::WebSocketType;
 
-pub trait WebSocketHandler {
+pub trait WebSocketSupervisor {
     type Error;
     type Response;
     type State;

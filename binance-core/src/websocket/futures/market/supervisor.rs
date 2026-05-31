@@ -11,10 +11,10 @@ use tokio::task::JoinHandle;
 use super::controller::WebSocketMarketController;
 use crate::websocket::{
     controller::WebSocketController, engine::WebSocketEngine,
-    futures::market::engine::WebSocketMarketEngine, handler::WebSocketHandler,
+    futures::market::engine::WebSocketMarketEngine, supervisor::WebSocketSupervisor,
 };
 
-pub struct WebSocketMarketHandler<C, E>
+pub struct WebSocketMarketSupervisor<C, E>
 where
     C: WebSocketController,
     E: WebSocketEngine + Send,
@@ -24,7 +24,9 @@ where
     handler: Option<JoinHandle<E>>,
 }
 
-impl WebSocketHandler for WebSocketMarketHandler<WebSocketMarketController, WebSocketMarketEngine> {
+impl WebSocketSupervisor
+    for WebSocketMarketSupervisor<WebSocketMarketController, WebSocketMarketEngine>
+{
     type Error = BinanceError;
     type Response = WebSocketResponse;
     type State = WebSocketState;

@@ -7,19 +7,19 @@ use binance_common::{
 use crate::websocket::controller::WebSocketController;
 
 pub struct WebSocketMarketController {
-    tx_controller: tokio::sync::mpsc::Sender<WebSocketCommand>,
+    tx_command: tokio::sync::mpsc::Sender<WebSocketCommand>,
     rx_response: tokio::sync::mpsc::Receiver<Result<(), BinanceError>>,
     rx_watch: tokio::sync::watch::Receiver<Result<WebSocketResponse, BinanceError>>,
 }
 
 impl WebSocketMarketController {
     pub fn new(
-        tx_controller: tokio::sync::mpsc::Sender<WebSocketCommand>,
+        tx_command: tokio::sync::mpsc::Sender<WebSocketCommand>,
         rx_response: tokio::sync::mpsc::Receiver<Result<(), BinanceError>>,
         rx_watch: tokio::sync::watch::Receiver<Result<WebSocketResponse, BinanceError>>,
     ) -> Self {
         WebSocketMarketController {
-            tx_controller,
+            tx_command,
             rx_response,
             rx_watch,
         }
@@ -54,7 +54,7 @@ impl WebSocketController for WebSocketMarketController {
     }
 
     async fn send_command(&mut self, command: WebSocketCommand) -> Result<(), BinanceError> {
-        self.tx_controller
+        self.tx_command
             .send(command)
             .await
             .map_err(|_| BinanceError::Channel("Failed to send WebSocket command.".to_string()))

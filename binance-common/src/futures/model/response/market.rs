@@ -154,9 +154,6 @@ pub struct Ticker24hResponse {
     #[serde_as(as = "DisplayFromStr")]
     pub volume: f64,
 
-    #[serde_as(as = "DisplayFromStr")]
-    pub quote_volume: f64,
-
     pub open_time: u64,
     pub close_time: u64,
     pub first_id: u64,

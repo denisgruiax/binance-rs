@@ -15,15 +15,9 @@ pub struct OrderResponse {
     pub cum_qty: f64,
 
     #[serde_as(as = "DisplayFromStr")]
-    pub cum_quote: f64,
-
-    #[serde_as(as = "DisplayFromStr")]
     pub executed_qty: f64,
 
     pub order_id: u64,
-
-    #[serde_as(as = "DisplayFromStr")]
-    pub avg_price: f64,
 
     #[serde_as(as = "DisplayFromStr")]
     pub orig_qty: f64,

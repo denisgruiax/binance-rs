@@ -105,6 +105,7 @@ impl WebSocketSupervisor
                 .unwrap()
                 .send_command(Disconnect)
                 .await?;
+            
             self.controller
                 .as_mut()
                 .unwrap()

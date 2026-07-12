@@ -1,8 +1,5 @@
 use binance_common::{
-    enums::{
-        WebSocketCommand::{self, Disconnect},
-        WebSocketState, WebSocketType,
-    },
+    enums::{WebSocketState, WebSocketType},
     error::BinanceError,
     futures::model::response::websocket::WebSocketResponse,
 };
@@ -67,11 +64,7 @@ impl WebSocketSupervisor
                 engine
             }));
 
-            self.controller
-                .as_mut()
-                .unwrap()
-                .send_command(WebSocketCommand::Connect(route))
-                .await?;
+            self.controller.as_mut().unwrap().connect(route).await?;
 
             Ok(())
         } else {
@@ -82,11 +75,7 @@ impl WebSocketSupervisor
     }
     async fn stop(&mut self) -> Result<(), Self::Error> {
         if self.engine.is_none() && self.handler.is_some() {
-            self.controller
-                .as_mut()
-                .unwrap()
-                .send_command(WebSocketCommand::Close)
-                .await?;
+            self.controller.as_mut().unwrap().close().await?;
 
             self.engine = Some(tokio::join!(self.handler.take().unwrap()).0.unwrap());
 
@@ -100,17 +89,9 @@ impl WebSocketSupervisor
 
     async fn restart(&mut self, route: String) -> Result<(), Self::Error> {
         if self.engine.is_none() && self.handler.is_some() {
-            self.controller
-                .as_mut()
-                .unwrap()
-                .send_command(Disconnect)
-                .await?;
-            
-            self.controller
-                .as_mut()
-                .unwrap()
-                .send_command(WebSocketCommand::Connect(route))
-                .await?;
+            self.controller.as_mut().unwrap().reconnect().await?;
+
+            self.controller.as_mut().unwrap().connect(route).await?;
 
             Ok(())
         } else {

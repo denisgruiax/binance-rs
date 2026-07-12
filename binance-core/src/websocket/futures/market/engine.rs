@@ -6,7 +6,7 @@ use binance_common::{
 use futures_util::{SinkExt, StreamExt};
 use tokio_tungstenite::{
     MaybeTlsStream, WebSocketStream, connect_async,
-    tungstenite::{Message, Utf8Bytes},
+    tungstenite::{Error, Message, Utf8Bytes},
 };
 
 use crate::websocket::engine::WebSocketEngine;
@@ -108,40 +108,108 @@ impl WebSocketEngine for WebSocketMarketEngine {
         }
     }
 
+    async fn handle_frame(&mut self, frame: Result<Message, Error>) -> Result<(), BinanceError> {
+        match frame {
+            Ok(message) => self.handle_message(message).await,
+            Err(_) => Err(BinanceError::Unknown(
+                "Socket reference problem!".to_string(),
+            )),
+        }
+    }
+
+    async fn handle_message(&mut self, message: Message) -> Result<(), BinanceError> {
+        match message {
+            Message::Close(_) => {
+                self.tx_watch
+                    .send(Err(BinanceError::WebSocketInternal(
+                        "Close frame arrived into WebSocketMarketEngine engine".to_string(),
+                    )))
+                    .map_err(|_| {
+                        BinanceError::Channel(
+                            "Failed to send the close error through watch channel.".to_string(),
+                        )
+                    })?;
+                let response = self.close().await;
+                self.tx_response.send(response).await.map_err(|_| {
+                    BinanceError::Channel(
+                        "Failed to send the close error through response channel.".to_string(),
+                    )
+                })
+            }
+
+            Message::Text(msg) => self.tx_watch.send(self.handle(msg).await).map_err(|_| {
+                BinanceError::Channel(
+                    "Failed to send the close error through watch channel.".to_string(),
+                )
+            }),
+
+            Message::Ping(payload) => self
+                .socket
+                .as_mut()
+                .ok_or(BinanceError::WebSocketInternal(
+                    "Unable to get a mutable reference to socket".to_string(),
+                ))?
+                .send(Message::Pong(payload))
+                .await
+                .map_err(|_| {
+                    BinanceError::Channel(
+                        "Failed to send the Pong response back to server with socket channel"
+                            .to_string(),
+                    )
+                }),
+            _ => Err(BinanceError::Unknown(
+                "Unknown error for socket reeference".to_string(),
+            )),
+        }
+    }
+
+    async fn handle_command(&mut self, command: WebSocketCommand) -> Result<(), BinanceError> {
+        match command {
+            WebSocketCommand::Connect(_, tx) => {
+                let error = Err(BinanceError::Unknown(
+                    "Websocket already Connected!".to_string(),
+                ));
+
+                tx.send(error)
+                    .map_err(|error: Result<(), BinanceError>| error.unwrap_err())
+            }
+            WebSocketCommand::Disconnect(tx) => {
+                let error = self.disconnect().await.map_err(|_| {
+                    BinanceError::Channel("Failed to disconnect the socket channel".to_string())
+                });
+
+                tx.send(error)
+                    .map_err(|error: Result<(), BinanceError>| error.unwrap_err())
+            }
+            WebSocketCommand::Close(tx) => {
+                let error: Result<(), BinanceError> = self.close().await.map_err(|_| {
+                    BinanceError::Channel("Failed to close the socket channel".to_string())
+                });
+
+                tx.send(error)
+                    .map_err(|error: Result<(), BinanceError>| error.unwrap_err())
+            }
+            WebSocketCommand::GetState(tx) => tx.send(Ok(self.state)).map_err(|_| {
+                BinanceError::Channel("Failed to send state to controller.".to_string())
+            }),
+            _ => Err(BinanceError::Unknown(
+                "Unknown error for controller channel".to_string(),
+            )),
+        }
+    }
+
     async fn select_action(&mut self) -> Result<(), BinanceError> {
-        let socket_ref = self.socket.as_mut().ok_or(BinanceError::WebSocketInternal(
-            "Unable to get a mutable reference to socket".to_string(),
-        ))?;
+        let socket_ref: &mut WebSocketStream<MaybeTlsStream<tokio::net::TcpStream>> =
+            self.socket.as_mut().ok_or(BinanceError::WebSocketInternal(
+                "Unable to get a mutable reference to socket".to_string(),
+            ))?;
 
         tokio::select! {
-        Some(result) = socket_ref.next() => {
-                match result {
-                    Ok(response) => {match response {
-                Message::Close(_) => {
-                        self.tx_watch.send(Err(BinanceError::WebSocketInternal("Close frame arrived into WebSocketMarketEngine engine".to_string()))).map_err(|_|BinanceError::Channel("Failed to send the close error through watch channel.".to_string()))?;
-                        let response = self.close().await;
-                        self.tx_response.send(response).await.map_err(|_|BinanceError::Channel("Failed to send the close error through response channel.".to_string()))
-                    },
-
-                Message::Text(msg) => {self.tx_watch.send(self.handle(msg).await).map_err(|_| BinanceError::Channel("Failed to send the close error through watch channel.".to_string()))},
-
-                Message::Ping(payload) => {
-                    self.socket.as_mut().ok_or(BinanceError::WebSocketInternal("Unable to get a mutable reference to socket".to_string()))?.send(Message::Pong(payload)).await.map_err(|_| BinanceError::Channel("Failed to send the Pong response back to server with socket channel".to_string()))
-                },
-                _ => Err(BinanceError::Unknown("Unknown error for socket reeference".to_string()))}},
-                    Err(_) => {Err(BinanceError::Unknown("Socket reference problem!".to_string()))},
-                }
+        Some(frame) = socket_ref.next() => {
+                self.handle_frame(frame).await
             },
 
-        Some(command) = self.rx_controller.recv() => {match  command {
-            WebSocketCommand::Connect(_) => {Err(BinanceError::Unknown("Websocket already Connected!".to_string()))},
-            WebSocketCommand::Disconnect => {self.disconnect().await.map_err(|_| BinanceError::Channel("Failed to disconnect the socket channel".to_string()))},
-            WebSocketCommand::Close => {self.close().await.map_err(|_| BinanceError::Channel("Failed to close the socket channel".to_string()))},
-            WebSocketCommand::GetState(tx) => {tx.send(self.state).map_err(|_| BinanceError::Channel("Failed to send state to controller.".to_string()))},
-            _ => {
-                Err(BinanceError::Unknown("Unknown error for controller channel".to_string()))
-            }
-        }},
+        Some(command) = self.rx_controller.recv() => {self.handle_command(command).await},
         }
     }
 
@@ -157,9 +225,9 @@ impl WebSocketEngine for WebSocketMarketEngine {
                 WebSocketState::Disconnected | WebSocketState::Idle => {
                     if let Some(command) = self.rx_controller.recv().await {
                         match command {
-                            WebSocketCommand::Connect(stream) => {
+                            WebSocketCommand::Connect(stream, tx) => {
                                 let response = self.connect(stream).await;
-                                self.tx_response.send(response).await.unwrap();
+                                tx.send(response).unwrap();
                             }
                             _ => {
                                 self.tx_response

@@ -2,6 +2,8 @@ pub mod futures;
 pub mod spot;
 
 use serde::{Deserialize, Serialize};
+
+use crate::error::BinanceError;
 pub enum Interval {
     Seconds1,
     Minutes1,
@@ -103,11 +105,14 @@ pub enum CancelRestrictions {
 
 #[derive(Debug)]
 pub enum WebSocketCommand {
-    Connect(String),
-    Disconnect,
-    Close,
-    Reconnect,
-    GetState(tokio::sync::oneshot::Sender<WebSocketState>),
+    Connect(
+        String,
+        tokio::sync::oneshot::Sender<Result<(), BinanceError>>,
+    ),
+    Disconnect(tokio::sync::oneshot::Sender<Result<(), BinanceError>>),
+    Close(tokio::sync::oneshot::Sender<Result<(), BinanceError>>),
+    Reconnect(tokio::sync::oneshot::Sender<Result<(), BinanceError>>),
+    GetState(tokio::sync::oneshot::Sender<Result<WebSocketState, BinanceError>>),
 }
 
 #[derive(Copy, Clone, Debug)]

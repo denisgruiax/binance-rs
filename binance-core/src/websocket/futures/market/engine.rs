@@ -205,11 +205,8 @@ impl WebSocketEngine for WebSocketMarketEngine {
             ))?;
 
         tokio::select! {
-        Some(frame) = socket_ref.next() => {
-                self.handle_frame(frame).await
-            },
-
-        Some(command) = self.rx_controller.recv() => {self.handle_command(command).await},
+            Some(frame) = socket_ref.next() => self.handle_frame(frame).await,
+            Some(command) = self.rx_controller.recv() => self.handle_command(command).await,
         }
     }
 

@@ -161,6 +161,9 @@ pub struct CommissionRateResponse {
 
     #[serde_as(as = "DisplayFromStr")]
     pub taker_commission_rate: f64,
+
+    #[serde_as(as = "DisplayFromStr")]
+    pub rpi_commission_rate: f64,
 }
 
 #[serde_as]

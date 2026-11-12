@@ -229,7 +229,7 @@ impl WebSocketEngine for WebSocketMarketEngine {
                             _ => {
                                 self.tx_response
                                     .send(Err(BinanceError::WebSocketInternal(
-                                        "state is Idle, only connect or close is available"
+                                        "State is Idle, only connect or close is available"
                                             .to_string(),
                                     )))
                                     .await

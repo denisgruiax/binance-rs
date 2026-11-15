@@ -1,16 +1,16 @@
 use hmac::digest::InvalidLength;
 use serde::Deserialize;
-use std::fmt::Display;
+use std::{fmt::Display, sync::Arc};
 
 #[derive(Debug)]
 pub enum BinanceError {
     Api(ApiError),
     BuildRequest(String),
     Channel(String),
-    Deserialize(serde_json::Error),
+    Deserialize(Arc<serde_json::Error>),
     IpBanned,
     InternalServer,
-    Request(reqwest::Error),
+    Request(Arc<reqwest::Error>),
     RequestTimeout,
     Signature(InvalidLength),
     TooManyRequest,
@@ -93,12 +93,12 @@ impl From<InvalidLength> for BinanceError {
 
 impl From<reqwest::Error> for BinanceError {
     fn from(value: reqwest::Error) -> Self {
-        BinanceError::Request(value)
+        BinanceError::Request(Arc::new(value))
     }
 }
 
 impl From<serde_json::Error> for BinanceError {
     fn from(value: serde_json::Error) -> Self {
-        BinanceError::Deserialize(value)
+        BinanceError::Deserialize(Arc::from(value))
     }
 }

@@ -98,11 +98,11 @@ impl WebSocketEngine for WebSocketMarketEngine {
         match self.websocket_type {
             WebSocketType::SingleStream => {
                 serde_json::from_slice::<WebSocketResponse>(message.as_bytes())
-                    .map_err(BinanceError::Deserialize)
+                    .map_err(BinanceError::from)
             }
             WebSocketType::MultiStream => {
                 let response = serde_json::from_slice::<CombinedStreamResponse>(message.as_bytes())
-                    .map_err(BinanceError::Deserialize)?;
+                    .map_err(BinanceError::from)?;
                 Ok(response.data)
             }
         }

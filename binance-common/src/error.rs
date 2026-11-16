@@ -2,7 +2,7 @@ use hmac::digest::InvalidLength;
 use serde::Deserialize;
 use std::{fmt::Display, sync::Arc};
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum BinanceError {
     Api(ApiError),
     BuildRequest(String),
@@ -19,7 +19,7 @@ pub enum BinanceError {
     WebSocketInternal(String),
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct ApiError {
     pub code: i16,
     pub msg: String,
